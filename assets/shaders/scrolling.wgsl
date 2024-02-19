@@ -1,8 +1,8 @@
  
 //see bindings in terrain_material.rs 
- 
- 
+  
  #import bevy_pbr::{
+    mesh_view_bindings::globals, 
     forward_io::{VertexOutput, FragmentOutput},
     pbr_functions::alpha_discard,
     pbr_fragment::pbr_input_from_standard_material,
@@ -21,8 +21,7 @@ struct StandardMaterial {
     flags: u32,
     alpha_cutoff: f32,
 };
-
-
+ 
 struct CustomMaterialUniforms {
     color_texture_expansion_factor: f32 ,
     chunk_uv: vec4<f32>,  //start_x, start_y, end_x, end_y   -- used to subselect a region from the splat texture 
@@ -61,7 +60,6 @@ var<uniform> custom_uniforms: CustomMaterialUniforms;
 var base_color_texture: texture_2d<f32>;
 @group(1) @binding(22)
 var base_color_sampler: sampler;
-
  
 
 
@@ -75,7 +73,7 @@ fn fragment(
     
    
    // let tiled_uv = material.color_texture_expansion_factor*mesh.uv;  //cannot get this binding to work !? 
-    let tiled_uv = 1.0*mesh.uv;
+    let tiled_uv = 1.0*mesh.uv * globals.time;
     
      
     

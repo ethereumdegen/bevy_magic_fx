@@ -82,7 +82,7 @@ pub struct ScrollingMaterial {
     #[sampler(22)]
     pub base_color_texture: Option<Handle<Image>>,
 
-     
+ 
 }
 
 impl Material for ScrollingMaterial {
