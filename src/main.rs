@@ -18,15 +18,16 @@ use bevy::pbr::ExtendedMaterial;
 use bevy::pbr::OpaqueRendererMethod;
 
 
+
 fn main() {
     App::new() 
-      
-         
+       
          .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
+          .add_plugins(bevy_obj::ObjPlugin)
+         
          .add_plugins(MaterialPlugin::<ExtendedMaterial<StandardMaterial,custom_material::ScrollingMaterial>>::default())
         .add_systems(Startup, setup)
-        .add_systems(Update, rotate)
-        .add_systems(Update, on_asset_load )
+        .add_systems(Update, rotate) 
         .insert_resource( AssetHandlesResource::default() )
         .run();
 }
@@ -36,15 +37,12 @@ fn main() {
 pub type CustomPbrBundle = MaterialMeshBundle<ExtendedMaterial<StandardMaterial,custom_material::ScrollingMaterial>>;
 mod custom_material;
 
-/// A marker component for our shapes so we can query them separately from the ground plane
-#[derive(Component)]
-struct Shape;
+ 
 
-const X_EXTENT: f32 = 14.5;
-
+ 
 #[derive(Resource,Default)]
 pub struct AssetHandlesResource {
-    bullet_mesh: Handle<Gltf>,
+    bullet_mesh: Handle<Mesh>,
     anim_material: Handle<ExtendedMaterial<StandardMaterial, custom_material::ScrollingMaterial >> 
 }
 
@@ -67,9 +65,9 @@ fn setup(
 
 
     let magic_texture = asset_server.load("textures/fire_01.png");
-    asset_handles_resource.bullet_mesh = asset_server.load("meshes/mesh_projectile.glb");
+    asset_handles_resource.bullet_mesh = asset_server.load("meshes/projectile.obj");
 
-let base_color = Color::PURPLE.set_a(0.4).clone();
+    let base_color = Color::PURPLE.set_a(0.4).clone();
 
 
     asset_handles_resource.anim_material = custom_materials.add(ExtendedMaterial {
@@ -79,11 +77,7 @@ let base_color = Color::PURPLE.set_a(0.4).clone();
             // can be used in forward or deferred mode.
             opaque_render_method: OpaqueRendererMethod::Auto,
             alpha_mode: AlphaMode::Multiply,
-            // in deferred mode, only the PbrInput can be modified (uvs, color and other material properties),
-            // in forward mode, the output can also be modified after lighting is applied.
-            // see the fragment shader `extended_material.wgsl` for more info.
-            // Note: to run in deferred mode, you must also add a `DeferredPrepass` component to the camera and either
-            // change the above to `OpaqueRendererMethod::Deferred` or add the `DefaultOpaqueRendererMethod` resource.
+            
             ..Default::default()
         },
         extension:custom_material::ScrollingMaterial {
@@ -106,44 +100,37 @@ let base_color = Color::PURPLE.set_a(0.4).clone();
     
     
     
+    
+                  let bullet_mesh_handle = &asset_handles_resource.bullet_mesh;
+                   
+                     let anim_mat_handle = &asset_handles_resource.anim_material;
+                    
+               
+          
+
+                    commands.spawn((
+                        CustomPbrBundle {
+                            mesh:  bullet_mesh_handle.clone(),
+                            material:  anim_mat_handle.clone(),
+                          
+                            transform: Transform::from_xyz(
+                                3.0,
+                                2.0,
+                                0.0,
+                            )
+                            .with_rotation(Quat::from_rotation_x(-PI / 5.)),
+                            ..default()
+                        },
+                        
+                        bevy::pbr::NotShadowCaster 
+                    ));
+                    
+                    
+    
     //custom_materials.add();
 
 
-  
-
-   /*  let shapes = [
-        meshes.add(shape::Cube::default().into()),
-        meshes.add(shape::Box::default().into()),
-        meshes.add(shape::Capsule::default().into()),
-        meshes.add(shape::Torus::default().into()),
-        meshes.add(shape::Cylinder::default().into()),
-        meshes.add(shape::Icosphere::default().try_into().unwrap()),
-        meshes.add(shape::UVSphere::default().into()),
-    ];
-
-   let num_shapes = shapes.len();
-
-    for (i, shape) in shapes.into_iter().enumerate() {
-        commands.spawn((
-            CustomPbrBundle {
-                mesh: shape,
-                material: debug_material.clone(),
-                transform: Transform::from_xyz(
-                    -X_EXTENT / 2. + i as f32 / (num_shapes - 1) as f32 * X_EXTENT,
-                    2.0,
-                    0.0,
-                )
-                .with_rotation(Quat::from_rotation_x(-PI / 40.)),
-                ..default()
-            },
-            Shape,
-            bevy::pbr::NotShadowCaster 
-        ));
-    }
-*/
-
-//   
-
+   
 
 
     commands.spawn(PointLightBundle {
@@ -180,74 +167,7 @@ let base_color = Color::PURPLE.set_a(0.4).clone();
 
 
 }
-
-/*
-Once our gltf loads, extract the mesh and build our bundle 
-*/
-fn on_asset_load(
-    mut commands: Commands,
-    mut ev_asset: EventReader<AssetEvent<Gltf>>,
-    
-       asset_handles_resource: Res <AssetHandlesResource>,
-  //  mut images: ResMut<Assets<Image>>,
-
-
-     gltfs: ResMut<Assets<Gltf>>,
-
-      gltfmeshes: ResMut<Assets<GltfMesh>>,
-
-      //materials: ResMut<Assets<StandardMaterial>>,
-  // mut custom_materials: ResMut<Assets<custom_material::ScrollingMaterial>>,
-){
-
-    for ev in ev_asset.read() {
-        match ev {
-            AssetEvent::LoadedWithDependencies { id  } => {
-                
-             //   let mut image_is_splat = false; 
-
-                let loaded_handle = Handle::Weak(*id);
-                
-                    let bullet_mesh_handle = &asset_handles_resource.bullet_mesh;
-                   
-                    
-                    if loaded_handle != *bullet_mesh_handle {
-                        continue
-                    }
-                    
-                     let anim_mat_handle = &asset_handles_resource.anim_material;
-                    
-                let custom_gltf = gltfs.get(bullet_mesh_handle).unwrap();
-                let custom_mesh_handle = custom_gltf.meshes.get(0).unwrap();
-                let custom_mesh = gltfmeshes.get( custom_mesh_handle ).unwrap();
-                let primitive = custom_mesh.primitives.first().unwrap();
-                
-                
-          
-
-                    commands.spawn((
-                        CustomPbrBundle {
-                            mesh:  primitive.mesh.clone(),
-                            material:  anim_mat_handle.clone(),
-                          
-                            transform: Transform::from_xyz(
-                                3.0,
-                                2.0,
-                                0.0,
-                            )
-                            .with_rotation(Quat::from_rotation_x(-PI / 5.)),
-                            ..default()
-                        },
-                        
-                        bevy::pbr::NotShadowCaster 
-                    ));
-            }
-            
-            _ => {}
-        }
-    
-    }
-}
+ 
 
 
 fn rotate(mut query: Query<&mut Transform , With<Handle<Mesh>>>, time: Res<Time>) {

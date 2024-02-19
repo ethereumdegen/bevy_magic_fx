@@ -176,6 +176,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.80"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5ad32ce52e4161730f7098c077cd2ed6229b5804ccf99e5366be1ab72a98b4e1"
+
+[[package]]
 name = "approx"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -737,6 +743,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_obj"
+version = "0.12.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "308882b319e5d4809655429d95c8d162b5ed5426f7882ed7c522440754e580ac"
+dependencies = [
+ "anyhow",
+ "bevy_app",
+ "bevy_asset",
+ "bevy_render",
+ "bevy_utils",
+ "thiserror",
+ "tobj",
+]
+
+[[package]]
 name = "bevy_pbr"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -884,6 +905,7 @@ name = "bevy_shader_play"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "bevy_obj",
 ]
 
 [[package]]
@@ -3130,6 +3152,15 @@ name = "tinyvec_macros"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
+
+[[package]]
+name = "tobj"
+version = "4.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5f7ca3ec0405b0f2f95e0dbcced28882190dc79b0dac63ff82533d256d770223"
+dependencies = [
+ "ahash",
+]
 
 [[package]]
 name = "toml_datetime"
