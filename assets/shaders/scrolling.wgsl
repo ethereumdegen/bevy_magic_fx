@@ -120,9 +120,9 @@ fn fragment(
     //hack the material (StandardMaterialUniform)  so the color is from the terrain splat 
   
      // alpha discard
-    pbr_input.material.base_color =  pbr_input.material.base_color * blended_color;
+    pbr_input.material.base_color =  pbr_input.material.base_color * blended_color ;
 
-    var final_color = alpha_discard(pbr_input.material, pbr_input.material.base_color );
+    var final_color = alpha_discard(pbr_input.material, pbr_input.material.base_color  )  ;
 
     
     

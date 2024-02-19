@@ -57,7 +57,7 @@ fn setup(
     mut custom_materials: ResMut<Assets<custom_material::ScrollingMaterial>>,
 ) {
 
-    let magic_texture = asset_server.load("textures/spark_02.png");
+    let magic_texture = asset_server.load("textures/fire_01.png");
     asset_handles_resource.bullet_mesh = asset_server.load("meshes/mesh_projectile.glb");
 
 let base_color = Color::PURPLE.set_a(0.4).clone();

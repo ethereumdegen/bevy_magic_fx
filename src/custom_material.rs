@@ -101,7 +101,7 @@ impl Material for ScrollingMaterial {
     }
 
     fn alpha_mode(&self) -> AlphaMode {
-        AlphaMode::Mask(0.1)
+        AlphaMode::Multiply   //IMPORTANT 
     }
 }
 
@@ -197,21 +197,21 @@ impl AsBindGroupShaderType<StandardMaterialUniform> for ScrollingMaterial {
         }*/
 
         //flags |= StandardMaterialFlags::ALPHA_MODE_BLEND;
-        flags |= StandardMaterialFlags::ALPHA_MODE_MULTIPLY;
+        flags |= StandardMaterialFlags::ALPHA_MODE_BLEND;
      //   flags |= StandardMaterialFlags::FOG_ENABLED;
         flags |= StandardMaterialFlags::DEPTH_MAP;  // need this ?
 
+        flags |= StandardMaterialFlags::DOUBLE_SIDED;
+     flags |= StandardMaterialFlags::UNLIT;
 
-       flags |= StandardMaterialFlags::UNLIT;
-
-        flags |= StandardMaterialFlags::FLIP_NORMAL_MAP_Y;
+      //  flags |= StandardMaterialFlags::FLIP_NORMAL_MAP_Y;
 
        // flags |= StandardMaterialFlags::EMISSIVE_TEXTURE;
 
         StandardMaterialUniform {
             base_color: self.base_color.into(),
             alpha_cutoff: 0.1,
-        //    emissive: self.base_color.into(),
+            emissive:  [0.2,0.2,0.2,0.2].into(),
             flags: flags.bits() ,
             
           
