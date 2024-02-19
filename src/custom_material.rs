@@ -21,37 +21,30 @@ https://github.com/bevyengine/bevy/blob/main/assets/shaders/custom_material.wgsl
 
 */
 
-#[derive(Clone, ShaderType,Default)]
-pub struct CustomMaterialUniforms {
-    pub color_texture_expansion_factor: f32,
-    pub chunk_uv: Vec4, //start_x, start_y, end_x, end_y   -- used to subselect a region from the splat texture
+
+#[derive(Clone, ShaderType,Default )]
+pub struct Repeats {
+    pub horizontal: u32,
+    pub vertical: u32,
 }
 
-/*
-#[derive(Clone, Default, ShaderType)]
-pub struct CustomMaterialUniform {
-  //  pub time: f32,
-    /// Doubles as diffuse albedo for non-metallic, specular for metallic and a mix for everything
-    /// in between.
-    pub base_color: Vec4,
-    // Use a color for user friendliness even though we technically don't use the alpha channel
-    // Might be used in the future for exposure correction in HDR
-    pub emissive: Vec4,
-    /// Linear perceptual roughness, clamped to [0.089, 1.0] in the shader
-    /// Defaults to minimum of 0.089
-    pub roughness: f32,
-    /// From [0.0, 1.0], dielectric to pure metallic
-    pub metallic: f32,
-    /// Specular intensity for non-metals on a linear scale of [0.0, 1.0]
-    /// defaults to 0.5 which is mapped to 4% reflectance in the shader
-    pub reflectance: f32,
-    pub flags: u32,
-    /// When the alpha mode mask flag is set, any base color alpha above this cutoff means fully opaque,
-    /// and any below means fully transparent.
-    pub alpha_cutoff: f32,
-}*/
 
+#[derive(Clone, ShaderType )]
+pub struct CustomMaterialUniforms {
+    pub animation_speed_multiplier: f32,
+    pub animation_style: u32 
+}
+impl Default for CustomMaterialUniforms{
 
+    fn default() -> Self{
+
+        Self{
+            animation_speed_multiplier: 1.0,
+            animation_style: 0
+        }  
+    } 
+}
+ 
 #[derive(AsBindGroup, TypeUuid, TypePath, Clone, Default)]
 #[uuid = "4acc53dd-2cfd-48ba-b659-c0e1a9bc0bdb"]    
 #[uniform(0, StandardMaterialUniform)]
@@ -76,11 +69,15 @@ pub struct ScrollingMaterial {
 
    
     #[uniform(20)]
-    pub uniforms: CustomMaterialUniforms,
+    pub custom_uniforms: CustomMaterialUniforms,
 
     #[texture(21)]
     #[sampler(22)]
     pub base_color_texture: Option<Handle<Image>>,
+
+     
+    #[uniform(23)]
+    pub repeats: Repeats,
 
  
 }
@@ -190,11 +187,14 @@ impl AsBindGroupShaderType<StandardMaterialUniform> for ScrollingMaterial {
         flags |= StandardMaterialFlags::FOG_ENABLED;
         flags |= StandardMaterialFlags::DEPTH_MAP;
 
+
+        flags |= StandardMaterialFlags::UNLIT;
+
         flags |= StandardMaterialFlags::FLIP_NORMAL_MAP_Y;
 
         StandardMaterialUniform {
             flags: flags.bits() ,
-             roughness: 0.9,
+           //  roughness: 0.9,
 
             // From [0.0, 1.0], dielectric to pure metallic
              metallic: 0.0,

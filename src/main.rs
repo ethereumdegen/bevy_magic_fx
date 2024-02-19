@@ -8,6 +8,9 @@ use bevy::{
     render::render_resource::{Extent3d, TextureDimension, TextureFormat},
 };
 
+use crate::custom_material::{Repeats,CustomMaterialUniforms};
+
+
 fn main() {
     App::new() 
       
@@ -42,6 +45,14 @@ fn setup(
 
     let debug_material = custom_materials.add(custom_material::ScrollingMaterial {
         base_color_texture: Some(images.add(uv_debug_texture())),
+        custom_uniforms: CustomMaterialUniforms{
+            animation_speed_multiplier: 0.1,
+            ..default()
+        },
+        repeats: Repeats {  
+            horizontal:2,
+            vertical:2
+        },
         ..default()
     });
 
@@ -67,7 +78,7 @@ fn setup(
                     2.0,
                     0.0,
                 )
-                .with_rotation(Quat::from_rotation_x(-PI / 4.)),
+                .with_rotation(Quat::from_rotation_x(-PI / 40.)),
                 ..default()
             },
             Shape,

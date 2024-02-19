@@ -23,8 +23,8 @@ struct StandardMaterial {
 };
  
 struct CustomMaterialUniforms {
-    color_texture_expansion_factor: f32 ,
-    chunk_uv: vec4<f32>,  //start_x, start_y, end_x, end_y   -- used to subselect a region from the splat texture 
+    animation_speed_multiplier: f32,
+    animation_style: u32 
     
 };
 
@@ -36,6 +36,14 @@ var base_color_texture_1: texture_2d<f32>;
 @group(1) @binding(2)
 var base_color_sampler_1: sampler;
  */
+
+
+
+struct Repeats {
+    horizontal: u32,
+    vertical: u32,
+}
+
 
 @group(1) @binding(3)
 var emissive_texture: texture_2d<f32>;
@@ -61,6 +69,18 @@ var base_color_texture: texture_2d<f32>;
 @group(1) @binding(22)
 var base_color_sampler: sampler;
  
+ @group(1) @binding(23)
+var<uniform> repeats: Repeats;
+
+
+
+fn get_repeated_uv_coords(coords: vec2<f32>) -> vec2<f32> {
+    let repeated_coords = vec2<f32>(
+        (coords.x % (1. / f32(repeats.horizontal))) * f32(repeats.horizontal),
+        (coords.y % (1. / f32(repeats.vertical))) * f32(repeats.vertical)
+    );
+    return repeated_coords;
+}
 
 
 //should consider adding vertex painting to this .. need another binding of course.. performs a color shift 
@@ -71,17 +91,14 @@ fn fragment(
     @builtin(front_facing) is_front: bool,
 ) -> @location(0) vec4<f32> {
     
-   
-   // let tiled_uv = material.color_texture_expansion_factor*mesh.uv;  //cannot get this binding to work !? 
-    let tiled_uv = 1.0*mesh.uv * globals.time;
-    
+    let scroll_amount = (globals.time * custom_uniforms.animation_speed_multiplier)  ;
+ 
+   let tiled_uv =   get_repeated_uv_coords (mesh.uv + vec2(scroll_amount,scroll_amount));
      
     
     //this technique lets us use 255 total textures BUT we can only layer 2 at a time.  
     let color_from_texture_0 = textureSample(base_color_texture, base_color_sampler, tiled_uv );
-
  
-
     let blended_color = color_from_texture_0   ;
 
 
@@ -93,31 +110,28 @@ fn fragment(
     pbr_input.material.base_color =  blended_color;
 
 
-    var pbr_out: FragmentOutput;
- 
-    
-    // apply lighting
-    pbr_out.color = apply_pbr_lighting(pbr_input);
-    // we can optionally modify the lit color before post-processing is applied
-    // out.color = out.color;
-    // apply in-shader post processing (fog, alpha-premultiply, and also tonemapping, debanding if the camera is non-hdr)
-    // note this does not include fullscreen postprocessing effects like bloom.
-    pbr_out.color = main_pass_post_lighting_processing(pbr_input, pbr_out.color);
+    var final_color = pbr_input.material.base_color  ;
 
+ 
+     //only apply lighting if bit is set
+       if ((pbr_input.material.flags & STANDARD_MATERIAL_FLAGS_UNLIT_BIT) == 0u) {
+          var pbr_out: FragmentOutput;
+            
+         pbr_out.color = apply_pbr_lighting(pbr_input);
+    
+         pbr_out.color = main_pass_post_lighting_processing(pbr_input, pbr_out.color);
+      
+          final_color = pbr_out.color;
+       }  
 
 
     // -----
 
-   // let shadowFactor = calculate_shadow_factor(frag_lightSpacePos);
+   
 
-    let final_color = vec4(   pbr_out.color.rgba )  ;
-      
-
-      // Implement alpha masking
-   // if (alpha_mask_value.r < 0.1) { // Use your threshold value here
-   //     discard;
-   // }
     
+      
+ 
     return final_color;
     
 }
