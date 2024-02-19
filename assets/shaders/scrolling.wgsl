@@ -3,13 +3,14 @@
   
  #import bevy_pbr::{
     mesh_view_bindings::globals, 
-    forward_io::{VertexOutput, FragmentOutput},
-    pbr_functions::alpha_discard,
+    forward_io::{VertexOutput, FragmentOutput}, 
     pbr_fragment::pbr_input_from_standard_material,
-      pbr_functions::{apply_pbr_lighting, main_pass_post_lighting_processing},
+      pbr_functions::{alpha_discard, apply_pbr_lighting, main_pass_post_lighting_processing},
     pbr_types::STANDARD_MATERIAL_FLAGS_UNLIT_BIT,
+      pbr_deferred_functions::deferred_output,
 }
-  
+   
+
 struct StandardMaterial {
     time: f32,
     base_color: vec4<f32>,
@@ -86,11 +87,12 @@ fn get_repeated_uv_coords(coords: vec2<f32>) -> vec2<f32> {
 
 //should consider adding vertex painting to this .. need another binding of course.. performs a color shift 
 
+ 
 @fragment
 fn fragment(
     mesh: VertexOutput,
     @builtin(front_facing) is_front: bool,
-) -> @location(0) vec4<f32> {
+) ->   FragmentOutput {
     
     let scroll_amount_x = (globals.time * custom_uniforms.scroll_speed_x)  ;
     let scroll_amount_y = (globals.time * custom_uniforms.scroll_speed_y)  ;
@@ -117,14 +119,17 @@ fn fragment(
  
     //hack the material (StandardMaterialUniform)  so the color is from the terrain splat 
   
+     // alpha discard
+    pbr_input.material.base_color =  pbr_input.material.base_color * blended_color;
 
+    var final_color = alpha_discard(pbr_input.material, pbr_input.material.base_color );
 
-    var final_color = pbr_input.material.base_color  * blended_color;
-
- 
+    
+    
+    var pbr_out: FragmentOutput;
      //only apply lighting if bit is set
        if ((pbr_input.material.flags & STANDARD_MATERIAL_FLAGS_UNLIT_BIT) == 0u) {
-          var pbr_out: FragmentOutput;
+       
             
          pbr_input.material.base_color =  blended_color;
 
@@ -137,15 +142,15 @@ fn fragment(
 
 
     // -----
-
+   pbr_out.color = final_color;
     if (final_color.a < 0.2) { // Use your threshold value here
-        discard;
+      //  discard;
     }
 
-    
+       
       
  
-    return final_color;
+    return pbr_out;
     
 }
  

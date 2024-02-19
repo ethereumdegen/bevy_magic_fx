@@ -5,8 +5,11 @@ use std::f32::consts::PI;
 
 use bevy::{
     prelude::*,
-    render::render_resource::{Extent3d, TextureDimension, TextureFormat},
+    render::render_resource::{Extent3d, TextureDimension, TextureFormat}, gltf::GltfMesh,
 };
+
+use bevy::gltf::Gltf;
+
 
 use crate::custom_material::{Repeats,CustomMaterialUniforms};
 
@@ -19,6 +22,8 @@ fn main() {
          .add_plugins(MaterialPlugin::<custom_material::ScrollingMaterial>::default())
         .add_systems(Startup, setup)
         .add_systems(Update, rotate)
+        .add_systems(Update, on_asset_load )
+        .insert_resource( AssetHandlesResource::default() )
         .run();
 }
 
@@ -33,29 +38,47 @@ struct Shape;
 
 const X_EXTENT: f32 = 14.5;
 
+#[derive(Resource,Default)]
+pub struct AssetHandlesResource {
+    bullet_mesh: Handle<Gltf>,
+    anim_material: Handle< custom_material::ScrollingMaterial> 
+}
+
 fn setup(
     mut commands: Commands,
     mut asset_server: ResMut< AssetServer>,
+    
+    mut asset_handles_resource: ResMut<AssetHandlesResource>,
 
-    mut meshes: ResMut<Assets<Mesh>>,
+   
+     mut meshes: ResMut<Assets<Mesh>>,
     mut images: ResMut<Assets<Image>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut custom_materials: ResMut<Assets<custom_material::ScrollingMaterial>>,
 ) {
 
-    let magic_texture = asset_server.load("textures/trace_02b.png");
+    let magic_texture = asset_server.load("textures/spark_02.png");
+    asset_handles_resource.bullet_mesh = asset_server.load("meshes/mesh_projectile.glb");
 
-    let debug_material = custom_materials.add(custom_material::ScrollingMaterial {
+
+    asset_handles_resource.anim_material = custom_materials.add(custom_material::ScrollingMaterial {
         base_color_texture: Some( magic_texture ),
         custom_uniforms: CustomMaterialUniforms{
-          //  scroll_speed: 0.1,
+            scroll_speed_x : 0.1,
+            scroll_speed_y : 1.0,
+            distortion_speed_x: 3.0,
+            distortion_speed_y: 1.0,
+            distortion_amount: 0.03,
+            distortion_cutoff: 1.0,
+            scroll_repeats_x: 12.0,
+            scroll_repeats_y: 3.0,
             ..default()
         },
         base_color:  Color::PURPLE,
         ..default()
     });
 
-    let shapes = [
+   /*  let shapes = [
         meshes.add(shape::Cube::default().into()),
         meshes.add(shape::Box::default().into()),
         meshes.add(shape::Capsule::default().into()),
@@ -65,7 +88,7 @@ fn setup(
         meshes.add(shape::UVSphere::default().into()),
     ];
 
-    let num_shapes = shapes.len();
+   let num_shapes = shapes.len();
 
     for (i, shape) in shapes.into_iter().enumerate() {
         commands.spawn((
@@ -84,6 +107,11 @@ fn setup(
             bevy::pbr::NotShadowCaster 
         ));
     }
+*/
+
+//   
+
+
 
     commands.spawn(PointLightBundle {
         point_light: PointLight {
@@ -109,7 +137,71 @@ fn setup(
     });
 }
 
-fn rotate(mut query: Query<&mut Transform, With<Shape>>, time: Res<Time>) {
+/*
+Once our gltf loads, extract the mesh and build our bundle 
+*/
+fn on_asset_load(
+    mut commands: Commands,
+    mut ev_asset: EventReader<AssetEvent<Gltf>>,
+    
+       asset_handles_resource: Res <AssetHandlesResource>,
+  //  mut images: ResMut<Assets<Image>>,
+
+
+     gltfs: ResMut<Assets<Gltf>>,
+
+      gltfmeshes: ResMut<Assets<GltfMesh>>,
+  // mut custom_materials: ResMut<Assets<custom_material::ScrollingMaterial>>,
+){
+
+    for ev in ev_asset.read() {
+        match ev {
+            AssetEvent::LoadedWithDependencies { id  } => {
+                
+             //   let mut image_is_splat = false; 
+
+                let loaded_handle = Handle::Weak(*id);
+                
+                    let bullet_mesh_handle = &asset_handles_resource.bullet_mesh;
+                   
+                    
+                    if loaded_handle != *bullet_mesh_handle {
+                        continue
+                    }
+                    
+                     let anim_mat_handle = &asset_handles_resource.anim_material;
+                    
+                let custom_gltf = gltfs.get(bullet_mesh_handle).unwrap();
+                let custom_mesh_handle = custom_gltf.meshes.get(0).unwrap();
+                let custom_mesh = gltfmeshes.get( custom_mesh_handle ).unwrap();
+                let primitive = custom_mesh.primitives.first().unwrap();
+                
+                
+                    commands.spawn((
+                        CustomPbrBundle {
+                            mesh:  primitive.mesh.clone(),
+                            material: anim_mat_handle.clone(),
+                            transform: Transform::from_xyz(
+                                3.0,
+                                2.0,
+                                0.0,
+                            )
+                            .with_rotation(Quat::from_rotation_x(-PI / 5.)),
+                            ..default()
+                        },
+                        
+                        bevy::pbr::NotShadowCaster 
+                    ));
+            }
+            
+            _ => {}
+        }
+    
+    }
+}
+
+
+fn rotate(mut query: Query<&mut Transform , With<Handle<Mesh>>>, time: Res<Time>) {
     for mut transform in &mut query {
         transform.rotate_y(time.delta_seconds() / 2.);
     }
