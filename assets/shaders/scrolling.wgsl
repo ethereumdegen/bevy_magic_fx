@@ -23,7 +23,7 @@ struct StandardMaterial {
 };
 
 
-struct ChunkMaterialUniforms {
+struct CustomMaterialUniforms {
     color_texture_expansion_factor: f32 ,
     chunk_uv: vec4<f32>,  //start_x, start_y, end_x, end_y   -- used to subselect a region from the splat texture 
     
@@ -31,12 +31,12 @@ struct ChunkMaterialUniforms {
 
 //https://github.com/DGriffin91/bevy_mod_standard_material/blob/main/assets/shaders/pbr.wgsl
 
-
+/*
 @group(1) @binding(1)
-var base_color_texture1: texture_2d<f32>;
+var base_color_texture_1: texture_2d<f32>;
 @group(1) @binding(2)
-var base_color_sampler1: sampler;
- 
+var base_color_sampler_1: sampler;
+ */
 
 @group(1) @binding(3)
 var emissive_texture: texture_2d<f32>;
@@ -55,28 +55,13 @@ var occlusion_sampler: sampler;
 
 
 @group(1) @binding(20)
-var<uniform> chunk_uniforms: ChunkMaterialUniforms;
+var<uniform> custom_uniforms: CustomMaterialUniforms;
+ 
 @group(1) @binding(21)
-var base_color_texture: texture_2d_array<f32>;
+var base_color_texture: texture_2d<f32>;
 @group(1) @binding(22)
 var base_color_sampler: sampler;
 
-
-//the splat map texture has 3 channels: R, G, B
-//R tells us the terrain_layer_index 0 per pixel
-//G tells us the terrain_layer_index 1 per pixel
-//B is 0-255 mapped to 0 to 100% telling us how much of R to render versus how much of G to render 
-@group(1) @binding(23)
- var splat_map_texture: texture_2d<f32>; 
-//var splat_map_texture: texture_2d_array<f32>; //these are control maps and there will be 4 
-@group(1) @binding(24)
-var splat_map_sampler: sampler;
-
-//works similar to splat mask  -- we use a separate tex for this for NOW to make collision mesh building far easier (only need height map and not splat)
-@group(1) @binding(25)
-var alpha_mask_texture: texture_2d<f32>; 
-@group(1) @binding(26)
-var alpha_mask_sampler: sampler;
  
 
 
@@ -90,30 +75,16 @@ fn fragment(
     
    
    // let tiled_uv = material.color_texture_expansion_factor*mesh.uv;  //cannot get this binding to work !? 
-    let tiled_uv = 8.0*mesh.uv;
+    let tiled_uv = 1.0*mesh.uv;
     
-    
-    // seems to be working !! yay ! makes our splat texture encompass all of the chunks 
-    let splat_uv = chunk_uniforms.chunk_uv.xy + mesh.uv * (chunk_uniforms.chunk_uv.zw - chunk_uniforms.chunk_uv.xy);
-    
-    let splat_values = textureSample(splat_map_texture, splat_map_sampler, splat_uv );
-    let alpha_mask_value = textureSample(alpha_mask_texture, alpha_mask_sampler, splat_uv );  //comes from height map atm but COULD come from splat map now 
-    
-       //comes from the  control map .. float -> integer 
-    let terrain_layer_index_0 = i32( splat_values.r * 255.0 );     ///* 255.0
-    let terrain_layer_index_1 = i32( splat_values.g * 255.0 );
+     
     
     //this technique lets us use 255 total textures BUT we can only layer 2 at a time.  
-    let color_from_texture_0 = textureSample(base_color_texture, base_color_sampler, tiled_uv, terrain_layer_index_0);
-    let color_from_texture_1 = textureSample(base_color_texture, base_color_sampler, tiled_uv, terrain_layer_index_1);
-    
+    let color_from_texture_0 = textureSample(base_color_texture, base_color_sampler, tiled_uv );
 
-    let blend_amount = splat_values.b;  //comes from B channel -- this pixel 
-      
-    
+ 
 
-    let blended_color = color_from_texture_0 * (1.0 - blend_amount) +
-                        color_from_texture_1 * (blend_amount)  ;
+    let blended_color = color_from_texture_0   ;
 
 
    
@@ -141,13 +112,13 @@ fn fragment(
 
    // let shadowFactor = calculate_shadow_factor(frag_lightSpacePos);
 
-    let final_color = vec4(   pbr_out.color.rgb , alpha_mask_value.r)  ;
+    let final_color = vec4(   pbr_out.color.rgba )  ;
       
 
       // Implement alpha masking
-    if (alpha_mask_value.r < 0.1) { // Use your threshold value here
-        discard;
-    }
+   // if (alpha_mask_value.r < 0.1) { // Use your threshold value here
+   //     discard;
+   // }
     
     return final_color;
     

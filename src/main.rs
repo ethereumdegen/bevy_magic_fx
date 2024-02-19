@@ -9,9 +9,11 @@ use bevy::{
 };
 
 fn main() {
-    App::new()
-         .insert_resource (custom_material::ScrollingMaterial::default())
-        .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
+    App::new() 
+      
+         
+         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
+         .add_plugins(MaterialPlugin::<custom_material::ScrollingMaterial>::default())
         .add_systems(Startup, setup)
         .add_systems(Update, rotate)
         .run();

@@ -22,11 +22,12 @@ https://github.com/bevyengine/bevy/blob/main/assets/shaders/custom_material.wgsl
 */
 
 #[derive(Clone, ShaderType,Default)]
-pub struct ChunkMaterialUniforms {
+pub struct CustomMaterialUniforms {
     pub color_texture_expansion_factor: f32,
     pub chunk_uv: Vec4, //start_x, start_y, end_x, end_y   -- used to subselect a region from the splat texture
 }
 
+/*
 #[derive(Clone, Default, ShaderType)]
 pub struct CustomMaterialUniform {
   //  pub time: f32,
@@ -48,7 +49,7 @@ pub struct CustomMaterialUniform {
     /// When the alpha mode mask flag is set, any base color alpha above this cutoff means fully opaque,
     /// and any below means fully transparent.
     pub alpha_cutoff: f32,
-}
+}*/
 
 
 #[derive(AsBindGroup, TypeUuid, TypePath, Clone, Default)]
@@ -56,11 +57,10 @@ pub struct CustomMaterialUniform {
 #[uniform(0, StandardMaterialUniform)]
 pub struct ScrollingMaterial {
   
-    //pub std_material: StandardMaterial, // no binding here bc it is bound by the derive to uniform 0 !
-
+    
     #[texture(1)]
-    #[sampler(2)]    
-    pub base_color_texture: Option<Handle<Image>>,
+    #[sampler(2)]    //wtf ? 
+    pub base_color_texture_1: Option<Handle<Image>>,
 
     #[texture(3)]
     #[sampler(4)]   
@@ -76,23 +76,13 @@ pub struct ScrollingMaterial {
 
    
     #[uniform(20)]
-    pub uniforms: ChunkMaterialUniforms,
-    // pub chunk_uv: Vec4,
-    // pub color_texture_expansion_factor: f32  ,
-    
-   /* #[texture(21, dimension = "2d_array")]
+    pub uniforms: CustomMaterialUniforms,
+
+    #[texture(21)]
     #[sampler(22)]
-    pub array_texture: Option<Handle<Image>>,
+    pub base_color_texture: Option<Handle<Image>>,
 
-  
-    #[texture(23)]
-    #[sampler(24)]
-    pub splat_texture: Option<Handle<Image>>,
-
-   
-    #[texture(25)]
-    #[sampler(26)]
-    pub alpha_mask_texture: Option<Handle<Image>>,*/
+     
 }
 
 impl Material for ScrollingMaterial {
