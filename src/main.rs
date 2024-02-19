@@ -60,7 +60,7 @@ fn setup(
     let magic_texture = asset_server.load("textures/spark_02.png");
     asset_handles_resource.bullet_mesh = asset_server.load("meshes/mesh_projectile.glb");
 
-
+let base_color = Color::PURPLE.set_a(0.4).clone();
     asset_handles_resource.anim_material = custom_materials.add(custom_material::ScrollingMaterial {
         base_color_texture: Some( magic_texture ),
         custom_uniforms: CustomMaterialUniforms{
@@ -74,7 +74,7 @@ fn setup(
             scroll_repeats_y: 3.0,
             ..default()
         },
-        base_color:  Color::PURPLE,
+        base_color ,
         ..default()
     });
 

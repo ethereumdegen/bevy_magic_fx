@@ -143,8 +143,8 @@ fn fragment(
 
     // -----
    pbr_out.color = final_color;
-    if (final_color.a < 0.2) { // Use your threshold value here
-      //  discard;
+    if (final_color.a < 0.1) { // Use your threshold value here
+        discard;
     }
 
        
