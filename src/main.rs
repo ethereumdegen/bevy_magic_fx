@@ -10,8 +10,12 @@ use bevy::{
 
 use bevy::gltf::Gltf;
 
+use bevy::core_pipeline::bloom::BloomSettings;
 
-use crate::custom_material::{Repeats,CustomMaterialUniforms};
+use crate::custom_material::{ CustomMaterialUniforms};
+use bevy::core_pipeline::tonemapping::Tonemapping;
+use bevy::pbr::ExtendedMaterial;
+use bevy::pbr::OpaqueRendererMethod;
 
 
 fn main() {
@@ -19,7 +23,7 @@ fn main() {
       
          
          .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
-         .add_plugins(MaterialPlugin::<custom_material::ScrollingMaterial>::default())
+         .add_plugins(MaterialPlugin::<ExtendedMaterial<StandardMaterial,custom_material::ScrollingMaterial>>::default())
         .add_systems(Startup, setup)
         .add_systems(Update, rotate)
         .add_systems(Update, on_asset_load )
@@ -29,7 +33,7 @@ fn main() {
 
 
 
-pub type CustomPbrBundle = MaterialMeshBundle<custom_material::ScrollingMaterial>;
+pub type CustomPbrBundle = MaterialMeshBundle<ExtendedMaterial<StandardMaterial,custom_material::ScrollingMaterial>>;
 mod custom_material;
 
 /// A marker component for our shapes so we can query them separately from the ground plane
@@ -41,7 +45,7 @@ const X_EXTENT: f32 = 14.5;
 #[derive(Resource,Default)]
 pub struct AssetHandlesResource {
     bullet_mesh: Handle<Gltf>,
-    anim_material: Handle< custom_material::ScrollingMaterial> 
+    anim_material: Handle<ExtendedMaterial<StandardMaterial, custom_material::ScrollingMaterial >> 
 }
 
 fn setup(
@@ -54,29 +58,58 @@ fn setup(
      mut meshes: ResMut<Assets<Mesh>>,
     mut images: ResMut<Assets<Image>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
-    mut custom_materials: ResMut<Assets<custom_material::ScrollingMaterial>>,
+
+    mut custom_materials: ResMut<Assets<ExtendedMaterial<StandardMaterial, custom_material::ScrollingMaterial>>>,
+ 
 ) {
+
+
+
 
     let magic_texture = asset_server.load("textures/fire_01.png");
     asset_handles_resource.bullet_mesh = asset_server.load("meshes/mesh_projectile.glb");
 
 let base_color = Color::PURPLE.set_a(0.4).clone();
-    asset_handles_resource.anim_material = custom_materials.add(custom_material::ScrollingMaterial {
-        base_color_texture: Some( magic_texture ),
-        custom_uniforms: CustomMaterialUniforms{
-            scroll_speed_x : 0.1,
-            scroll_speed_y : 1.0,
-            distortion_speed_x: 3.0,
-            distortion_speed_y: 1.0,
-            distortion_amount: 0.03,
-            distortion_cutoff: 1.0,
-            scroll_repeats_x: 12.0,
-            scroll_repeats_y: 3.0,
+
+
+    asset_handles_resource.anim_material = custom_materials.add(ExtendedMaterial {
+        base: StandardMaterial {
+            base_color ,
+            emissive: Color::rgb_linear(50.2, 1.2, 0.8),
+            // can be used in forward or deferred mode.
+            opaque_render_method: OpaqueRendererMethod::Auto,
+            alpha_mode: AlphaMode::Multiply,
+            // in deferred mode, only the PbrInput can be modified (uvs, color and other material properties),
+            // in forward mode, the output can also be modified after lighting is applied.
+            // see the fragment shader `extended_material.wgsl` for more info.
+            // Note: to run in deferred mode, you must also add a `DeferredPrepass` component to the camera and either
+            // change the above to `OpaqueRendererMethod::Deferred` or add the `DefaultOpaqueRendererMethod` resource.
+            ..Default::default()
+        },
+        extension:custom_material::ScrollingMaterial {
+            base_color_texture: Some( magic_texture ),
+          
+            custom_uniforms: CustomMaterialUniforms{
+                scroll_speed_x : 0.1,
+                scroll_speed_y : 1.0,
+                distortion_speed_x: 3.0,
+                distortion_speed_y: 1.0,
+                distortion_amount: 0.03,
+                distortion_cutoff: 1.0,
+                scroll_repeats_x: 12.0,
+                scroll_repeats_y: 3.0,
+                ..default()
+            }, 
             ..default()
         },
-        base_color ,
-        ..default()
     });
+    
+    
+    
+    //custom_materials.add();
+
+
+  
 
    /*  let shapes = [
         meshes.add(shape::Cube::default().into()),
@@ -130,11 +163,22 @@ let base_color = Color::PURPLE.set_a(0.4).clone();
         material: materials.add(Color::SILVER.into()),
         ..default()
     });
+ 
 
-    commands.spawn(Camera3dBundle {
-        transform: Transform::from_xyz(0.0, 6., 12.0).looking_at(Vec3::new(0., 1., 0.), Vec3::Y),
-        ..default()
-    });
+    commands.spawn((
+        Camera3dBundle {
+            camera: Camera {
+                hdr: true, // 1. HDR must be enabled on the camera
+                ..default()
+            },
+            tonemapping: Tonemapping::TonyMcMapface,
+            transform: Transform::from_xyz(0.0, 6., 12.0).looking_at(Vec3::new(0., 1., 0.), Vec3::Y),
+            ..default()
+        },
+        BloomSettings::default(), // 2. Enable bloom for the camera
+    ));
+
+
 }
 
 /*
@@ -151,6 +195,8 @@ fn on_asset_load(
      gltfs: ResMut<Assets<Gltf>>,
 
       gltfmeshes: ResMut<Assets<GltfMesh>>,
+
+      //materials: ResMut<Assets<StandardMaterial>>,
   // mut custom_materials: ResMut<Assets<custom_material::ScrollingMaterial>>,
 ){
 
@@ -177,10 +223,13 @@ fn on_asset_load(
                 let primitive = custom_mesh.primitives.first().unwrap();
                 
                 
+          
+
                     commands.spawn((
                         CustomPbrBundle {
                             mesh:  primitive.mesh.clone(),
-                            material: anim_mat_handle.clone(),
+                            material:  anim_mat_handle.clone(),
+                          
                             transform: Transform::from_xyz(
                                 3.0,
                                 2.0,

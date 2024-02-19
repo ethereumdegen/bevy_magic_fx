@@ -131,7 +131,7 @@ fn fragment(
        if ((pbr_input.material.flags & STANDARD_MATERIAL_FLAGS_UNLIT_BIT) == 0u) {
        
             
-         pbr_input.material.base_color =  blended_color;
+        // pbr_input.material.base_color =  blended_color;
 
          pbr_out.color = apply_pbr_lighting(pbr_input);
     
@@ -143,9 +143,11 @@ fn fragment(
 
     // -----
    pbr_out.color = final_color;
-    if (final_color.a < 0.1) { // Use your threshold value here
-        discard;
-    }
+   // pbr_out.emissive = pbr_input.material.emissive;
+
+   // if (final_color.a < 0.1) { // Use your threshold value here
+    //    discard;
+   // }
 
        
       
