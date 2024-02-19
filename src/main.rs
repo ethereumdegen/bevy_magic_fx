@@ -35,24 +35,23 @@ const X_EXTENT: f32 = 14.5;
 
 fn setup(
     mut commands: Commands,
+    mut asset_server: ResMut< AssetServer>,
+
     mut meshes: ResMut<Assets<Mesh>>,
     mut images: ResMut<Assets<Image>>,
-    mut  materials: ResMut<Assets<StandardMaterial>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
     mut custom_materials: ResMut<Assets<custom_material::ScrollingMaterial>>,
 ) {
 
- 
+    let magic_texture = asset_server.load("textures/trace_02b.png");
 
     let debug_material = custom_materials.add(custom_material::ScrollingMaterial {
-        base_color_texture: Some(images.add(uv_debug_texture())),
+        base_color_texture: Some( magic_texture ),
         custom_uniforms: CustomMaterialUniforms{
-            animation_speed_multiplier: 0.1,
+          //  scroll_speed: 0.1,
             ..default()
         },
-        repeats: Repeats {  
-            horizontal:2,
-            vertical:2
-        },
+        base_color:  Color::PURPLE,
         ..default()
     });
 
@@ -82,6 +81,7 @@ fn setup(
                 ..default()
             },
             Shape,
+            bevy::pbr::NotShadowCaster 
         ));
     }
 

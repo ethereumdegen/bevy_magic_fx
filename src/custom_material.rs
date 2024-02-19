@@ -31,16 +31,29 @@ pub struct Repeats {
 
 #[derive(Clone, ShaderType )]
 pub struct CustomMaterialUniforms {
-    pub animation_speed_multiplier: f32,
-    pub animation_style: u32 
+    pub distortion_speed_x: f32,
+    pub distortion_speed_y: f32,
+    pub scroll_repeats_x:  f32 ,
+    pub scroll_repeats_y:  f32 ,
+    pub scroll_speed_x: f32,    
+    pub scroll_speed_y: f32,    
+    pub distortion_amount: f32 ,
+    pub distortion_cutoff: f32  
+    
 }
 impl Default for CustomMaterialUniforms{
 
     fn default() -> Self{
 
         Self{
-            animation_speed_multiplier: 1.0,
-            animation_style: 0
+            scroll_speed_x : 0.1,
+            scroll_speed_y : 1.0,
+            distortion_speed_x: 3.0,
+            distortion_speed_y: 1.0,
+            distortion_amount: 0.03,
+            distortion_cutoff: 1.0,
+            scroll_repeats_x: 12.0,
+            scroll_repeats_y: 3.0,
         }  
     } 
 }
@@ -76,8 +89,8 @@ pub struct ScrollingMaterial {
     pub base_color_texture: Option<Handle<Image>>,
 
      
-    #[uniform(23)]
-    pub repeats: Repeats,
+  
+    pub base_color: Color
 
  
 }
@@ -183,16 +196,20 @@ impl AsBindGroupShaderType<StandardMaterialUniform> for ScrollingMaterial {
             }
         }*/
 
-        flags |= StandardMaterialFlags::ALPHA_MODE_MASK;
-        flags |= StandardMaterialFlags::FOG_ENABLED;
-        flags |= StandardMaterialFlags::DEPTH_MAP;
+        flags |= StandardMaterialFlags::ALPHA_MODE_BLEND;
+     //   flags |= StandardMaterialFlags::FOG_ENABLED;
+        flags |= StandardMaterialFlags::DEPTH_MAP;  // need this ?
 
 
         flags |= StandardMaterialFlags::UNLIT;
 
         flags |= StandardMaterialFlags::FLIP_NORMAL_MAP_Y;
 
+        flags |= StandardMaterialFlags::EMISSIVE_TEXTURE;
+
         StandardMaterialUniform {
+            base_color: self.base_color.into(),
+            emissive: self.base_color.into(),
             flags: flags.bits() ,
            //  roughness: 0.9,
 
