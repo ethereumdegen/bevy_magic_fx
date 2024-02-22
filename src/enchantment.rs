@@ -30,8 +30,9 @@ fn main() {
          .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
          .add_plugins(MaterialPlugin::<ExtendedMaterial<StandardMaterial,custom_material::ScrollingMaterial>>::default())
         .add_systems(Startup, setup)
-        .add_systems(Update, rotate)
-        .add_systems(Update, swap_ench_material )
+        .add_systems(Update, rotate) 
+        .add_systems(Update, link_enchantment_materials )
+        .add_systems(Update, apply_enchantment_materials )
         .insert_resource( AssetHandlesResource::default() )
         .run();
 }
@@ -90,9 +91,9 @@ fn setup(
 
 
     let magic_texture = asset_server.load("textures/fire_01.png");
-    asset_handles_resource.sword_gltf = asset_server.load("models/rpg_dagger_03.glb#Scene0");
+    asset_handles_resource.sword_gltf = asset_server.load("models/rpg_sword_07.glb#Scene0");
 
-let base_color = Color::PURPLE.set_a(0.4).clone();
+    let base_color = Color::PURPLE.set_a(0.4).clone();
 
 
     asset_handles_resource.anim_material = custom_materials.add(ExtendedMaterial {
@@ -220,9 +221,9 @@ let base_color = Color::PURPLE.set_a(0.4).clone();
 }
 
 /*
-Once our gltf loads, extract the mesh and build our bundle 
+works similar to animation linking 
 */
-fn swap_ench_material(
+fn link_enchantment_materials(
     mut commands: Commands, 
     
     
@@ -238,54 +239,106 @@ fn swap_ench_material(
  
 ){
 
-    for enchanted_model_entity in enchanted_model_query.iter() {
-      
-                 
-                    
-                     let anim_mat_handle = &asset_handles_resource.anim_material;
+    for enchanted_model_entity in enchanted_model_query.iter() { 
                      
-                    
-                     let target_name = "skin_enchant_layer_1_material".into();
-                     
-                     let enchantment_skin_node = find_node_by_name_recursive(
+                     let enchantment_layer_1_node = find_node_by_startswith_name_recursive(
                           
                          &name_query,
                          &children_query,
                       
                          enchanted_model_entity,
-                         target_name
+                         "skin_enchant_layer_1_material".into()
                      ); 
+                     let enchantment_layer_2_node = find_node_by_startswith_name_recursive(
+                          
+                        &name_query,
+                        &children_query,
                      
-                     if let Some( enchantment_skin_node ) = enchantment_skin_node { 
+                        enchanted_model_entity,
+                        "skin_enchant_layer_2_material".into()
+                    ); 
+                    let enchantment_runes_1_node = find_node_by_startswith_name_recursive(
+                          
+                        &name_query,
+                        &children_query,
+                     
+                        enchanted_model_entity,
+                        "skin_runes_1_material".into()
+                    ); 
 
-                         if let Ok(standard_material_handle) = standard_material_query.get(enchantment_skin_node){
-                       
-                              commands.entity(enchantment_skin_node).remove::<Handle<StandardMaterial>>( );
-                              commands.entity(enchantment_skin_node).insert(anim_mat_handle.clone());
+                    println!("inserted material link {:?}", enchantment_layer_1_node );
 
-                              commands.entity(  enchanted_model_entity ).insert(
-                                EnchantmentMaterialLink{
-                                      enchantment_skin_1_material_entity : Some(enchantment_skin_node.clone()) ,
-                                    ..default()
-                                }
-                              );
+                    //all or nothing to prevent hard-to-find bugs
+                    if enchantment_layer_1_node.is_none() {continue};
+                    if enchantment_layer_2_node.is_none() {continue};
+                    if enchantment_runes_1_node.is_none() {continue};
 
-                         }else{
-                             println!("unable to find ench  material");
-                             
-                         }
-                      
-                     }else{
-                        println!( "no node w that name " );
-                     }
-                    
-            
-                    
+                    commands.entity(  enchanted_model_entity ).insert(
+                        EnchantmentMaterialLink{
+                              enchantment_skin_1_material_entity : enchantment_layer_1_node.clone() ,
+                              enchantment_skin_2_material_entity : enchantment_layer_2_node.clone() ,
+                              enchantment_runes_material_entity : enchantment_runes_1_node.clone() ,
+                            ..default()
+                        }
+                      ); 
                     
             }
             
             
   
+}
+
+
+fn apply_enchantment_materials(
+    mut commands: Commands, 
+    
+    
+    name_query:   Query<(Entity, &Name )>, 
+    children_query:   Query<  &Children>, 
+    
+    enchanted_model_query: Query< (Entity,&EnchantmentMaterialLink), Added<EnchantmentMaterialLink> >,
+    
+      asset_handles_resource: Res <AssetHandlesResource>,
+       
+      mut standard_materials: ResMut<Assets<StandardMaterial>>,  
+      standard_material_query: Query<   &Handle<StandardMaterial> >,
+ 
+){
+
+    for (ench_entity,ench_mat_link) in enchanted_model_query.iter(){
+
+
+
+        if let Some( enchantment_skin_node ) = ench_mat_link.enchantment_skin_1_material_entity { 
+
+            if let Ok(standard_material_handle) = standard_material_query.get(enchantment_skin_node){
+                
+                let anim_mat_handle = &asset_handles_resource.anim_material;
+                     
+               
+
+                 commands.entity(enchantment_skin_node).remove::<Handle<StandardMaterial>>( );
+                 commands.entity(enchantment_skin_node).insert(anim_mat_handle.clone());
+    
+               
+            }else{
+                println!("unable to find ench  material");
+                
+            }
+         
+        }else{
+           println!( "no node w that name " );
+        }
+       
+
+
+    }
+
+   
+
+
+
+
 }
 
 
@@ -324,7 +377,7 @@ fn uv_debug_texture() -> Image {
 }
 
 
-fn find_node_by_name_recursive( 
+fn find_node_by_startswith_name_recursive( 
 
     name_query:   &Query<(Entity, &Name )>, 
     children_query:   &Query<  &Children>, 
@@ -335,7 +388,7 @@ fn find_node_by_name_recursive(
      
     // First, check if the current entity matches the target name
     if let Ok((entity, name)) = name_query.get(current_entity) {
-        if name.as_str() == target_name {
+        if name.as_str().starts_with( target_name ) {
             return Some(entity);
         }
         println!("found node w name {:?}", &name);
@@ -345,7 +398,7 @@ fn find_node_by_name_recursive(
     if let Ok(children) = children_query.get(current_entity) {
         println!("children are {:?}",children);
         for &child in children.iter() {
-            if let Some(found) = find_node_by_name_recursive(name_query, children_query, child, target_name) {
+            if let Some(found) = find_node_by_startswith_name_recursive(name_query, children_query, child, target_name) {
                 return Some(found);
             }
         }
