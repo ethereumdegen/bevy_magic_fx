@@ -2,9 +2,19 @@
 name = "bevy_shader_play"
 version = "0.1.0"
 edition = "2021"
+default-run ="main"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 bevy = "0.12.1"
 bevy_obj = "0.12.1"
+
+[[bin]]
+name = "main"
+path = "src/main.rs"
+
+
+[[bin]]
+name = "enchantment"
+path = "src/enchantment.rs"
