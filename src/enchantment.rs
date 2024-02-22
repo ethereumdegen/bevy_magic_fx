@@ -57,8 +57,14 @@ pub struct AssetHandlesResource {
 #[derive(Component)]
 pub struct HasEnchantmentMaterial { 
 } 
-#[derive(Component)]
+#[derive(Component,Default)]
 pub struct EnchantmentMaterialLink { 
+
+    enchantment_skin_1_material_entity: Option<Entity>,
+    enchantment_skin_2_material_entity: Option<Entity>,
+    enchantment_runes_material_entity: Option<Entity>,
+
+
 } 
 
 
@@ -217,8 +223,7 @@ let base_color = Color::PURPLE.set_a(0.4).clone();
 Once our gltf loads, extract the mesh and build our bundle 
 */
 fn swap_ench_material(
-    mut commands: Commands,
-    //mut ev_asset: EventReader<AssetEvent<Scene>>,
+    mut commands: Commands, 
     
     
     name_query:   Query<(Entity, &Name )>, 
@@ -257,6 +262,13 @@ fn swap_ench_material(
                        
                               commands.entity(enchantment_skin_node).remove::<Handle<StandardMaterial>>( );
                               commands.entity(enchantment_skin_node).insert(anim_mat_handle.clone());
+
+                              commands.entity(  enchanted_model_entity ).insert(
+                                EnchantmentMaterialLink{
+                                      enchantment_skin_1_material_entity : Some(enchantment_skin_node.clone()) ,
+                                    ..default()
+                                }
+                              );
 
                          }else{
                              println!("unable to find ench  material");
