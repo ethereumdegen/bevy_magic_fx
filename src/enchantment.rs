@@ -129,7 +129,9 @@ let base_color = Color::PURPLE.set_a(0.4).clone();
                                 3.0,
                                 2.0,
                                 0.0,
-                            ),
+                            )
+                            .with_scale( (3.0,3.0,3.0).into()  )
+                            ,
                           //  .with_rotation(Quat::from_rotation_x(-PI / 5.)),
                             
               ..default()
@@ -226,62 +228,41 @@ fn swap_ench_material(
     
       asset_handles_resource: Res <AssetHandlesResource>,
        
-    //    materials: &mut ResMut<Assets<StandardMaterial>>,  //busted ??
-      material_query: Query<(Entity, &Handle<StandardMaterial>)>,
-       
-    //  mut material_query: Query<&mut Material> ,
-  //  mut images: ResMut<Assets<Image>>,
-
-
-    // gltfs: ResMut<Assets<Gltf>>,
-
-    //  gltfmeshes: ResMut<Assets<GltfMesh>>,
-
-      //materials: ResMut<Assets<StandardMaterial>>,
-  // mut custom_materials: ResMut<Assets<custom_material::ScrollingMaterial>>,
+      mut standard_materials: ResMut<Assets<StandardMaterial>>,  
+      standard_material_query: Query<   &Handle<StandardMaterial> >,
+ 
 ){
 
     for enchanted_model_entity in enchanted_model_query.iter() {
       
-                
-             //   let mut image_is_splat = false; 
-
-                   //let loaded_handle = Handle::Weak(*id);
-                
-                   // let sword_gltf_handle = &asset_handles_resource.sword_gltf;
-                   
-                    
-                   // if loaded_handle != *sword_gltf_handle {
-                  //      continue
-                   // }
+                 
                     
                      let anim_mat_handle = &asset_handles_resource.anim_material;
                      
-                    // let current_entity = 
+                    
                      let target_name = "skin_enchant_layer_1_material".into();
                      
-                     let enchantment_1_node = find_node_by_name_recursive(
+                     let enchantment_skin_node = find_node_by_name_recursive(
                           
                          &name_query,
                          &children_query,
                       
                          enchanted_model_entity,
                          target_name
-                     );
+                     ); 
                      
-                     
-                     if let Some( enchantment_1_node ) = enchantment_1_node {
-                        println!("DO THE THING ");
-                         let material_of_node = material_query.get(enchantment_1_node);
-                         
-                         if let Ok(material_of_node) = material_of_node{
-                             
-                             println!("about to swap material");
+                     if let Some( enchantment_skin_node ) = enchantment_skin_node { 
+
+                         if let Ok(standard_material_handle) = standard_material_query.get(enchantment_skin_node){
+                       
+                              commands.entity(enchantment_skin_node).remove::<Handle<StandardMaterial>>( );
+                              commands.entity(enchantment_skin_node).insert(anim_mat_handle.clone());
+
                          }else{
                              println!("unable to find ench  material");
                              
                          }
-                         //commands.entity(enchantment_1_node)
+                      
                      }else{
                         println!( "no node w that name " );
                      }
