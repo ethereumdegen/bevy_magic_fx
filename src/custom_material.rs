@@ -1,28 +1,14 @@
-use bevy::asset::VisitAssetDependencies;
+ 
 use bevy::prelude::*;
 use bevy::reflect::{TypePath, TypeUuid};
 use bevy::render::render_resource::*;
 
-use bevy::render::render_asset::RenderAssets;
-
-use bevy::pbr::StandardMaterialUniform;
-use bevy::pbr::StandardMaterialFlags;
+ 
 use bevy::pbr::MaterialExtension;
 
 
-/*
-
-
-This is where we set up all of our pipeline bindings
-
-reference:
-https://github.com/bevyengine/bevy/blob/main/assets/shaders/custom_material.wgsl
-
-
-
-*/
-
  
+ // pub type AnimatedMaterial = ExtendedMaterial<StandardMaterial,custom_material::ScrollingMaterial>;
 
 
 #[derive(Clone, ShaderType ,Debug)]
@@ -68,10 +54,7 @@ pub struct ScrollingMaterial {
     #[sampler(22)]
     pub base_color_texture: Option<Handle<Image>>,
 
-     
-  
-    //pub base_color: Color,
-  //  pub emissive: Color
+      
 
 }
  

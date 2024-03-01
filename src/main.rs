@@ -4,7 +4,7 @@
 use std::f32::consts::PI;
 
 use bevy::{
-    prelude::*,
+    
     render::render_resource::{Extent3d, TextureDimension, TextureFormat}, gltf::GltfMesh,
 };
 
@@ -17,6 +17,20 @@ use bevy::core_pipeline::tonemapping::Tonemapping;
 use bevy::pbr::ExtendedMaterial;
 use bevy::pbr::OpaqueRendererMethod;
 
+use bevy::{
+   
+    core_pipeline::{
+        bloom::{BloomCompositeMode},
+        
+    },
+    prelude::*,
+};
+
+
+
+pub type AnimatedMaterial = ExtendedMaterial<StandardMaterial,custom_material::ScrollingMaterial>;
+pub type CustomPbrBundle = MaterialMeshBundle<AnimatedMaterial>;
+mod custom_material;
 
 
 fn main() {
@@ -25,7 +39,7 @@ fn main() {
          .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
           .add_plugins(bevy_obj::ObjPlugin)
          
-         .add_plugins(MaterialPlugin::<ExtendedMaterial<StandardMaterial,custom_material::ScrollingMaterial>>::default())
+         .add_plugins(MaterialPlugin::<AnimatedMaterial>::default())
         .add_systems(Startup, setup)
         .add_systems(Update, rotate) 
         .insert_resource( AssetHandlesResource::default() )
@@ -34,16 +48,12 @@ fn main() {
 
 
 
-pub type CustomPbrBundle = MaterialMeshBundle<ExtendedMaterial<StandardMaterial,custom_material::ScrollingMaterial>>;
-mod custom_material;
-
- 
 
  
 #[derive(Resource,Default)]
 pub struct AssetHandlesResource {
     bullet_mesh: Handle<Mesh>,
-    anim_material: Handle<ExtendedMaterial<StandardMaterial, custom_material::ScrollingMaterial >> 
+    anim_material: Handle<AnimatedMaterial> 
 }
 
 fn setup(
@@ -57,7 +67,7 @@ fn setup(
     mut images: ResMut<Assets<Image>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 
-    mut custom_materials: ResMut<Assets<ExtendedMaterial<StandardMaterial, custom_material::ScrollingMaterial>>>,
+    mut custom_materials: ResMut<Assets<AnimatedMaterial>>,
  
 ) {
 
@@ -73,10 +83,10 @@ fn setup(
     asset_handles_resource.anim_material = custom_materials.add(ExtendedMaterial {
         base: StandardMaterial {
             base_color ,
-            emissive: Color::rgb_linear(50.2, 1.2, 0.8),
+            emissive: Color::rgb_linear(500.2, 1000.2, 200.8),  //turn up bloom emission like insane 
             // can be used in forward or deferred mode.
             opaque_render_method: OpaqueRendererMethod::Auto,
-            alpha_mode: AlphaMode::Multiply,
+            alpha_mode: AlphaMode::Blend,
             
             ..Default::default()
         },
@@ -84,11 +94,11 @@ fn setup(
             base_color_texture: Some( magic_texture ),
           
             custom_uniforms: CustomMaterialUniforms{
-                scroll_speed_x : 0.1,
+                scroll_speed_x : 0.4,
                 scroll_speed_y : 1.0,
                 distortion_speed_x: 3.0,
-                distortion_speed_y: 1.0,
-                distortion_amount: 0.03,
+                distortion_speed_y: 9.0,
+                distortion_amount: 0.09,
                 distortion_cutoff: 1.0,
                 scroll_repeats_x: 12.0,
                 scroll_repeats_y: 3.0,
@@ -175,31 +185,4 @@ fn rotate(mut query: Query<&mut Transform , With<Handle<Mesh>>>, time: Res<Time>
         transform.rotate_y(time.delta_seconds() / 2.);
     }
 }
-
-/// Creates a colorful test pattern
-fn uv_debug_texture() -> Image {
-    const TEXTURE_SIZE: usize = 8;
-
-    let mut palette: [u8; 32] = [
-        255, 102, 159, 255, 255, 159, 102, 255, 236, 255, 102, 255, 121, 255, 102, 255, 102, 255,
-        198, 255, 102, 198, 255, 255, 121, 102, 255, 255, 236, 102, 255, 255,
-    ];
-
-    let mut texture_data = [0; TEXTURE_SIZE * TEXTURE_SIZE * 4];
-    for y in 0..TEXTURE_SIZE {
-        let offset = TEXTURE_SIZE * y * 4;
-        texture_data[offset..(offset + TEXTURE_SIZE * 4)].copy_from_slice(&palette);
-        palette.rotate_right(4);
-    }
-
-    Image::new_fill(
-        Extent3d {
-            width: TEXTURE_SIZE as u32,
-            height: TEXTURE_SIZE as u32,
-            depth_or_array_layers: 1,
-        },
-        TextureDimension::D2,
-        &texture_data,
-        TextureFormat::Rgba8UnormSrgb,
-    )
-}
+ 

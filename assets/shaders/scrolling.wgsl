@@ -37,31 +37,7 @@ struct CustomMaterialUniforms {
     
 };
 
-//https://github.com/DGriffin91/bevy_mod_standard_material/blob/main/assets/shaders/pbr.wgsl
-
-/*
-@group(1) @binding(1)
-var base_color_texture_1: texture_2d<f32>;
-@group(1) @binding(2)
-var base_color_sampler_1: sampler;
- */
-
  
-
-@group(1) @binding(3)
-var emissive_texture: texture_2d<f32>;
-@group(1) @binding(4)
-var emissive_sampler: sampler;
-
-@group(1) @binding(5)
-var metallic_roughness_texture: texture_2d<f32>;
-@group(1) @binding(6)
-var metallic_roughness_sampler: sampler;
-
-@group(1) @binding(7)
-var occlusion_texture: texture_2d<f32>;
-@group(1) @binding(8)
-var occlusion_sampler: sampler;
 
 
 @group(1) @binding(20)
