@@ -1,18 +1,20 @@
  
 use bevy::prelude::*;
-use bevy::reflect::{TypePath, TypeUuid};
+use bevy::reflect::{TypePath};
 use bevy::render::render_resource::*;
 
  
-use bevy::pbr::MaterialExtension;
+use bevy::pbr::{ExtendedMaterial, MaterialExtension};
 
 
- 
- // pub type AnimatedMaterial = ExtendedMaterial<StandardMaterial,custom_material::ScrollingMaterial>;
+  
 
+
+pub type AnimatedMaterialExtension = ExtendedMaterial<StandardMaterial,AnimatedMaterial>;
+pub type AnimatedMaterialBundle = MaterialMeshBundle<AnimatedMaterialExtension>;
 
 #[derive(Clone, ShaderType ,Debug)]
-pub struct CustomMaterialUniforms {
+pub struct AnimatedMaterialUniforms {
     pub distortion_speed_x: f32,
     pub distortion_speed_y: f32,
     pub scroll_repeats_x:  f32 ,
@@ -23,7 +25,7 @@ pub struct CustomMaterialUniforms {
     pub distortion_cutoff: f32  
     
 }
-impl Default for CustomMaterialUniforms{
+impl Default for AnimatedMaterialUniforms{
 
     fn default() -> Self{
 
@@ -42,13 +44,13 @@ impl Default for CustomMaterialUniforms{
 
 
 #[derive(Asset, AsBindGroup, TypePath, Debug, Clone,Default )]
-pub struct ScrollingMaterial {
+pub struct AnimatedMaterial {
     // We need to ensure that the bindings of the base material and the extension do not conflict,
     // so we start from binding slot 100, leaving slots 0-99 for the base material.
    
     
     #[uniform(20)]
-    pub custom_uniforms: CustomMaterialUniforms,
+    pub custom_uniforms: AnimatedMaterialUniforms,
 
     #[texture(21)]
     #[sampler(22)]
@@ -59,13 +61,13 @@ pub struct ScrollingMaterial {
 }
  
 
-impl MaterialExtension for ScrollingMaterial {
+impl MaterialExtension for AnimatedMaterial {
     fn fragment_shader() -> ShaderRef {
-        "shaders/scrolling.wgsl".into()
+        "shaders/magic_fx.wgsl".into()
     }
 
     fn deferred_fragment_shader() -> ShaderRef {
-        "shaders/scrolling.wgsl".into()
+        "shaders/magic_fx.wgsl".into()
     }
 }
  

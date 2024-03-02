@@ -11,8 +11,7 @@ use bevy::{
 use bevy::gltf::Gltf;
 
 use bevy::core_pipeline::bloom::BloomSettings;
-
-use crate::custom_material::{ CustomMaterialUniforms};
+ 
 use bevy::core_pipeline::tonemapping::Tonemapping;
 use bevy::pbr::ExtendedMaterial;
 use bevy::pbr::OpaqueRendererMethod;
@@ -25,12 +24,12 @@ use bevy::{
     },
     prelude::*,
 };
+ 
+
+use bevy_magic_fx::animated_material::{self, AnimatedMaterialExtension};
 
 
 
-pub type AnimatedMaterial = ExtendedMaterial<StandardMaterial,custom_material::ScrollingMaterial>;
-pub type CustomPbrBundle = MaterialMeshBundle<AnimatedMaterial>;
-mod custom_material;
 
 
 fn main() {
@@ -39,7 +38,7 @@ fn main() {
          .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
           .add_plugins(bevy_obj::ObjPlugin)
          
-         .add_plugins(MaterialPlugin::<AnimatedMaterial>::default())
+         .add_plugins(MaterialPlugin::<animated_material::AnimatedMaterialExtension>::default())
         .add_systems(Startup, setup)
         .add_systems(Update, rotate) 
         .insert_resource( AssetHandlesResource::default() )
@@ -53,7 +52,7 @@ fn main() {
 #[derive(Resource,Default)]
 pub struct AssetHandlesResource {
     bullet_mesh: Handle<Mesh>,
-    anim_material: Handle<AnimatedMaterial> 
+    anim_material: Handle<animated_material::AnimatedMaterialExtension> 
 }
 
 fn setup(
@@ -67,7 +66,7 @@ fn setup(
     mut images: ResMut<Assets<Image>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 
-    mut custom_materials: ResMut<Assets<AnimatedMaterial>>,
+    mut custom_materials: ResMut<Assets<AnimatedMaterialExtension>>,
  
 ) {
 
@@ -83,17 +82,17 @@ fn setup(
     asset_handles_resource.anim_material = custom_materials.add(ExtendedMaterial {
         base: StandardMaterial {
             base_color ,
-            emissive: Color::rgb_linear(500.2, 1000.2, 200.8),  //turn up bloom emission like insane 
+            emissive: Color::rgb_linear(500.2, 3000.2, 200.8),  //turn up bloom emission like insane 
             // can be used in forward or deferred mode.
             opaque_render_method: OpaqueRendererMethod::Auto,
             alpha_mode: AlphaMode::Blend,
             
             ..Default::default()
         },
-        extension:custom_material::ScrollingMaterial {
+        extension:animated_material::AnimatedMaterial {
             base_color_texture: Some( magic_texture ),
           
-            custom_uniforms: CustomMaterialUniforms{
+            custom_uniforms: animated_material::AnimatedMaterialUniforms{
                 scroll_speed_x : 0.4,
                 scroll_speed_y : 1.0,
                 distortion_speed_x: 3.0,
@@ -113,13 +112,13 @@ fn setup(
     
                   let bullet_mesh_handle = &asset_handles_resource.bullet_mesh;
                    
-                     let anim_mat_handle = &asset_handles_resource.anim_material;
+                     let anim_mat_handle:&Handle<animated_material::AnimatedMaterialExtension> = &asset_handles_resource.anim_material;
                     
                
           
 
                     commands.spawn((
-                        CustomPbrBundle {
+                        animated_material::AnimatedMaterialBundle {
                             mesh:  bullet_mesh_handle.clone(),
                             material:  anim_mat_handle.clone(),
                           
@@ -156,8 +155,8 @@ fn setup(
 
     // ground plane
     commands.spawn(PbrBundle {
-        mesh: meshes.add(shape::Plane::from_size(50.0).into()),
-        material: materials.add(Color::SILVER.into()),
+        mesh: meshes.add( Plane3d::default().mesh().size(50.0, 50.0) ),
+          material: materials.add(Color::SILVER),
         ..default()
     });
  

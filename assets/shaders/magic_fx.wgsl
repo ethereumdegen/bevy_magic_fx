@@ -40,12 +40,12 @@ struct CustomMaterialUniforms {
  
 
 
-@group(1) @binding(20)
+@group(2) @binding(20)
 var<uniform> custom_uniforms: CustomMaterialUniforms;
  
-@group(1) @binding(21)
+@group(2) @binding(21)
 var base_color_texture: texture_2d<f32>;
-@group(1) @binding(22)
+@group(2) @binding(22)
 var base_color_sampler: sampler;
  
  

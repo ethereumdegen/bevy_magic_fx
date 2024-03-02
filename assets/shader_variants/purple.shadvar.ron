@@ -1,0 +1,16 @@
+(
+    
+    name: "purple",
+    texture: "textures/particles/spark_05.png",
+    animation_speed: 0.5, // Assuming animation_speed is a string for some reason; otherwise, consider using a float or int
+    color: Rgba(
+        red: 255,
+        green: 55,
+        blue: 55,
+        alpha: 255 // Assuming your Color struct has rgba fields; adjust according to your actual Color struct
+    ),
+     emissive:  (
+        2000.0,2000.0,2000.0
+    )
+      
+)
