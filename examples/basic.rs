@@ -4,6 +4,7 @@
 use std::f32::consts::PI;
 
   
+use bevy::pbr::{ExtendedMaterial, OpaqueRendererMethod};
 use bevy::{gltf::GltfMesh, utils::HashMap};
 
 use bevy::gltf::Gltf;
@@ -15,13 +16,13 @@ use bevy::core_pipeline::tonemapping::Tonemapping;
 
 use bevy::{core_pipeline::bloom::BloomCompositeMode, prelude::*};
 
-use bevy_magic_fx::MagicFxPlugin;
+use bevy_magic_fx::{animated_material, MagicFxPlugin};
 
 use bevy_magic_fx::magic_fx::{
           MagicFxVariantComponent,
 };
 
-use bevy_magic_fx::animated_material::{AnimatedMaterialExtension};
+use bevy_magic_fx::animated_material::{build_animated_material, AnimatedMaterial};
 use bevy_magic_fx::{
     magic_fx_variant::{MagicFxVariant, MagicFxVariantManifest},
     shader_variant::ShaderVariantManifest,
@@ -66,6 +67,11 @@ pub struct AssetLoadingResource {
     texture_handles_map: HashMap<String, Handle<Image>>,
     mesh_handles_map: HashMap<String, Handle<Mesh>>,
     shader_variants_map: HashMap<String, Handle<ShaderVariantManifest>>,
+
+    //shader var name -> animated material 
+     animated_material_map: HashMap<String, Handle<AnimatedMaterial>>,
+
+
     //name of shader variant - > built animated material
     // animated_materials_map: HashMap<String, Handle<AnimatedMaterialExtension> >,
 }
@@ -95,7 +101,7 @@ fn setup(
     let shader_variant_manifest_handle = asset_server.load("shader_variants/purple.shadvar.ron");
     asset_loading_resource.shader_variants_map.insert(
         "shader_variants/purple.shadvar.ron".to_string(),
-        shader_variant_manifest_handle.clone_weak(),
+        shader_variant_manifest_handle.clone(),
     );
 
     asset_handles_resource.shader_variant_manifest_handle = shader_variant_manifest_handle.clone();
@@ -148,6 +154,13 @@ fn update_loading_shader_variant_manifest(
     mut ev_asset: EventReader<AssetEvent<ShaderVariantManifest>>,
     //  mut fx_variant_assets: ResMut<Assets<ShaderVariantManifest>>,
     mut asset_handles_resource: ResMut<AssetHandlesResource>,
+
+    mut asset_loading_resource: ResMut<AssetLoadingResource>,
+   mut animated_materials: ResMut<Assets<AnimatedMaterial>>,
+
+
+    shader_variant_manifest_resource: Res<Assets<ShaderVariantManifest>>,
+
     asset_server: ResMut<AssetServer>,
 ) {
     for ev in ev_asset.read() {
@@ -155,6 +168,32 @@ fn update_loading_shader_variant_manifest(
             AssetEvent::LoadedWithDependencies { id } => {
                 //once the shader variant loads, we can start loading our magic fx
                 if id == &asset_handles_resource.shader_variant_manifest_handle.id() {
+
+                     let shader_variant_manifest: &ShaderVariantManifest = shader_variant_manifest_resource
+                        .get(&asset_handles_resource.shader_variant_manifest_handle)
+                        .unwrap();
+
+                    //finish loading and building the shader variant and add it to the map 
+                    let texture_handles_map = &asset_loading_resource.texture_handles_map;
+                
+
+
+                let shadvar_name = & shader_variant_manifest.name;
+
+                let shader_material_handle = animated_materials.add( build_animated_material(
+                    shader_variant_manifest,
+                    &texture_handles_map
+                    ));
+
+               // self.shader_material = Some(shader_material.clone());
+ 
+                    asset_loading_resource.animated_material_map.insert( 
+                        shadvar_name .clone(), 
+                        shader_material_handle );
+
+
+
+                        //now that our shadvar materials are built and loaded, we load the magic fx 
                     asset_handles_resource.magic_fx_variant_manifest_handle =
                         asset_server.load("magic_fx_variants/magic.magicfx.ron");
                 }
@@ -172,11 +211,11 @@ fn update_loading_magic_fx_variant_manifest(
 
     asset_handles_resource: ResMut<AssetHandlesResource>,
 
-    shader_variant_assets: Res<Assets<ShaderVariantManifest>>,
+   // shader_variant_assets: Res<Assets<ShaderVariantManifest>>,
 
     asset_loading_resource: Res<AssetLoadingResource>,
 
-    mut animated_materials: ResMut<Assets<AnimatedMaterialExtension>>,
+    //  animated_materials: ResMut<Assets<AnimatedMaterial>>,
 
     time: Res<Time>,
 ) {
@@ -191,18 +230,22 @@ fn update_loading_magic_fx_variant_manifest(
                     let texture_handles_map = &asset_loading_resource.texture_handles_map;
                     let mesh_handles_map = &asset_loading_resource.mesh_handles_map;
 
-                    let shader_variants_map = &asset_loading_resource.shader_variants_map;
+                   // let shader_variants_map = &asset_loading_resource.shader_variants_map;
+                    let animated_materials_map = &asset_loading_resource.animated_material_map;
 
-                    //pre-build all materials
+                   
                     let magic_fx = MagicFxVariant::from_manifest(
                         magic_fx_variant_manifest,
                         &texture_handles_map,
                         &mesh_handles_map,
-                        &shader_variants_map,
-                        &shader_variant_assets,
+                      
+                        &animated_materials_map,
+                     
                         &time,
-                    )
-                    .build_all_materials(&mut animated_materials);
+                    );
+
+                    //now we can store this in a resource 
+                    println!("spawn the root ");
 
                     //at a later time, whenever, spawn the magic fx . This is usually from a spell cast.
                     let _magic_fx_root = commands

@@ -62,8 +62,9 @@ impl MagicFxVariant {
         // a map of all shader variant handles which have already been loaded
         texture_handles_map: &HashMap<String, Handle<Image>>,
         mesh_handles_map: &HashMap<String, Handle<Mesh>>,
-        shader_variants_map: &HashMap<String, Handle<ShaderVariantManifest>>,
-        shader_variant_assets: &Res<Assets<ShaderVariantManifest>>,
+      //  shader_variants_map: &HashMap<String, Handle<ShaderVariantManifest>>,
+        animated_materials_map: &HashMap<String,Handle<AnimatedMaterial>>,
+     //   shader_variant_assets: &Res<Assets<ShaderVariantManifest>>,
 
         time: &Res<Time>,
     ) -> Self {
@@ -82,14 +83,15 @@ impl MagicFxVariant {
                         instance_manifest,
                         texture_handles_map,
                         mesh_handles_map,
-                        shader_variants_map,
-                        shader_variant_assets,
+                    //    shader_variants_map,
+                        animated_materials_map,
                     )
                 })
                 .collect(),
         }
     }
 
+    /*
     pub fn build_all_materials(
         mut self,
         animated_materials: &mut ResMut<Assets<AnimatedMaterial >>,
@@ -98,22 +100,23 @@ impl MagicFxVariant {
             let _bundle = &mut instance.build_material(animated_materials);
         }
         self
-    }
+    }*/
 }
 
 #[derive(Debug, Clone)]
 pub struct MagicFxInstance {
-    pub shader_variant_manifest: ShaderVariantManifest,
+   // pub shader_variant_manifest: ShaderVariantManifest,
 
-    pub texture_handle: Handle<Image>,
+   // pub texture_handle: Handle<Image>,
 
     pub mesh_handle: Handle<Mesh>,
     pub start_time_offset: Duration,
     pub end_time_offset: Duration,
     pub start_transform: Transform,
     pub end_transform: Transform,
+     pub shader_material_handle: Handle<AnimatedMaterial>,
 
-    pub shader_material: Option<Handle<AnimatedMaterial >>,
+
 }
 
 impl MagicFxInstance {
@@ -123,30 +126,26 @@ impl MagicFxInstance {
         texture_handles_map: &HashMap<String, Handle<Image>>,
         mesh_handles_map: &HashMap<String, Handle<Mesh>>,
 
-        shader_variants_map: &HashMap<String, Handle<ShaderVariantManifest>>,
-        shader_variant_manifest_assets: &Res<Assets<ShaderVariantManifest>>,
+       // shader_variants_map: &HashMap<String, Handle<ShaderVariantManifest>>,
+       // shader_variant_manifest_assets: &Res<Assets<ShaderVariantManifest>>,
+
+        animated_materials_map: &HashMap<String,Handle<AnimatedMaterial>>,
     ) -> Option<Self> {
-        let mesh_handle = mesh_handles_map.get(&manifest.mesh_name).unwrap();
+        let mesh_handle = mesh_handles_map.get(&manifest.mesh_name)?;
+ 
 
-        let shader_variant_manifest_handle = shader_variants_map
-            .get(&manifest.shader_variant_name)
-            .unwrap();
-
-        let shader_variant_manifest = shader_variant_manifest_assets
-            .get(shader_variant_manifest_handle)
-            .unwrap();
-
-        let texture_handle = texture_handles_map.get(&shader_variant_manifest.texture)?; //&self.shader_variant.texture;
-
+         let shader_material_handle  = animated_materials_map
+         .get(&manifest.shader_variant_name)?.clone();
+       
         Some(Self {
-            texture_handle: texture_handle.clone(),
+          
 
             end_time_offset: Duration::from_secs_f32(manifest.end_time_offset),
-            shader_variant_manifest: shader_variant_manifest.clone(),
+         //   shader_variant_manifest: shader_variant_manifest.clone(),
+         	shader_material_handle,
+          //  shader_material_handle: shader_material_handle,
 
-            shader_material: None,
-
-            mesh_handle: mesh_handle.clone_weak(),
+            mesh_handle: mesh_handle.clone (),
             start_time_offset: Duration::from_secs_f32(manifest.start_time_offset),
             start_transform: manifest.start_transform.to_transform(),
             end_transform: manifest.end_transform.to_transform(),
@@ -155,7 +154,7 @@ impl MagicFxInstance {
 
     //make this a part of shader variant ?
     //how to improve this ?
-    pub fn build_material(
+  /*  pub fn build_material(
         &mut self,
 
         animated_materials: &mut ResMut<Assets<AnimatedMaterial >>,
@@ -204,20 +203,20 @@ impl MagicFxInstance {
         self
     }
 
-    pub fn to_bundle(&self) -> Option<AnimatedMaterialBundle> {
-        let shader_material = &self.shader_material;
+*/
+    pub fn to_bundle(&self) -> AnimatedMaterialBundle {
+        let shader_material = &self.shader_material_handle;
 
-        return shader_material.as_ref().map(|shader_mat| {
-            animated_material::AnimatedMaterialBundle {
+        return  animated_material::AnimatedMaterialBundle {
                 mesh: self.mesh_handle.clone(),
-                material: shader_mat.clone(),
+                material: shader_material.clone(),
 
                 transform: self.start_transform,
                 visibility: Visibility::Hidden,
 
                 ..default()
             }
-        });
+        
     }
 }
 

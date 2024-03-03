@@ -36,7 +36,7 @@ pub fn update_magic_fx_variants_added(
         for instance in magic_fx.magic_fx_instances.iter() {
             println!("spawn magic fx instance!!");
 
-            let bundle = &instance.to_bundle().unwrap();
+            let bundle = &instance.to_bundle();
 
             let magic_fx_child = commands
                 .spawn((
