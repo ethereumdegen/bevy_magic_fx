@@ -178,16 +178,14 @@ fn update_loading_shader_variant_manifest(
                 
 
 
-                let shadvar_name = & shader_variant_manifest.name;
+                    let shadvar_name = & shader_variant_manifest.name;
 
-                let shader_material_handle = animated_materials.add( build_animated_material(
-                    shader_variant_manifest,
-                    &texture_handles_map
-                    ).unwrap()
-                );
+                    let shader_material_handle = animated_materials.add( build_animated_material(
+                        shader_variant_manifest,
+                        &texture_handles_map
+                        ).unwrap()
+                    ); 
 
-               // self.shader_material = Some(shader_material.clone());
- 
                     asset_loading_resource.animated_material_map.insert( 
                         shadvar_name .clone(), 
                         shader_material_handle );
@@ -227,13 +225,10 @@ fn update_loading_magic_fx_variant_manifest(
                         .get(&asset_handles_resource.magic_fx_variant_manifest_handle)
                         .unwrap();
 
-                   // let texture_handles_map = &asset_loading_resource.texture_handles_map;
-                    let mesh_handles_map = &asset_loading_resource.mesh_handles_map;
+                     let mesh_handles_map = &asset_loading_resource.mesh_handles_map;
 
-                   // let shader_variants_map = &asset_loading_resource.shader_variants_map;
                     let animated_materials_map = &asset_loading_resource.animated_material_map;
-
-                   
+  
                     let magic_fx = MagicFxVariant::from_manifest(
                         magic_fx_variant_manifest,
                       
