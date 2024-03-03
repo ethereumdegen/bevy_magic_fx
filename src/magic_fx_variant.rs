@@ -20,6 +20,8 @@ pub struct MagicFxVariantManifest {
     pub magic_fx_instances: Vec<MagicFxInstanceManifest>,
 
     pub max_time: f32,
+
+    pub repeating: bool 
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -50,6 +52,8 @@ pub struct MagicFxVariant {
 
     // pub current_time: Duration,
     pub max_time_offset: Duration,
+
+    pub repeating: bool 
 }
 
 impl MagicFxVariant {
@@ -66,6 +70,7 @@ impl MagicFxVariant {
 
         Self {
             name: manifest.name.clone(),
+            repeating: manifest.repeating,
             
             max_time_offset: Duration::from_secs_f32(manifest.max_time),
             magic_fx_instances: manifest

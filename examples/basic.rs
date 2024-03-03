@@ -54,7 +54,7 @@ fn main() {
 }
 
 #[derive(Resource, Default)]
-pub struct AssetHandlesResource {
+  struct AssetHandlesResource {
     magic_fx_variant_manifest_handle: Handle<MagicFxVariantManifest>,
     shader_variant_manifest_handle: Handle<ShaderVariantManifest>,
     // mesh_handle: Handle<Mesh>,
@@ -63,7 +63,7 @@ pub struct AssetHandlesResource {
 }
 
 #[derive(Resource, Default)]
-pub struct AssetLoadingResource {
+  struct AssetLoadingResource {
     texture_handles_map: HashMap<String, Handle<Image>>,
     mesh_handles_map: HashMap<String, Handle<Mesh>>,
     shader_variants_map: HashMap<String, Handle<ShaderVariantManifest>>,

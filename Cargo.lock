@@ -712,7 +712,7 @@ dependencies = [
 
 [[package]]
 name = "bevy_magic_fx"
-version = "0.2.5"
+version = "0.2.6"
 dependencies = [
  "bevy",
  "bevy_common_assets",

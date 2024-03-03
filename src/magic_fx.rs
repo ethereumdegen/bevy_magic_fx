@@ -16,7 +16,7 @@ pub struct MagicFxVariantComponent {
 #[derive(Component)]
 pub struct MagicFxInstanceComponent {
     pub instance: MagicFxInstance,
-    pub start_time: Duration,
+  //  pub start_time: Duration, // find from parent 
 }
 
 /*
@@ -28,13 +28,13 @@ build plugins for the above comps
 pub fn update_magic_fx_variants_added(
     mut commands: Commands,
     magic_fx_query: Query<(Entity, &MagicFxVariantComponent), Added<MagicFxVariantComponent>>,
-    time: Res<Time>,
+    //time: Res<Time>,
 ) {
     for (fx_entity, magic_fx_comp) in magic_fx_query.iter() {
         let magic_fx = &magic_fx_comp.magic_fx;
 
         for instance in magic_fx.magic_fx_instances.iter() {
-            println!("spawn magic fx instance!!");
+            //println!("spawn magic fx instance!!");
 
             let bundle = &instance.to_bundle();
 
@@ -43,7 +43,7 @@ pub fn update_magic_fx_variants_added(
                     bundle.clone(),
                     MagicFxInstanceComponent {
                         instance: instance.clone(),
-                        start_time: time.elapsed(),
+                       // start_time: time.elapsed(),
                     },
                     bevy::pbr::NotShadowCaster,
                 ))
@@ -56,35 +56,51 @@ pub fn update_magic_fx_variants_added(
 
 pub fn update_magic_fx_variants(
     mut commands: Commands,
-    magic_fx_query: Query<(Entity, &MagicFxVariantComponent)>,
+    mut magic_fx_query: Query<(Entity, &mut MagicFxVariantComponent)>,
     time: Res<Time>,
 ) {
     let current_time = time.elapsed();
 
-    for (fx_entity, magic_fx_comp) in magic_fx_query.iter() {
+    for (fx_entity, mut magic_fx_comp) in magic_fx_query.iter_mut() {
         let magic_fx = &magic_fx_comp.magic_fx;
 
-        if current_time > magic_fx_comp.start_time + magic_fx.max_time_offset {
-            commands.entity(fx_entity).despawn_recursive();
-        }
+       // let repeating = magic_fx.repeating;
+       
+            if current_time > magic_fx_comp.start_time + magic_fx.max_time_offset {
+                
+                 if magic_fx.repeating {
+                    //reset 
+                     magic_fx_comp.start_time = current_time;
+                     }else { 
+                        commands.entity(fx_entity).despawn_recursive();
+                }
+            }
+        
     }
 }
 
 pub fn update_magic_fx_instances(
-    mut magic_fx_query: Query<(
+    mut magic_fx_instance_query: Query<(
         Entity,
         &mut Visibility,
         &mut Transform,
         &MagicFxInstanceComponent,
+        &Parent
     )>,
+
+    magic_fx_variant_query: Query<&MagicFxVariantComponent>,
     time: Res<Time>,
 ) {
     let current_time = time.elapsed();
 
-    for (entity, mut fx_visibility, mut fx_xform, instance_comp) in magic_fx_query.iter_mut() {
+    for (entity, mut fx_visibility, mut fx_xform, instance_comp, parent) in magic_fx_instance_query.iter_mut() {
+       
+        let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.get()  ).ok() else {continue};
+
+
         let instance = &instance_comp.instance;
-        let start_time = instance_comp.start_time + instance.start_time_offset;
-        let end_time = instance_comp.start_time + instance.end_time_offset;
+        let start_time = magic_fx_variant.start_time + instance.start_time_offset;
+        let end_time = magic_fx_variant.start_time + instance.end_time_offset;
 
         let start_xform = instance.start_transform;
         let end_xform = instance.end_transform;
