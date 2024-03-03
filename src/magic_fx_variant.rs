@@ -9,7 +9,7 @@ use crate::animated_material::{self, AnimatedMaterial, AnimatedMaterialBundle, A
 
 
 use crate::euler_transform::EulerTransform;
-use crate::shader_variant::{ShaderVariant, ShaderVariantManifest};
+use crate::shader_variant::{ ShaderVariantManifest};
 
 
 //use bevy::utils::HashMap;
@@ -32,6 +32,7 @@ pub struct MagicFxVariantManifest {
 pub struct MagicFxInstanceManifest {
 
 	pub shader_variant_name: String,
+
 	pub mesh_name:String, 
 	pub start_time_offset: f32,
 	pub end_time_offset:f32,
@@ -57,6 +58,7 @@ pub struct MagicFxVariant  {
 
     pub magic_fx_instances: Vec<MagicFxInstance>,
 
+
     pub current_time: Duration,
     pub max_time: Duration
 
@@ -66,11 +68,8 @@ pub struct MagicFxVariant  {
 impl MagicFxVariant {
 
 	pub fn from_manifest(  
-      		manifest: &MagicFxVariantManifest ,
-		  // asset_server: &Res< AssetServer>,
-
- 
-
+      	manifest: &MagicFxVariantManifest ,
+		 
 		// a map of all shader variant handles which have already been loaded 
 		texture_handles_map: &HashMap<String,Handle<Image>>,
 		mesh_handles_map: &HashMap<String, Handle<Mesh>> ,
@@ -99,7 +98,10 @@ impl MagicFxVariant {
 #[derive(Debug, Clone)]
 pub struct MagicFxInstance  {
 
-	pub shader_variant: ShaderVariant , 
+	pub shader_variant_manifest: ShaderVariantManifest , 
+	 
+	pub texture_handle: Handle<Image>,
+
 	pub shader_material: Option<Handle< AnimatedMaterialExtension >> ,
 	pub mesh_handle: Handle<Mesh>, 
 	pub start_time_offset: Duration,
@@ -115,23 +117,17 @@ impl MagicFxInstance {
 
 	pub fn from_manifest( 
 		manifest: MagicFxInstanceManifest,
-		
-		//asset_server: &Res< AssetServer>,
-		
+		 
 
 		texture_handles_map: &HashMap<String, Handle<Image>> ,
 		mesh_handles_map: &HashMap<String, Handle<Mesh>> ,
 
-		// a map of all shader variant handles which have already been loaded 
+		
    		shader_variants_map: &HashMap<String, Handle<ShaderVariantManifest> > ,
     	shader_variant_manifest_assets: &Res<Assets<ShaderVariantManifest>>,
 
 		
-
-
-		// mut custom_materials: ResMut<Assets<ExtendedMaterial<StandardMaterial, custom_material::ScrollingMaterial>>>,
  
-
 
 
 	 ) -> Option<Self> {
@@ -144,17 +140,17 @@ impl MagicFxInstance {
 
 		 let shader_variant_manifest = shader_variant_manifest_assets.get(shader_variant_manifest_handle).unwrap();
 
-		  //this is failing 
-		 let shader_variant = ShaderVariant::from_manifest(shader_variant_manifest, texture_handles_map).unwrap();
+		 let texture_handle =  texture_handles_map.get(&shader_variant_manifest.texture)?; //&self.shader_variant.texture;
+
 
 		
 		Some(
 		Self {
 
-
+			texture_handle: texture_handle.clone(),
 
 			end_time_offset: Duration::from_secs_f32(  manifest.end_time_offset ),
-			shader_variant: shader_variant.clone() ,
+			shader_variant_manifest: shader_variant_manifest.clone() ,
 
 			shader_material: None ,
 
@@ -177,16 +173,17 @@ impl MagicFxInstance {
 		mut self,
 
 		  animated_materials: &mut ResMut<Assets<AnimatedMaterialExtension>>,
- 
 
-		) -> Self {
+	 	) -> Self {
 	
 
-	    let base_color = (&self.shader_variant.color).clone();
-	    let emissive = (&self.shader_variant.emissive).clone();
+	    let base_color = (&self.shader_variant_manifest.color).clone();
+	    let emissive = (&self.shader_variant_manifest.emissive).clone();
+
+	   
 		 
 
-		let image_handle = &self.shader_variant.texture;
+		let image_handle =  &self.texture_handle; 
 
 
 
@@ -205,14 +202,14 @@ impl MagicFxInstance {
                           	
                           	//put in more data here 
                             custom_uniforms: animated_material::AnimatedMaterialUniforms{
-                                scroll_speed_x : 0.4,
-                                scroll_speed_y : 1.0,
-                                distortion_speed_x: 3.0,
-                                distortion_speed_y: 9.0,
-                                distortion_amount: 0.09,
+                                scroll_speed_x : self.shader_variant_manifest.animation_speed.x,
+                                scroll_speed_y : self.shader_variant_manifest.animation_speed.y,
+                                distortion_speed_x: self.shader_variant_manifest.distortion_speed.x,
+                                distortion_speed_y: self.shader_variant_manifest.distortion_speed.y,
+                                distortion_amount: self.shader_variant_manifest.distortion_amount,
                                 distortion_cutoff: 1.0,
-                                scroll_repeats_x: 12.0,
-                                scroll_repeats_y: 3.0,
+                                scroll_repeats_x: self.shader_variant_manifest.scroll_repeats.x,
+                                scroll_repeats_y: self.shader_variant_manifest.scroll_repeats.y,
                                 ..default()
                             }, 
                             ..default()
@@ -228,23 +225,14 @@ impl MagicFxInstance {
 
 
 	pub fn to_bundle(
-		&self,
-
-		//asset_server: &Res<AssetServer> //just for now 
-
-		//  animated_materials: &mut ResMut<Assets<AnimatedMaterialExtension>>,
- 
-
+		&self, 
 		) -> Option<AnimatedMaterialBundle> {
  
 
 
 		let shader_material = &self.shader_material;
 
-		//let mesh:Handle<Mesh> = asset_server.load("meshes/projectile.obj");
- 
- 
-
+	 
 
 		 return shader_material.as_ref().map(|shader_mat| 
 

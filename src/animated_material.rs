@@ -6,9 +6,7 @@ use bevy::render::render_resource::*;
  
 use bevy::pbr::{ExtendedMaterial, MaterialExtension};
 
-
-  
-
+ 
 
 pub type AnimatedMaterialExtension = ExtendedMaterial<StandardMaterial,AnimatedMaterial>;
 pub type AnimatedMaterialBundle = MaterialMeshBundle<AnimatedMaterialExtension>;

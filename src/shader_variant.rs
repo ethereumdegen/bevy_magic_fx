@@ -16,7 +16,17 @@ pub struct ShaderVariantManifest {
     //     variant: HashMap<String, ShaderVariant >
     pub name: String, //used to load it
     pub texture: String,
-    pub animation_speed: f32,
+
+    pub animation_speed: Vec2,
+    pub distortion_speed: Vec2,
+
+    pub scroll_repeats: Vec2,
+
+    pub distortion_amount: f32,
+
+
+
+
     pub color: Color,
     pub emissive: Vec3, 
 
@@ -32,7 +42,7 @@ impl TypePath for ShaderVariantManifest {
     }
 }
 
-
+/*
 #[derive(Debug, Clone )]
 pub struct ShaderVariant  {
     //     variant: HashMap<String, ShaderVariant >
@@ -74,3 +84,4 @@ impl ShaderVariant {
     }
 }
 
+*/

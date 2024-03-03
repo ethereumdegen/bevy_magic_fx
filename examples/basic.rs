@@ -5,7 +5,7 @@ use std::f32::consts::PI;
 
 use bevy::{
     
-    gltf::GltfMesh, render::render_resource::{Extent3d, TextureDimension, TextureFormat}, utils::HashMap
+    gltf::GltfMesh, utils::HashMap
 };
 
 use bevy_common_assets::ron::RonAssetPlugin;
@@ -14,8 +14,7 @@ use bevy::gltf::Gltf;
 use bevy::core_pipeline::bloom::BloomSettings;
  
 use bevy::core_pipeline::tonemapping::Tonemapping;
-use bevy::pbr::ExtendedMaterial;
-use bevy::pbr::OpaqueRendererMethod;
+ 
 
 use bevy::{
    
@@ -27,7 +26,7 @@ use bevy::{
 };
  
 
-use bevy_magic_fx::{magic_fx_variant::{MagicFxVariant, MagicFxVariantManifest}, shader_variant::ShaderVariantManifest};
+use bevy_magic_fx::{magic_fx::{MagicFxChildComponent, MagicFxRootComponent}, magic_fx_variant::{MagicFxVariant, MagicFxVariantManifest}, shader_variant::ShaderVariantManifest};
 use bevy_magic_fx::animated_material::{self, AnimatedMaterialExtension};
 
 
@@ -204,12 +203,10 @@ fn update_loading_magic_fx_variant_manifest(
       fx_variant_assets: ResMut<Assets<MagicFxVariantManifest>>,
 
     mut commands: Commands,
-   // map_img: Res<MyMapImage>,
-
+   
       asset_handles_resource: ResMut<AssetHandlesResource>,
 
-   //asset_server: Res<AssetServer> ,
-
+  
       shader_variant_assets: Res<Assets<ShaderVariantManifest>>,
 
      asset_loading_resource: Res <AssetLoadingResource>,
@@ -248,33 +245,40 @@ fn update_loading_magic_fx_variant_manifest(
                         &shader_variant_assets
                         ); 
 
+
+
+                   let magic_fx_root = commands.spawn(  SpatialBundle::default() )
+                        .insert( MagicFxRootComponent::default()    )
+                        .id();
+
+
+
                         for instance in  magic_fx.magic_fx_instances.drain(..){
 
                             println!("spawn bundle!!");
 
 
                             let bundle = instance.build_material(
-                                &mut animated_materials
+                                &mut animated_materials,
+
                                 ).to_bundle( 
-                                    //  &asset_server
+                                   
                                 ).unwrap(); 
 
 
-                                commands.spawn((
+                                let magic_fx_child = commands.spawn((
                                     bundle,
-                                    
+                                    MagicFxChildComponent::default() ,
                                     bevy::pbr::NotShadowCaster 
-                                ));
+                                )).id();
 
-                        }
+                                commands
+                                .entity(magic_fx_root)
+                                .add_child(magic_fx_child);
 
+                        } 
 
-
-
-                    }
-
-
-
+                    } 
 
             }
             _ => {} 
