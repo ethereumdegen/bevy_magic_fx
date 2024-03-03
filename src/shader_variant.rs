@@ -34,47 +34,4 @@ impl TypePath for ShaderVariantManifest {
         "shadvar.ron"
     }
 }
-
-/*
-#[derive(Debug, Clone )]
-pub struct ShaderVariant  {
-    //     variant: HashMap<String, ShaderVariant >
-    pub name: String, //used to load it
-    pub texture: Handle<Image>,
-    pub animation_speed: f32,
-    pub color: Color,
-    pub emissive: Vec3,
-
-}
-
-impl ShaderVariant {
-
-    pub fn from_manifest(
-        manifest: &ShaderVariantManifest,
-        texture_handles_map: &HashMap<String, Handle<Image>>
-
-        ) -> Option<Self>{
-
-
-
-        let texture_handle = texture_handles_map.get( &manifest.texture ).unwrap().clone_weak();
-
-
-        Some( Self {
-
-
-
-            name: manifest.name.clone(),
-            texture: texture_handle,
-            color: manifest.color.clone(),
-            animation_speed: manifest.animation_speed.clone(),
-            emissive: manifest.emissive.clone()
-
-
-        })
-
-
-    }
-}
-
-*/
+ 
