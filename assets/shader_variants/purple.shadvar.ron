@@ -1,7 +1,7 @@
 (
     
     name: "purple",
-    texture: "textures/particles/spark_05.png",
+    texture: "textures/fire_01.png",
     animation_speed: 0.5, // Assuming animation_speed is a string for some reason; otherwise, consider using a float or int
     color: Rgba(
         red: 255,

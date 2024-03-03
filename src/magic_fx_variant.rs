@@ -67,7 +67,7 @@ impl MagicFxVariant {
 
 	pub fn from_manifest(  
       		manifest: &MagicFxVariantManifest ,
-		   asset_server: &Res< AssetServer>,
+		  // asset_server: &Res< AssetServer>,
 
  
 
@@ -86,7 +86,7 @@ impl MagicFxVariant {
 			current_time: Duration::from_secs_f32(0.0),
 			max_time: Duration::from_secs_f32( manifest.max_time) ,
 			magic_fx_instances:  manifest.magic_fx_instances.clone().drain(..).filter_map( |instance_manifest|
-				MagicFxInstance::from_manifest( instance_manifest, asset_server, texture_handles_map, mesh_handles_map, shader_variants_map , shader_variant_assets )
+				MagicFxInstance::from_manifest( instance_manifest,  texture_handles_map, mesh_handles_map, shader_variants_map , shader_variant_assets )
 				).collect() 
 		}
 		 
@@ -116,7 +116,7 @@ impl MagicFxInstance {
 	pub fn from_manifest( 
 		manifest: MagicFxInstanceManifest,
 		
-		asset_server: &Res< AssetServer>,
+		//asset_server: &Res< AssetServer>,
 		
 
 		texture_handles_map: &HashMap<String, Handle<Image>> ,
@@ -136,14 +136,18 @@ impl MagicFxInstance {
 
 	 ) -> Option<Self> {
 
+         let mesh_handle = mesh_handles_map.get(&manifest.mesh_name).unwrap();
+
+
 		 
 		 let shader_variant_manifest_handle = shader_variants_map.get(&manifest.shader_variant_name).unwrap();
+
 		 let shader_variant_manifest = shader_variant_manifest_assets.get(shader_variant_manifest_handle).unwrap();
 
-		 let shader_variant = ShaderVariant::from_manifest(shader_variant_manifest, texture_handles_map)?;
+		  //this is failing 
+		 let shader_variant = ShaderVariant::from_manifest(shader_variant_manifest, texture_handles_map).unwrap();
 
-		 let mesh_handle = mesh_handles_map.get(&manifest.mesh_name)? ;
-
+		
 		Some(
 		Self {
 

@@ -109,7 +109,7 @@ fn setup(
     let shader_variant_manifest_handle = asset_server.load("shader_variants/purple.shadvar.ron");
     asset_loading_resource.shader_variants_map.insert("shader_variants/purple.shadvar.ron".to_string(),shader_variant_manifest_handle.clone_weak());
 
-    asset_handles_resource.shader_variant_manifest_handle = shader_variant_manifest_handle.clone_weak();
+    asset_handles_resource.shader_variant_manifest_handle = shader_variant_manifest_handle.clone();
     // asset_handles_resource.//shader_variant_manifest_handle = asset_server.load("shader_variants/purple.shadvar.ron");
 
 
@@ -269,18 +269,18 @@ fn update_loading_shader_variant_manifest(
 
 fn update_loading_magic_fx_variant_manifest(
     mut ev_asset: EventReader<AssetEvent<MagicFxVariantManifest>>,
-    mut fx_variant_assets: ResMut<Assets<MagicFxVariantManifest>>,
+      fx_variant_assets: ResMut<Assets<MagicFxVariantManifest>>,
 
     mut commands: Commands,
    // map_img: Res<MyMapImage>,
 
-    mut asset_handles_resource: ResMut<AssetHandlesResource>,
+      asset_handles_resource: ResMut<AssetHandlesResource>,
 
-    asset_server: Res<AssetServer> ,
+   // asset_server: Res<AssetServer> ,
 
       shader_variant_assets: Res<Assets<ShaderVariantManifest>>,
 
-   mut asset_loading_resource: Res <AssetLoadingResource>,
+     asset_loading_resource: Res <AssetLoadingResource>,
 
    mut animated_materials:   ResMut<Assets<AnimatedMaterialExtension>>,
  
@@ -311,7 +311,7 @@ fn update_loading_magic_fx_variant_manifest(
 
                    let magic_fx = MagicFxVariant::from_manifest(
                         magic_fx_variant_manifest,
-                        &asset_server,
+                       // &asset_server,
                         &texture_handles_map,
                         &mesh_handles_map,
                         &shader_variants_map,

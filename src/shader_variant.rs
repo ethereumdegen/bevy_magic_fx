@@ -52,10 +52,17 @@ impl ShaderVariant {
 
         ) -> Option<Self>{
 
+
+
+        let texture_handle = texture_handles_map.get( &manifest.texture ).unwrap().clone_weak();
+
+
         Some( Self {
 
+
+
             name: manifest.name.clone(),
-            texture: texture_handles_map.get( &manifest.texture )?.clone_weak(),
+            texture: texture_handle,
             color: manifest.color.clone(),
             animation_speed: manifest.animation_speed.clone(),
             emissive: manifest.emissive.clone()
