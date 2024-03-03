@@ -3,6 +3,7 @@
 
 use std::f32::consts::PI;
 
+use bevy::ecs::query;
 use bevy::{
     
     gltf::GltfMesh, utils::HashMap
@@ -243,7 +244,7 @@ fn update_loading_magic_fx_variant_manifest(
                   let  shader_variants_map = &asset_loading_resource.shader_variants_map;
 
                    
-
+                    //pre-build all materials 
                    let   magic_fx = MagicFxVariant::from_manifest(
                         magic_fx_variant_manifest, 
                         &texture_handles_map,
@@ -255,6 +256,7 @@ fn update_loading_magic_fx_variant_manifest(
 
 
 
+                   //at a later time, whenever, spawn the magic fx . This is usually from a spell cast.
                    let _magic_fx_root = commands.spawn(  SpatialBundle::default() )
                         .insert( MagicFxVariantComponent {
                             magic_fx,
