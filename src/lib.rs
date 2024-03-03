@@ -25,12 +25,12 @@ impl Plugin for MagicFxPlugin {
             .add_plugins(RonAssetPlugin::<MagicFxVariantManifest>::new(&[
                 "magicfx.ron",
             ]))
-            .add_plugins(MaterialPlugin::<animated_material::AnimatedMaterialExtension>::default())
+            .add_plugins(MaterialPlugin::<animated_material::AnimatedMaterial >::default())
              .add_systems(Update, magic_fx::update_magic_fx_variants_added)
             .add_systems(Update, magic_fx::update_magic_fx_variants)
             .add_systems(Update, magic_fx::update_magic_fx_instances)
             ;
-            
+
     }
 }
 

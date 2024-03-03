@@ -6,7 +6,7 @@ use bevy::utils::HashMap;
 use serde::{Deserialize, Serialize};
 
 use crate::animated_material::{
-    self, AnimatedMaterial, AnimatedMaterialBundle, AnimatedMaterialExtension,
+    self, AnimatedMaterialBase, AnimatedMaterialBundle, AnimatedMaterial ,
 };
 
 use crate::euler_transform::EulerTransform;
@@ -92,7 +92,7 @@ impl MagicFxVariant {
 
     pub fn build_all_materials(
         mut self,
-        animated_materials: &mut ResMut<Assets<AnimatedMaterialExtension>>,
+        animated_materials: &mut ResMut<Assets<AnimatedMaterial >>,
     ) -> Self {
         for instance in self.magic_fx_instances.iter_mut() {
             let _bundle = &mut instance.build_material(animated_materials);
@@ -113,7 +113,7 @@ pub struct MagicFxInstance {
     pub start_transform: Transform,
     pub end_transform: Transform,
 
-    pub shader_material: Option<Handle<AnimatedMaterialExtension>>,
+    pub shader_material: Option<Handle<AnimatedMaterial >>,
 }
 
 impl MagicFxInstance {
@@ -158,7 +158,7 @@ impl MagicFxInstance {
     pub fn build_material(
         &mut self,
 
-        animated_materials: &mut ResMut<Assets<AnimatedMaterialExtension>>,
+        animated_materials: &mut ResMut<Assets<AnimatedMaterial >>,
     ) -> &Self {
         let base_color = (&self.shader_variant_manifest.color).clone();
         let emissive = (&self.shader_variant_manifest.emissive).clone();
@@ -180,7 +180,7 @@ impl MagicFxInstance {
 
                 ..Default::default()
             },
-            extension: animated_material::AnimatedMaterial {
+            extension: animated_material::AnimatedMaterialBase{
                 base_color_texture: Some(image_handle.clone()),
 
                 //put in more data here

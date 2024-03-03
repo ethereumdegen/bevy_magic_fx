@@ -4,8 +4,11 @@ use bevy::render::render_resource::*;
 
 use bevy::pbr::{ExtendedMaterial, MaterialExtension};
 
-pub type AnimatedMaterialExtension = ExtendedMaterial<StandardMaterial, AnimatedMaterial>;
-pub type AnimatedMaterialBundle = MaterialMeshBundle<AnimatedMaterialExtension>;
+
+pub type AnimatedMaterial = ExtendedMaterial<StandardMaterial, AnimatedMaterialBase>;
+
+//pub type AnimatedMaterialExtension = ExtendedMaterial<StandardMaterial, AnimatedMaterial>;
+pub type AnimatedMaterialBundle = MaterialMeshBundle<AnimatedMaterial >;
 
 #[derive(Clone, ShaderType, Debug)]
 pub struct AnimatedMaterialUniforms {
@@ -34,7 +37,7 @@ impl Default for AnimatedMaterialUniforms {
 }
 
 #[derive(Asset, AsBindGroup, TypePath, Debug, Clone, Default)]
-pub struct AnimatedMaterial {
+pub struct AnimatedMaterialBase {
     // We need to ensure that the bindings of the base material and the extension do not conflict,
     // so we start from binding slot 100, leaving slots 0-99 for the base material.
     #[uniform(20)]
@@ -45,7 +48,7 @@ pub struct AnimatedMaterial {
     pub base_color_texture: Option<Handle<Image>>,
 }
 
-impl MaterialExtension for AnimatedMaterial {
+impl MaterialExtension for AnimatedMaterialBase {
     fn fragment_shader() -> ShaderRef {
         "shaders/magic_fx.wgsl".into()
     }
