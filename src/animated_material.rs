@@ -14,15 +14,15 @@ pub fn build_animated_material(
     shader_variant_manifest: &ShaderVariantManifest,
     texture_handles_map: & HashMap<String,Handle<Image>>, 
 
-    ) -> AnimatedMaterial{
+    ) -> Option<AnimatedMaterial>{
 
 
    let base_color = (&shader_variant_manifest.color).clone();
    let emissive = (&shader_variant_manifest.emissive).clone();
 
-   let texture_handle = texture_handles_map.get(&shader_variant_manifest.texture).unwrap();
+   let texture_handle = texture_handles_map.get(&shader_variant_manifest.texture)?;
  
-
+   Some(
     ExtendedMaterial {
                     base: StandardMaterial {
                         base_color,
@@ -57,7 +57,7 @@ pub fn build_animated_material(
                     },
                 }
 
-
+      )
 }
 
 //pub type AnimatedMaterialExtension = ExtendedMaterial<StandardMaterial, AnimatedMaterial>;

@@ -59,35 +59,34 @@ pub struct MagicFxVariant {
 impl MagicFxVariant {
     pub fn from_manifest(
         manifest: &MagicFxVariantManifest,
-
         
         mesh_handles_map: &HashMap<String, Handle<Mesh>>,
      
         animated_materials_map: &HashMap<String,Handle<AnimatedMaterial>>,
      
-    ) -> Self {
+    ) -> Option<Self> {
        // let current_time = time.elapsed();
 
-        Self {
+         let magic_fx_instances: Vec<MagicFxInstance> = manifest
+            .magic_fx_instances
+            .clone()
+            .into_iter() // Use into_iter instead of drain(..) to consume the vector
+            .map(|instance_manifest| {
+                MagicFxInstance::from_manifest(
+                    instance_manifest,
+                    mesh_handles_map,
+                    animated_materials_map,
+                )
+            })
+            .collect::<Option<Vec<MagicFxInstance>>>()?; // Early return None if any item is None
+
+        Some(Self {
             name: manifest.name.clone(),
             repeating: manifest.repeating,
-            
             max_time_offset: Duration::from_secs_f32(manifest.max_time),
-            magic_fx_instances: manifest
-                .magic_fx_instances
-                .clone()
-                .drain(..)
-                .filter_map(|instance_manifest| {
-                    MagicFxInstance::from_manifest(
-                        instance_manifest,
-                      
-                        mesh_handles_map,
-                     
-                        animated_materials_map,
-                    )
-                })
-                .collect(),
-        }
+            magic_fx_instances,
+        })
+        
     }
 
     
@@ -114,14 +113,14 @@ impl MagicFxInstance {
  
         animated_materials_map: &HashMap<String,Handle<AnimatedMaterial>>,
     ) -> Option<Self> {
+
         let mesh_handle = mesh_handles_map.get(&manifest.mesh_name)?;
  
 
          let shader_material_handle  = animated_materials_map
          .get(&manifest.shader_variant_name)?.clone();
        
-        Some(Self {
-          
+        Some(Self { 
 
             end_time_offset: Duration::from_secs_f32(manifest.end_time_offset),
          

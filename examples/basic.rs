@@ -183,7 +183,8 @@ fn update_loading_shader_variant_manifest(
                 let shader_material_handle = animated_materials.add( build_animated_material(
                     shader_variant_manifest,
                     &texture_handles_map
-                    ));
+                    ).unwrap()
+                );
 
                // self.shader_material = Some(shader_material.clone());
  
@@ -210,12 +211,9 @@ fn update_loading_magic_fx_variant_manifest(
     mut commands: Commands,
 
     asset_handles_resource: ResMut<AssetHandlesResource>,
-
-   // shader_variant_assets: Res<Assets<ShaderVariantManifest>>,
-
+ 
     asset_loading_resource: Res<AssetLoadingResource>,
-
-    //  animated_materials: ResMut<Assets<AnimatedMaterial>>,
+ 
 
     time: Res<Time>,
 ) {
@@ -223,6 +221,8 @@ fn update_loading_magic_fx_variant_manifest(
         match ev {
             AssetEvent::LoadedWithDependencies { id } => {
                 if id == &asset_handles_resource.magic_fx_variant_manifest_handle.id() {
+                   
+
                     let magic_fx_variant_manifest: &MagicFxVariantManifest = fx_variant_assets
                         .get(&asset_handles_resource.magic_fx_variant_manifest_handle)
                         .unwrap();
@@ -242,7 +242,7 @@ fn update_loading_magic_fx_variant_manifest(
                         &animated_materials_map,
                      
                         
-                    );
+                    ).unwrap();
 
                     //now we can store this in a resource 
                     println!("spawn the root ");
