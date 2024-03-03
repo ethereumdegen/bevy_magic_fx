@@ -4,13 +4,13 @@
     texture: "textures/fire_01.png",
     animation_speed: 0.5, // Assuming animation_speed is a string for some reason; otherwise, consider using a float or int
     color: Rgba(
-        red: 255,
-        green: 55,
+        red: 5,
+        green: 255,
         blue: 55,
         alpha: 255 // Assuming your Color struct has rgba fields; adjust according to your actual Color struct
     ),
      emissive:  (
-        500.0,2000.0,500.0
+        5.0,20.0,5.0
     )
       
 )

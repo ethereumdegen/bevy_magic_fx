@@ -118,70 +118,7 @@ fn setup(
 
 
 
-
-
-   // let base_color = Color::PURPLE.set_a(0.4).clone();
-
-/*
-    asset_handles_resource.anim_material = custom_materials.add(ExtendedMaterial {
-        base: StandardMaterial {
-            base_color ,
-            emissive: Color::rgb_linear(500.2, 3000.2, 200.8),  //turn up bloom emission like insane 
-            // can be used in forward or deferred mode.
-            opaque_render_method: OpaqueRendererMethod::Auto,
-            alpha_mode: AlphaMode::Blend,
-            
-            ..Default::default()
-        },
-        extension:animated_material::AnimatedMaterial {
-            base_color_texture: Some( magic_texture ),
-          
-            custom_uniforms: animated_material::AnimatedMaterialUniforms{
-                scroll_speed_x : 0.4,
-                scroll_speed_y : 1.0,
-                distortion_speed_x: 3.0,
-                distortion_speed_y: 9.0,
-                distortion_amount: 0.09,
-                distortion_cutoff: 1.0,
-                scroll_repeats_x: 12.0,
-                scroll_repeats_y: 3.0,
-                ..default()
-            }, 
-            ..default()
-        },
-    });
-    
-    
-    
-    
-                     let bullet_mesh_handle = &asset_handles_resource.bullet_mesh;
-                   
-                     let anim_mat_handle:&Handle<animated_material::AnimatedMaterialExtension> = &asset_handles_resource.anim_material;
-                    
-               
-          
-
-                    commands.spawn((
-                        animated_material::AnimatedMaterialBundle {
-                            mesh:  bullet_mesh_handle.clone(),
-                            material:  anim_mat_handle.clone(),
-                          
-                            transform: Transform::from_xyz(
-                                3.0,
-                                2.0,
-                                0.0,
-                            )
-                            .with_rotation(Quat::from_rotation_x(-PI / 5.)),
-                            ..default()
-                        },
-                        
-                        bevy::pbr::NotShadowCaster 
-                    ));
-                    
-                    
-    */
-    //custom_materials.add();
-
+ 
 
    
 
@@ -314,7 +251,7 @@ fn update_loading_magic_fx_variant_manifest(
                         for instance in  magic_fx.magic_fx_instances.drain(..){
 
                             println!("spawn bundle!!");
-                            
+
 
                             let bundle = instance.build_material(
                                 &mut animated_materials

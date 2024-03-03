@@ -171,6 +171,8 @@ impl MagicFxInstance {
 
 
 
+	//make this a part of shader variant ? 
+	//how to improve this ? 
 	pub fn build_material(
 		mut self,
 
@@ -181,10 +183,8 @@ impl MagicFxInstance {
 	
 
 	    let base_color = (&self.shader_variant.color).clone();
-		//let image_name = &self.shader_variant.texture;
-
-		//let image_handle = images_map.get(image_name)?;
-		//let image = image_assets.get(image_handle);
+	    let emissive = (&self.shader_variant.emissive).clone();
+		 
 
 		let image_handle = &self.shader_variant.texture;
 
@@ -193,7 +193,7 @@ impl MagicFxInstance {
 		let shader_material =  animated_materials.add(ExtendedMaterial {
                         base: StandardMaterial {
                             base_color ,
-                            emissive: Color::rgb_linear(500.2, 3000.2, 200.8),  //turn up bloom emission like insane 
+                            emissive: Color::Rgba { red: emissive.x, green: emissive.y, blue:emissive.z, alpha: 1.0 },  //turn up bloom emission like insane 
                             // can be used in forward or deferred mode.
                             opaque_render_method: OpaqueRendererMethod::Auto,
                             alpha_mode: AlphaMode::Blend,
