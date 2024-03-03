@@ -3,14 +3,13 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EulerTransform {
-	pub translation: Vec3,
-	pub rotation: Vec3,
-	pub scale: Vec3 
+    pub translation: Vec3,
+    pub rotation: Vec3,
+    pub scale: Vec3,
 }
 
 impl EulerTransform {
-
-  pub fn to_transform(self) -> Transform {
+    pub fn to_transform(self) -> Transform {
         Transform {
             translation: self.translation,
             rotation: Quat::from_euler(
@@ -22,5 +21,4 @@ impl EulerTransform {
             scale: self.scale,
         }
     }
-
 }

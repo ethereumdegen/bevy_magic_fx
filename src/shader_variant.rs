@@ -3,8 +3,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::animated_material::AnimatedMaterial;
 
- 
-
 //this gets loaded in
 
 //this ends up as pub shader_variant_materials: HashMap<String, Handle<AnimatedMaterial>>,
@@ -24,14 +22,9 @@ pub struct ShaderVariantManifest {
 
     pub distortion_amount: f32,
 
-
-
-
     pub color: Color,
-    pub emissive: Vec3, 
-
+    pub emissive: Vec3,
 }
- 
 
 impl TypePath for ShaderVariantManifest {
     fn short_type_path() -> &'static str {
@@ -50,15 +43,15 @@ pub struct ShaderVariant  {
     pub texture: Handle<Image>,
     pub animation_speed: f32,
     pub color: Color,
-    pub emissive: Vec3, 
+    pub emissive: Vec3,
 
 }
 
 impl ShaderVariant {
 
-    pub fn from_manifest( 
+    pub fn from_manifest(
         manifest: &ShaderVariantManifest,
-        texture_handles_map: &HashMap<String, Handle<Image>> 
+        texture_handles_map: &HashMap<String, Handle<Image>>
 
         ) -> Option<Self>{
 
