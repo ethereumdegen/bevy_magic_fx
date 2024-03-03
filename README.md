@@ -5,6 +5,12 @@ Define mesh-based VFX in RON files and load them into bevy
 ![image](https://github.com/ethereumdegen/bevy_magic_fx/assets/6249263/ad0dc5f6-e56c-4439-a417-02cbc2205e05)
 
 
+### How to use 
+
+```
+cargo run --example basic
+```
+
 ### Example VFX Definition 
 ```
 
