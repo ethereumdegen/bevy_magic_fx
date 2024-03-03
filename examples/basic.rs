@@ -3,11 +3,11 @@
 
 use std::f32::consts::PI;
 
-use bevy::ecs::query;
+  
 use bevy::{gltf::GltfMesh, utils::HashMap};
 
 use bevy::gltf::Gltf;
-use bevy_common_assets::ron::RonAssetPlugin;
+ 
 
 use bevy::core_pipeline::bloom::BloomSettings;
 
@@ -15,18 +15,21 @@ use bevy::core_pipeline::tonemapping::Tonemapping;
 
 use bevy::{core_pipeline::bloom::BloomCompositeMode, prelude::*};
 
+use bevy_magic_fx::MagicFxPlugin;
+
 use bevy_magic_fx::magic_fx::{
-    update_magic_fx_instances, update_magic_fx_variants, update_magic_fx_variants_added,
-    MagicFxVariantComponent,
+          MagicFxVariantComponent,
 };
 
-use bevy_magic_fx::animated_material::{self, AnimatedMaterialExtension};
+use bevy_magic_fx::animated_material::{AnimatedMaterialExtension};
 use bevy_magic_fx::{
     magic_fx_variant::{MagicFxVariant, MagicFxVariantManifest},
     shader_variant::ShaderVariantManifest,
 };
+  
 
-use bevy_magic_fx::{magic_fx_variant, shader_variant};
+
+
 
 fn main() {
     App::new()
@@ -34,20 +37,18 @@ fn main() {
         .insert_resource(AssetLoadingResource::default())
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
         .add_plugins(bevy_obj::ObjPlugin)
-        .add_plugins(RonAssetPlugin::<ShaderVariantManifest>::new(&[
-            "shadvar.ron",
-        ]))
-        .add_plugins(RonAssetPlugin::<MagicFxVariantManifest>::new(&[
-            "magicfx.ron",
-        ]))
-        .add_plugins(MaterialPlugin::<animated_material::AnimatedMaterialExtension>::default())
-        .add_systems(Startup, setup)
-        .add_systems(Update, rotate)
+
+
+        .add_plugins( MagicFxPlugin )
+
         .add_systems(Update, update_loading_shader_variant_manifest)
         .add_systems(Update, update_loading_magic_fx_variant_manifest)
-        .add_systems(Update, update_magic_fx_variants_added)
-        .add_systems(Update, update_magic_fx_variants)
-        .add_systems(Update, update_magic_fx_instances)
+           
+
+        
+        .add_systems(Startup, setup)
+        .add_systems(Update, rotate)
+
         .run();
 }
 
