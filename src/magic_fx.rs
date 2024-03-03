@@ -115,7 +115,7 @@ pub fn update_magic_fx_instances(
             *fx_xform = start_xform;
         }
 
-        println!("update visibility {:?}", is_visible);
+       // println!("update visibility {:?}", is_visible);
         //let bundle =  &mut instance.to_bundle() ;
     }
 }
