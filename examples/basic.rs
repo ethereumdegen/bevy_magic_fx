@@ -97,24 +97,23 @@ fn setup(
  
 ) {
 
-   // let magic_fx_variant_manifest_handle:Handle<MagicFxVariantManifest> = asset_server.load("magic_fx_variants/magic.magicfx.ron");
-   // 
+  
+   /*
+
+            Simulate our bevy asset loader with 'asset_loading_resource'
+   */
 
     let particle_texture_handle = asset_server.load("textures/fire_01.png");
     asset_loading_resource.texture_handles_map.insert("textures/fire_01.png".to_string(),particle_texture_handle);
-  //  asset_handles_resource.particle_texture_handle = asset_server.load("textures/fire_01.png");
    
-
 
     let shader_variant_manifest_handle = asset_server.load("shader_variants/purple.shadvar.ron");
     asset_loading_resource.shader_variants_map.insert("shader_variants/purple.shadvar.ron".to_string(),shader_variant_manifest_handle.clone_weak());
 
     asset_handles_resource.shader_variant_manifest_handle = shader_variant_manifest_handle.clone();
-    // asset_handles_resource.//shader_variant_manifest_handle = asset_server.load("shader_variants/purple.shadvar.ron");
+    
 
-
-
-      let mesh_handle:Handle<Mesh> = asset_server.load("meshes/projectile.obj");
+    let mesh_handle:Handle<Mesh> = asset_server.load("meshes/projectile.obj");
     asset_loading_resource.mesh_handles_map.insert("meshes/projectile.obj".to_string(),mesh_handle);
 
 
@@ -238,7 +237,7 @@ fn update_loading_shader_variant_manifest(
     //  mut fx_variant_assets: ResMut<Assets<ShaderVariantManifest>>,
 
      mut asset_handles_resource: ResMut<AssetHandlesResource>,
-      mut asset_server: ResMut< AssetServer>,
+        asset_server: ResMut< AssetServer>,
     
 
 
@@ -248,11 +247,7 @@ fn update_loading_shader_variant_manifest(
                 AssetEvent::LoadedWithDependencies { id } => {
 
                         //once the shader variant loads, we can start loading our magic fx 
-                    if id == &asset_handles_resource.shader_variant_manifest_handle.id() {
-
-
-                       
-                      
+                    if id == &asset_handles_resource.shader_variant_manifest_handle.id() { 
 
                          asset_handles_resource.magic_fx_variant_manifest_handle = asset_server.load("magic_fx_variants/magic.magicfx.ron");
                     }
@@ -276,7 +271,7 @@ fn update_loading_magic_fx_variant_manifest(
 
       asset_handles_resource: ResMut<AssetHandlesResource>,
 
-   // asset_server: Res<AssetServer> ,
+   //asset_server: Res<AssetServer> ,
 
       shader_variant_assets: Res<Assets<ShaderVariantManifest>>,
 
@@ -305,33 +300,34 @@ fn update_loading_magic_fx_variant_manifest(
 
                   let   shader_variants_map = &asset_loading_resource.shader_variants_map;
 
-                  
- 
-                  
+                   
 
-                   let magic_fx = MagicFxVariant::from_manifest(
+                   let mut magic_fx = MagicFxVariant::from_manifest(
                         magic_fx_variant_manifest,
                        // &asset_server,
                         &texture_handles_map,
                         &mesh_handles_map,
                         &shader_variants_map,
                         &shader_variant_assets
-
                         ); 
 
-                    for instance in  &magic_fx.magic_fx_instances{
+                        for instance in  magic_fx.magic_fx_instances.drain(..){
 
-                        let bundle = instance.clone().build_material(
-                            &mut animated_materials
-                            ).to_bundle(
-                            ).unwrap();
+                            println!("spawn bundle!!");
+                            
+
+                            let bundle = instance.build_material(
+                                &mut animated_materials
+                                ).to_bundle( 
+                                    //  &asset_server
+                                ).unwrap(); 
 
 
-                            commands.spawn((
-                                bundle,
-                                
-                                bevy::pbr::NotShadowCaster 
-                            ));
+                                commands.spawn((
+                                    bundle,
+                                    
+                                    bevy::pbr::NotShadowCaster 
+                                ));
 
                         }
 

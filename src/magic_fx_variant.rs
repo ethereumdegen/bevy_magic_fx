@@ -201,7 +201,7 @@ impl MagicFxInstance {
                             ..Default::default()
                         },
                         extension:animated_material::AnimatedMaterial {
-                            base_color_texture: Some( image_handle.clone_weak() ),
+                            base_color_texture: Some( image_handle.clone() ),
                           	
                           	//put in more data here 
                             custom_uniforms: animated_material::AnimatedMaterialUniforms{
@@ -219,7 +219,7 @@ impl MagicFxInstance {
                         },
                     }) ;
 
-		self.shader_material = Some(shader_material.clone_weak());
+		self.shader_material = Some(shader_material.clone());
 
 		self
 
@@ -230,33 +230,29 @@ impl MagicFxInstance {
 	pub fn to_bundle(
 		&self,
 
+		//asset_server: &Res<AssetServer> //just for now 
+
 		//  animated_materials: &mut ResMut<Assets<AnimatedMaterialExtension>>,
  
 
 		) -> Option<AnimatedMaterialBundle> {
-
-
-		 
+ 
 
 
 		let shader_material = &self.shader_material;
 
-
-
-
-
-		 
-		// let initial_transform = self.start_transform;
-
+		//let mesh:Handle<Mesh> = asset_server.load("meshes/projectile.obj");
+ 
+ 
 
 
 		 return shader_material.as_ref().map(|shader_mat| 
 
  				 animated_material::AnimatedMaterialBundle {
-                            mesh: self.mesh_handle.clone_weak(),
-                            material: shader_mat.clone_weak(),
+                            mesh:  self.mesh_handle.clone(),
+                            material: shader_mat.clone(),
                           
-                            transform: self.start_transform,
+                            transform: self.start_transform ,  
                         
                             ..default()
 

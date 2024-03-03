@@ -10,7 +10,7 @@
         alpha: 255 // Assuming your Color struct has rgba fields; adjust according to your actual Color struct
     ),
      emissive:  (
-        2000.0,2000.0,2000.0
+        500.0,2000.0,500.0
     )
       
 )
