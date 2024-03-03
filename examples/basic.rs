@@ -227,7 +227,7 @@ fn update_loading_magic_fx_variant_manifest(
                         .get(&asset_handles_resource.magic_fx_variant_manifest_handle)
                         .unwrap();
 
-                    let texture_handles_map = &asset_loading_resource.texture_handles_map;
+                   // let texture_handles_map = &asset_loading_resource.texture_handles_map;
                     let mesh_handles_map = &asset_loading_resource.mesh_handles_map;
 
                    // let shader_variants_map = &asset_loading_resource.shader_variants_map;
@@ -236,12 +236,12 @@ fn update_loading_magic_fx_variant_manifest(
                    
                     let magic_fx = MagicFxVariant::from_manifest(
                         magic_fx_variant_manifest,
-                        &texture_handles_map,
+                      
                         &mesh_handles_map,
                       
                         &animated_materials_map,
                      
-                        &time,
+                        
                     );
 
                     //now we can store this in a resource 

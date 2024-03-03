@@ -60,15 +60,15 @@ impl MagicFxVariant {
         manifest: &MagicFxVariantManifest,
 
         // a map of all shader variant handles which have already been loaded
-        texture_handles_map: &HashMap<String, Handle<Image>>,
+       // texture_handles_map: &HashMap<String, Handle<Image>>,
         mesh_handles_map: &HashMap<String, Handle<Mesh>>,
       //  shader_variants_map: &HashMap<String, Handle<ShaderVariantManifest>>,
         animated_materials_map: &HashMap<String,Handle<AnimatedMaterial>>,
      //   shader_variant_assets: &Res<Assets<ShaderVariantManifest>>,
 
-        time: &Res<Time>,
+      //  time: &Res<Time>,
     ) -> Self {
-        let current_time = time.elapsed();
+       // let current_time = time.elapsed();
 
         Self {
             name: manifest.name.clone(),
@@ -81,7 +81,7 @@ impl MagicFxVariant {
                 .filter_map(|instance_manifest| {
                     MagicFxInstance::from_manifest(
                         instance_manifest,
-                        texture_handles_map,
+                       // texture_handles_map,
                         mesh_handles_map,
                     //    shader_variants_map,
                         animated_materials_map,
@@ -123,7 +123,7 @@ impl MagicFxInstance {
     pub fn from_manifest(
         manifest: MagicFxInstanceManifest,
 
-        texture_handles_map: &HashMap<String, Handle<Image>>,
+      //  texture_handles_map: &HashMap<String, Handle<Image>>,
         mesh_handles_map: &HashMap<String, Handle<Mesh>>,
 
        // shader_variants_map: &HashMap<String, Handle<ShaderVariantManifest>>,
