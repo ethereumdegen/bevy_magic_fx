@@ -1,6 +1,8 @@
 use std::time::Duration;
 
+use bevy::pbr::{ExtendedMaterial, OpaqueRendererMethod};
 use bevy::prelude::*;
+use bevy::utils::HashMap;
 use serde::{Deserialize, Serialize};
 
 use crate::animated_material::{self, AnimatedMaterial, AnimatedMaterialBundle, AnimatedMaterialExtension};
@@ -53,7 +55,7 @@ pub struct MagicFxVariant  {
 
     pub name: String,  
 
-    pub magic_fx_instance: Vec<MagicFxInstance>,
+    pub magic_fx_instances: Vec<MagicFxInstance>,
 
     pub current_time: Duration,
     pub max_time: Duration
@@ -65,19 +67,29 @@ impl MagicFxVariant {
 
 	pub fn from_manifest(  
       		manifest: &MagicFxVariantManifest ,
-		   asset_server: &Res< AssetServer>
+		   asset_server: &Res< AssetServer>,
+
+ 
+
+		// a map of all shader variant handles which have already been loaded 
+		texture_handles_map: &HashMap<String,Handle<Image>>,
+		mesh_handles_map: &HashMap<String, Handle<Mesh>> ,
+   		shader_variants_map: &HashMap<String, Handle<ShaderVariantManifest> > ,
+		shader_variant_assets: &Res<Assets<ShaderVariantManifest>>,
+
+
 		 ) -> Self {
-
-
+	 
+	
 		Self {
 			name: manifest.name.clone(),
 			current_time: Duration::from_secs_f32(0.0),
 			max_time: Duration::from_secs_f32( manifest.max_time) ,
-			magic_fx_instance:  manifest.magic_fx_instances.clone().drain(..).map( |instance_manifest|
-				MagicFxInstance::from_manifest( instance_manifest, asset_server)
+			magic_fx_instances:  manifest.magic_fx_instances.clone().drain(..).filter_map( |instance_manifest|
+				MagicFxInstance::from_manifest( instance_manifest, asset_server, texture_handles_map, mesh_handles_map, shader_variants_map , shader_variant_assets )
 				).collect() 
-
 		}
+		 
 
 
 	}
@@ -87,8 +99,9 @@ impl MagicFxVariant {
 #[derive(Debug, Clone)]
 pub struct MagicFxInstance  {
 
-	pub shader_variant: Handle<AnimatedMaterialExtension>,
-	pub mesh: Handle<Mesh>, 
+	pub shader_variant: ShaderVariant , 
+	pub shader_material: Option<Handle< AnimatedMaterialExtension >> ,
+	pub mesh_handle: Handle<Mesh>, 
 	pub start_time_offset: Duration,
 	pub end_time_offset:Duration,
 	pub start_transform: Transform,
@@ -102,9 +115,18 @@ impl MagicFxInstance {
 
 	pub fn from_manifest( 
 		manifest: MagicFxInstanceManifest,
+		
 		asset_server: &Res< AssetServer>,
-   
-		//shader_variant_assets: Res<Assets<ShaderVariant>>,
+		
+
+		texture_handles_map: &HashMap<String, Handle<Image>> ,
+		mesh_handles_map: &HashMap<String, Handle<Mesh>> ,
+
+		// a map of all shader variant handles which have already been loaded 
+   		shader_variants_map: &HashMap<String, Handle<ShaderVariantManifest> > ,
+    	shader_variant_manifest_assets: &Res<Assets<ShaderVariantManifest>>,
+
+		
 
 
 		// mut custom_materials: ResMut<Assets<ExtendedMaterial<StandardMaterial, custom_material::ScrollingMaterial>>>,
@@ -112,16 +134,27 @@ impl MagicFxInstance {
 
 
 
-	 ) -> Self {
+	 ) -> Option<Self> {
 
 		 
+		 let shader_variant_manifest_handle = shader_variants_map.get(&manifest.shader_variant_name).unwrap();
+		 let shader_variant_manifest = shader_variant_manifest_assets.get(shader_variant_manifest_handle).unwrap();
+
+		 let shader_variant = ShaderVariant::from_manifest(shader_variant_manifest, texture_handles_map)?;
+
+		 let mesh_handle = mesh_handles_map.get(&manifest.mesh_name)? ;
+
+		Some(
 		Self {
 
 
-			end_time_offset: Duration::from_secs_f32(  manifest.end_time_offset ),
-			shader_variant: asset_server.load( & manifest.shader_variant_name ) ,
 
-		    mesh:asset_server.load( & manifest.mesh_name ),
+			end_time_offset: Duration::from_secs_f32(  manifest.end_time_offset ),
+			shader_variant: shader_variant.clone() ,
+
+			shader_material: None ,
+
+		    mesh_handle: mesh_handle.clone_weak(),
 		    start_time_offset: Duration::from_secs_f32( manifest.start_time_offset ),
 		    start_transform: manifest.start_transform.to_transform(),
 		    end_transform:  manifest.end_transform.to_transform(),
@@ -129,25 +162,107 @@ impl MagicFxInstance {
 
 
 
-		}  
+		}  )
 	}
 
 
 
-	pub fn to_bundle(&self) -> AnimatedMaterialBundle {
+	pub fn build_material(
+		mut self,
 
-		let initial_transform = self.start_transform;
+		  animated_materials: &mut ResMut<Assets<AnimatedMaterialExtension>>,
+ 
 
-		    animated_material::AnimatedMaterialBundle {
-                            mesh:  self.mesh.clone(),
-                            material:  self.shader_variant.clone(),
+		) -> Self {
+	
+
+	    let base_color = (&self.shader_variant.color).clone();
+		//let image_name = &self.shader_variant.texture;
+
+		//let image_handle = images_map.get(image_name)?;
+		//let image = image_assets.get(image_handle);
+
+		let image_handle = &self.shader_variant.texture;
+
+
+
+		let shader_material =  animated_materials.add(ExtendedMaterial {
+                        base: StandardMaterial {
+                            base_color ,
+                            emissive: Color::rgb_linear(500.2, 3000.2, 200.8),  //turn up bloom emission like insane 
+                            // can be used in forward or deferred mode.
+                            opaque_render_method: OpaqueRendererMethod::Auto,
+                            alpha_mode: AlphaMode::Blend,
+                            
+                            ..Default::default()
+                        },
+                        extension:animated_material::AnimatedMaterial {
+                            base_color_texture: Some( image_handle.clone_weak() ),
+                          	
+                          	//put in more data here 
+                            custom_uniforms: animated_material::AnimatedMaterialUniforms{
+                                scroll_speed_x : 0.4,
+                                scroll_speed_y : 1.0,
+                                distortion_speed_x: 3.0,
+                                distortion_speed_y: 9.0,
+                                distortion_amount: 0.09,
+                                distortion_cutoff: 1.0,
+                                scroll_repeats_x: 12.0,
+                                scroll_repeats_y: 3.0,
+                                ..default()
+                            }, 
+                            ..default()
+                        },
+                    }) ;
+
+		self.shader_material = Some(shader_material.clone_weak());
+
+		self
+
+
+	}
+
+
+	pub fn to_bundle(
+		&self,
+
+		//  animated_materials: &mut ResMut<Assets<AnimatedMaterialExtension>>,
+ 
+
+		) -> Option<AnimatedMaterialBundle> {
+
+
+		 
+
+
+		let shader_material = &self.shader_material;
+
+
+
+
+
+		 
+		// let initial_transform = self.start_transform;
+
+
+
+		 return shader_material.as_ref().map(|shader_mat| 
+
+ 				 animated_material::AnimatedMaterialBundle {
+                            mesh: self.mesh_handle.clone_weak(),
+                            material: shader_mat.clone_weak(),
                           
                             transform: self.start_transform,
                         
                             ..default()
-                        } 
 
-	}
+                        }
+
+		 	);
+		 
+
+		}
+		       
 }
 
 /*

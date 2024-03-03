@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, utils::HashMap};
 use serde::{Deserialize, Serialize};
 
 use crate::animated_material::AnimatedMaterial;
@@ -9,7 +9,7 @@ use crate::animated_material::AnimatedMaterial;
 
 //this ends up as pub shader_variant_materials: HashMap<String, Handle<AnimatedMaterial>>,
 
-pub type ShaderVariant = AnimatedMaterial;
+//pub type ShaderVariant = AnimatedMaterial;
 
 #[derive(Debug, Clone, Asset, Serialize, Deserialize)]
 pub struct ShaderVariantManifest {
@@ -31,3 +31,39 @@ impl TypePath for ShaderVariantManifest {
         "shadvar.ron"
     }
 }
+
+
+#[derive(Debug, Clone )]
+pub struct ShaderVariant  {
+    //     variant: HashMap<String, ShaderVariant >
+    pub name: String, //used to load it
+    pub texture: Handle<Image>,
+    pub animation_speed: f32,
+    pub color: Color,
+    pub emissive: Vec3, 
+
+}
+
+impl ShaderVariant {
+
+    pub fn from_manifest( 
+        manifest: &ShaderVariantManifest,
+        texture_handles_map: &HashMap<String, Handle<Image>> 
+
+        ) -> Option<Self>{
+
+        Some( Self {
+
+            name: manifest.name.clone(),
+            texture: texture_handles_map.get( &manifest.texture )?.clone_weak(),
+            color: manifest.color.clone(),
+            animation_speed: manifest.animation_speed.clone(),
+            emissive: manifest.emissive.clone()
+
+
+        })
+
+
+    }
+}
+
