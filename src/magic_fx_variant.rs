@@ -59,8 +59,8 @@ pub struct MagicFxVariant  {
     pub magic_fx_instances: Vec<MagicFxInstance>,
 
 
-    pub current_time: Duration,
-    pub max_time: Duration
+   // pub current_time: Duration,
+    pub max_time_offset: Duration
 
 
 } 
@@ -77,19 +77,36 @@ impl MagicFxVariant {
 		shader_variant_assets: &Res<Assets<ShaderVariantManifest>>,
 
 
+		time: &Res<Time>
+
+
 		 ) -> Self {
 	 
+	 	let current_time = time.elapsed();
 	
 		Self {
 			name: manifest.name.clone(),
-			current_time: Duration::from_secs_f32(0.0),
-			max_time: Duration::from_secs_f32( manifest.max_time) ,
+			//current_time:  current_time ,
+			max_time_offset:  Duration::from_secs_f32( manifest.max_time) ,
 			magic_fx_instances:  manifest.magic_fx_instances.clone().drain(..).filter_map( |instance_manifest|
 				MagicFxInstance::from_manifest( instance_manifest,  texture_handles_map, mesh_handles_map, shader_variants_map , shader_variant_assets )
 				).collect() 
 		}
 		 
 
+
+	}
+
+	pub fn build_all_materials(
+		  mut self,
+		  animated_materials: &mut ResMut<Assets<AnimatedMaterialExtension>>,
+		) -> Self {
+
+		  for   instance in    self.magic_fx_instances.iter_mut(){ 
+
+                    let _bundle =  &mut instance.build_material(    animated_materials  ) ; 
+           }
+           self
 
 	}
 
@@ -102,12 +119,14 @@ pub struct MagicFxInstance  {
 	 
 	pub texture_handle: Handle<Image>,
 
-	pub shader_material: Option<Handle< AnimatedMaterialExtension >> ,
+   
 	pub mesh_handle: Handle<Mesh>, 
 	pub start_time_offset: Duration,
 	pub end_time_offset:Duration,
 	pub start_transform: Transform,
-	pub end_transform: Transform 
+	pub end_transform: Transform ,
+
+	 pub shader_material: Option<Handle< AnimatedMaterialExtension >> ,
 
 }
 
@@ -170,23 +189,18 @@ impl MagicFxInstance {
 	//make this a part of shader variant ? 
 	//how to improve this ? 
 	pub fn build_material(
-		mut self,
+		&mut self,
 
 		  animated_materials: &mut ResMut<Assets<AnimatedMaterialExtension>>,
 
-	 	) -> Self {
+	 	) -> &Self {
 	
 
 	    let base_color = (&self.shader_variant_manifest.color).clone();
-	    let emissive = (&self.shader_variant_manifest.emissive).clone();
-
-	   
-		 
+	    let emissive = (&self.shader_variant_manifest.emissive).clone(); 
 
 		let image_handle =  &self.texture_handle; 
-
-
-
+  
 		let shader_material =  animated_materials.add(ExtendedMaterial {
                         base: StandardMaterial {
                             base_color ,
@@ -241,6 +255,7 @@ impl MagicFxInstance {
                             material: shader_mat.clone(),
                           
                             transform: self.start_transform ,  
+                            visibility: Visibility::Hidden,
                         
                             ..default()
 

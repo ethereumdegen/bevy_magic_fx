@@ -26,7 +26,13 @@ use bevy::{
 };
  
 
-use bevy_magic_fx::{magic_fx::{MagicFxChildComponent, MagicFxRootComponent}, magic_fx_variant::{MagicFxVariant, MagicFxVariantManifest}, shader_variant::ShaderVariantManifest};
+use bevy_magic_fx::magic_fx::{
+    update_magic_fx_variants, 
+    update_magic_fx_instances, 
+    update_magic_fx_variants_added, 
+    MagicFxVariantComponent};
+
+use bevy_magic_fx::{ magic_fx_variant::{MagicFxVariant, MagicFxVariantManifest}, shader_variant::ShaderVariantManifest};
 use bevy_magic_fx::animated_material::{self, AnimatedMaterialExtension};
 
 
@@ -50,6 +56,12 @@ fn main() {
         .add_systems(Update, update_loading_shader_variant_manifest )
          .add_systems(Update, update_loading_magic_fx_variant_manifest )
 
+         
+
+         .add_systems( Update, update_magic_fx_variants_added  )
+         .add_systems( Update, update_magic_fx_variants )
+         .add_systems(Update, update_magic_fx_instances)
+
         .run();
 }
 
@@ -71,8 +83,11 @@ pub struct AssetHandlesResource {
 pub struct AssetLoadingResource {
 
     texture_handles_map: HashMap<String,Handle<Image>>,
-     mesh_handles_map: HashMap<String,Handle<Mesh>>,
+    mesh_handles_map: HashMap<String,Handle<Mesh>>,
     shader_variants_map: HashMap<String, Handle<ShaderVariantManifest> >, 
+        
+        //name of shader variant - > built animated material 
+    animated_materials_map: HashMap<String, Handle<AnimatedMaterialExtension> >, 
               
 
 
@@ -115,11 +130,7 @@ fn setup(
     let mesh_handle:Handle<Mesh> = asset_server.load("meshes/projectile.obj");
     asset_loading_resource.mesh_handles_map.insert("meshes/projectile.obj".to_string(),mesh_handle);
 
-
-
  
-
-   
 
 
     commands.spawn(PointLightBundle {
@@ -212,6 +223,8 @@ fn update_loading_magic_fx_variant_manifest(
      asset_loading_resource: Res <AssetLoadingResource>,
 
    mut animated_materials:   ResMut<Assets<AnimatedMaterialExtension>>,
+
+   time: Res<Time>
  
    
 ) {
@@ -220,63 +233,38 @@ fn update_loading_magic_fx_variant_manifest(
             AssetEvent::LoadedWithDependencies { id } => {
 
                 if id == &asset_handles_resource.magic_fx_variant_manifest_handle.id() {
-
-
-                    let magic_fx_variant_manifest:&MagicFxVariantManifest = fx_variant_assets.get( &asset_handles_resource.magic_fx_variant_manifest_handle ).unwrap();
-
-                    //spawn it 
-
-
+ 
+                  let magic_fx_variant_manifest:&MagicFxVariantManifest = fx_variant_assets.get( &asset_handles_resource.magic_fx_variant_manifest_handle ).unwrap();
  
 
-                  let   texture_handles_map = &asset_loading_resource.texture_handles_map;
-                    let   mesh_handles_map = &asset_loading_resource.mesh_handles_map;
+                  let  texture_handles_map = &asset_loading_resource.texture_handles_map;
+                  let  mesh_handles_map = &asset_loading_resource.mesh_handles_map;
 
-                  let   shader_variants_map = &asset_loading_resource.shader_variants_map;
+                  let  shader_variants_map = &asset_loading_resource.shader_variants_map;
 
                    
 
-                   let mut magic_fx = MagicFxVariant::from_manifest(
-                        magic_fx_variant_manifest,
-                       // &asset_server,
+                   let   magic_fx = MagicFxVariant::from_manifest(
+                        magic_fx_variant_manifest, 
                         &texture_handles_map,
                         &mesh_handles_map,
                         &shader_variants_map,
-                        &shader_variant_assets
-                        ); 
+                        &shader_variant_assets,
+                        &time
+                    ).build_all_materials( &mut animated_materials ); 
 
 
 
-                   let magic_fx_root = commands.spawn(  SpatialBundle::default() )
-                        .insert( MagicFxRootComponent::default()    )
+                   let _magic_fx_root = commands.spawn(  SpatialBundle::default() )
+                        .insert( MagicFxVariantComponent {
+                            magic_fx,
+                            start_time: time.elapsed()
+                        }    )
                         .id();
 
 
 
-                        for instance in  magic_fx.magic_fx_instances.drain(..){
-
-                            println!("spawn bundle!!");
-
-
-                            let bundle = instance.build_material(
-                                &mut animated_materials,
-
-                                ).to_bundle( 
-                                   
-                                ).unwrap(); 
-
-
-                                let magic_fx_child = commands.spawn((
-                                    bundle,
-                                    MagicFxChildComponent::default() ,
-                                    bevy::pbr::NotShadowCaster 
-                                )).id();
-
-                                commands
-                                .entity(magic_fx_root)
-                                .add_child(magic_fx_child);
-
-                        } 
+                       
 
                     } 
 
