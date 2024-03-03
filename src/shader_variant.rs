@@ -1,14 +1,18 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
+use crate::animated_material::AnimatedMaterial;
+
  
 
 //this gets loaded in
 
 //this ends up as pub shader_variant_materials: HashMap<String, Handle<AnimatedMaterial>>,
 
+pub type ShaderVariant = AnimatedMaterial;
+
 #[derive(Debug, Clone, Asset, Serialize, Deserialize)]
-pub(crate) struct ShaderVariantManifest {
+pub struct ShaderVariantManifest {
     //     variant: HashMap<String, ShaderVariant >
     pub name: String, //used to load it
     pub texture: String,

@@ -1,0 +1,19 @@
+(
+    
+    name: "magic",    
+       
+    magic_fx_instances: [( 
+
+     shader_variant_name: "shader_variants/purple.shadvar.ron",
+	  mesh_name:  "meshes/projectile.obj", 
+		  start_time_offset: 0.0,
+		  end_time_offset: 3.0,
+		  start_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.0,1.0,1.0)),
+		  end_transform: (translation: (4.0,0.0,0.0), rotation:(2.0,0.0,0.0),scale:(1.0,1.0,1.0)),
+
+    )]  #MagicFxInstanceManifest>,
+
+    pub max_time: 5.0
+
+
+)
