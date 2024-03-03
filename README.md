@@ -11,7 +11,80 @@ Define mesh-based VFX in RON files and load them into bevy
 cargo run --example basic
 ```
 
-### Example VFX Definition 
+
+
+### How to install 
+
+
+1. Add this plugin to your bevy application
+```
+
+app
+   .add_plugins( MagicFxPlugin )
+```
+
+2. Load and register your shader variants from files 
+
+   ``` 
+ 		let shadvar_name = & shader_variant_manifest.name;
+
+                    let shader_material_handle = animated_materials.add( build_animated_material(
+                        shader_variant_manifest, // the ron file parsed 
+                        &texture_handles_map
+                        ).unwrap()
+                    ); 
+                    
+                    asset_loading_resource.animated_material_map.insert( 
+                        shadvar_name .clone(), 
+                        shader_material_handle );
+```
+
+3.  Load and register your magic fx variants from files
+
+```
+
+ let magic_fx_variant_manifest: &MagicFxVariantManifest = fx_variant_assets
+                        .get(&asset_handles_resource.magic_fx_variant_manifest_handle)
+                        .unwrap();
+
+                     let mesh_handles_map = &asset_loading_resource.mesh_handles_map;
+
+                    let animated_materials_map = &asset_loading_resource.animated_material_map;
+  
+                    let magic_fx = MagicFxVariant::from_manifest(
+                        magic_fx_variant_manifest, // the ron file parsed 
+                      
+                        &mesh_handles_map,
+                      
+                        &animated_materials_map,
+                     
+                        
+                    ).unwrap();
+
+			//save the variant for later spawning ..
+ 		asset_loading_resource.loaded_magic_fx_variants.insert( 
+                        magic_fx.name.clone(), 
+                        magic_fx );
+      
+
+```
+
+4.   Spawn your magic fx variants whenever you want 
+
+```
+             let _magic_fx_root = commands
+                        .spawn(SpatialBundle::default())
+                        .insert(MagicFxVariantComponent {
+                            magic_fx,  //this is what you saved in a resource in step 3
+                            start_time: time.elapsed(),
+                        })
+                        .id();
+```
+
+
+
+
+### Example VFX Definition File (RON)
 ```
 
 (
@@ -35,7 +108,7 @@ cargo run --example basic
 )
 
 ```
-### Example Shader Variant Definition 
+### Example Shader Variant Definition File (RON)
 ```
 (
     
