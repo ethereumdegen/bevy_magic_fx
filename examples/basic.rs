@@ -4,10 +4,10 @@
 use std::f32::consts::PI;
 
   
-use bevy::pbr::{ExtendedMaterial, OpaqueRendererMethod};
+//use bevy::pbr::{ExtendedMaterial, OpaqueRendererMethod};
 use bevy::{gltf::GltfMesh, utils::HashMap};
 
-use bevy::gltf::Gltf;
+//use bevy::gltf::Gltf;
  
 
 use bevy::core_pipeline::bloom::BloomSettings;
@@ -16,11 +16,10 @@ use bevy::core_pipeline::tonemapping::Tonemapping;
 
 use bevy::{core_pipeline::bloom::BloomCompositeMode, prelude::*};
 
-use bevy_magic_fx::{animated_material, MagicFxPlugin};
+use bevy_magic_fx::magic_fx::MagicFxVariantComponent;
+use bevy_magic_fx::{ MagicFxPlugin};
 
-use bevy_magic_fx::magic_fx::{
-          MagicFxVariantComponent,
-};
+//use bevy_magic_fx::magic_fx::{  MagicFxVariantComponent, };
 
 use bevy_magic_fx::animated_material::{build_animated_material, AnimatedMaterial};
 use bevy_magic_fx::{
