@@ -23,7 +23,7 @@ pub struct ShaderVariantManifest {
     pub distortion_amount: f32,
 
     pub color: Color,
-    pub emissive: Vec3,
+    pub emissive: Color,
 }
 
 impl TypePath for ShaderVariantManifest {

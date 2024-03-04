@@ -2,18 +2,43 @@
     
     name: "magic",    
        
-    magic_fx_instances: [( 
+    magic_fx_instances: [
+( 
 
      shader_variant_name: "purple",
 	  mesh_name:  "meshes/projectile.obj", 
 		  start_time_offset: 0.0,
-		  end_time_offset: 3.0,
+		  end_time_offset: 1.3,
 		  start_transform: (translation: (3.0,2.0,0.0), rotation:(0.0,0.0,0.0),scale:(0.2,0.6,0.2)),
-		  end_transform: (translation: (4.0,0.0,0.0), rotation:(2.0,0.0,0.0),scale:(2.0,2.0,2.0)),
+		  end_transform: (translation: (4.0,0.0,0.0), rotation:(2.0,0.0,0.0),scale:(1.0,1.0,1.0)),
 
-    )] ,  
+    ),
 
-    max_time: 5.0,
+    ( 
+
+     shader_variant_name: "beam",
+	  mesh_name:  "meshes/shatter.obj", 
+		  start_time_offset: 0.4,
+		  end_time_offset: 1.4,
+		  start_transform: (translation: (3.0,2.0,0.0), rotation:(0.0,0.0,0.0),scale:(0.2,0.2,0.2)),
+		  end_transform: (translation: (4.0,0.0,0.0), rotation:(2.0,0.0,0.0),scale:(9.0,4.0,9.0)),
+
+    ),
+
+      ( 
+
+     shader_variant_name: "blast",
+	  mesh_name:  "meshes/shatter.obj", 
+		  start_time_offset: 0.4,
+		  end_time_offset: 1.4,
+		  start_transform: (translation: (3.0,2.0,0.0), rotation:(30.0,30.0,0.0),scale:(0.2,0.2,0.2)),
+		  end_transform: (translation: (4.0,0.0,0.0), rotation:(30.0,30.0,0.0),scale:(9.0,4.0,9.0)),
+
+    )
+
+    ] ,  
+
+    max_time: 2.0,
     repeating: true 
 
 

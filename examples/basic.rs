@@ -55,7 +55,7 @@ fn main() {
 #[derive(Resource, Default)]
   struct AssetHandlesResource {
     magic_fx_variant_manifest_handle: Handle<MagicFxVariantManifest>,
-    shader_variant_manifest_handle: Handle<ShaderVariantManifest>,
+  //  shader_variant_manifest_handle: Handle<ShaderVariantManifest>,
     // mesh_handle: Handle<Mesh>,
     // anim_material: Handle<animated_material::AnimatedMaterialExtension> ,
     // particle_texture_handle: Handle<Image>
@@ -97,24 +97,67 @@ fn setup(
         .texture_handles_map
         .insert("textures/fire_01.png".to_string(), particle_texture_handle);
 
+
+  let blast_texture_handle = asset_server.load("textures/blast_01.png");
+    asset_loading_resource
+        .texture_handles_map
+        .insert("textures/blast_01.png".to_string(), blast_texture_handle);
+
+   let magic_texture_handle = asset_server.load("textures/magic_01.png");
+    asset_loading_resource
+        .texture_handles_map
+        .insert("textures/magic_01.png".to_string(), magic_texture_handle);
+
+         let particle_beam_handle = asset_server.load("textures/beam_01.png");
+    asset_loading_resource
+        .texture_handles_map
+        .insert("textures/beam_01.png".to_string(), particle_beam_handle);
+
     let shader_variant_manifest_handle = asset_server.load("shader_variants/purple.shadvar.ron");
+  
     asset_loading_resource.shader_variants_map.insert(
         "shader_variants/purple.shadvar.ron".to_string(),
         shader_variant_manifest_handle.clone(),
     );
 
-    asset_handles_resource.shader_variant_manifest_handle = shader_variant_manifest_handle.clone();
+   // asset_handles_resource.shader_variant_manifest_handle = shader_variant_manifest_handle.clone();
+
+
+      let beam_shader_variant_manifest_handle = asset_server.load("shader_variants/beam.shadvar.ron");
+   
+    asset_loading_resource.shader_variants_map.insert(
+        "shader_variants/beam.shadvar.ron".to_string(),
+        beam_shader_variant_manifest_handle.clone(),
+    );
+
+      let blast_shader_variant_manifest_handle = asset_server.load("shader_variants/blast.shadvar.ron");
+   
+    asset_loading_resource.shader_variants_map.insert(
+        "shader_variants/blast.shadvar.ron".to_string(),
+        blast_shader_variant_manifest_handle.clone(),
+    );
+
+
+   // asset_handles_resource.shader_variant_manifest_handle = beam_shader_variant_manifest_handle.clone();
+
+
 
     let mesh_handle: Handle<Mesh> = asset_server.load("meshes/projectile.obj");
     asset_loading_resource
         .mesh_handles_map
         .insert("meshes/projectile.obj".to_string(), mesh_handle);
 
+
+    let mesh_handle: Handle<Mesh> = asset_server.load("meshes/shatter.obj");
+    asset_loading_resource
+        .mesh_handles_map
+        .insert("meshes/shatter.obj".to_string(), mesh_handle);
+
     commands.spawn(PointLightBundle {
         point_light: PointLight {
-            intensity: 9000.0,
+            intensity: 2000.0,
             range: 100.,
-            shadows_enabled: true,
+            shadows_enabled: false,
             ..default()
         },
         transform: Transform::from_xyz(8.0, 16.0, 8.0),
@@ -166,17 +209,17 @@ fn update_loading_shader_variant_manifest(
         match ev {
             AssetEvent::LoadedWithDependencies { id } => {
                 //once the shader variant loads, we can start loading our magic fx
-                if id == &asset_handles_resource.shader_variant_manifest_handle.id() {
+
+                for shader_manifest_handle in asset_loading_resource.shader_variants_map.clone().values() {
+                if id == &shader_manifest_handle.id() {
 
                      let shader_variant_manifest: &ShaderVariantManifest = shader_variant_manifest_resource
-                        .get(&asset_handles_resource.shader_variant_manifest_handle)
+                        .get( shader_manifest_handle.id())
                         .unwrap();
 
                     //finish loading and building the shader variant and add it to the map 
                     let texture_handles_map = &asset_loading_resource.texture_handles_map;
-                
-
-
+                 
                     let shadvar_name = & shader_variant_manifest.name;
 
                     let shader_material_handle = animated_materials.add( build_animated_material(
@@ -185,15 +228,21 @@ fn update_loading_shader_variant_manifest(
                         ).unwrap()
                     ); 
 
+
                     asset_loading_resource.animated_material_map.insert( 
                         shadvar_name .clone(), 
                         shader_material_handle );
 
+                    println!("adding shadvar_name {:?}",shadvar_name);
 
-
-                        //now that our shadvar materials are built and loaded, we load the magic fx 
-                    asset_handles_resource.magic_fx_variant_manifest_handle =
+                   if asset_loading_resource.animated_material_map.clone().into_values().len()   >= 3 {
+                     asset_handles_resource.magic_fx_variant_manifest_handle =
                         asset_server.load("magic_fx_variants/magic.magicfx.ron");
+
+                   }
+                        //now that our shadvar materials are built and loaded, we load the magic fx 
+                    }
+                   
                 }
             }
             _ => {}

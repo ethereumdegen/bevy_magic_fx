@@ -26,12 +26,7 @@ pub fn build_animated_material(
     ExtendedMaterial {
                     base: StandardMaterial {
                         base_color,
-                        emissive: Color::Rgba {
-                            red: emissive.x,
-                            green: emissive.y,
-                            blue: emissive.z,
-                            alpha: 1.0,
-                        }, //turn up bloom emission like insane
+                        emissive,
                         // can be used in forward or deferred mode.
                         opaque_render_method: OpaqueRendererMethod::Auto,
                         alpha_mode: AlphaMode::Blend,
@@ -41,7 +36,7 @@ pub fn build_animated_material(
                     extension: AnimatedMaterialBase{
                         base_color_texture: Some(texture_handle.clone()),
 
-                        //put in more data here
+                       
                         custom_uniforms: AnimatedMaterialUniforms {
                             scroll_speed_x: shader_variant_manifest.animation_speed.x,
                             scroll_speed_y: shader_variant_manifest.animation_speed.y,
