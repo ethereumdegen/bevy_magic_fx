@@ -15,7 +15,7 @@ use crate::shader_variant::ShaderVariantManifest;
 
 #[derive(Debug, Clone, Asset, Serialize, Deserialize)]
 pub struct MagicFxVariantManifest {
-    pub name: String,
+  //  pub name: String,
 
     pub magic_fx_instances: Vec<MagicFxInstanceManifest>,
 
@@ -46,7 +46,7 @@ impl TypePath for MagicFxVariantManifest {
 
 #[derive(Debug, Clone)]
 pub struct MagicFxVariant {
-    pub name: String,
+  //  pub name: String,
 
     pub magic_fx_instances: Vec<MagicFxInstance>,
 
@@ -81,7 +81,7 @@ impl MagicFxVariant {
             .collect::<Option<Vec<MagicFxInstance>>>()?; // Early return None if any item is None
 
         Some(Self {
-            name: manifest.name.clone(),
+          //  name: manifest.name.clone(),
             repeating: manifest.repeating,
             max_time_offset: Duration::from_secs_f32(manifest.max_time),
             magic_fx_instances,

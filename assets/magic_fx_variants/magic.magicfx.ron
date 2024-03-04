@@ -1,11 +1,10 @@
 (
     
-    name: "magic",    
-       
+    
     magic_fx_instances: [
 ( 
 
-     shader_variant_name: "purple",
+     shader_variant_name: "purple.shadvar",
 	  mesh_name:  "meshes/projectile.obj", 
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.3,
@@ -16,7 +15,7 @@
 
     ( 
 
-     shader_variant_name: "beam",
+     shader_variant_name: "beam.shadvar",
 	  mesh_name:  "meshes/shatter.obj", 
 		  start_time_offset: 0.4,
 		  end_time_offset: 1.4,
@@ -27,7 +26,7 @@
 
       ( 
 
-     shader_variant_name: "blast",
+     shader_variant_name: "blast.shadvar",
 	  mesh_name:  "meshes/shatter.obj", 
 		  start_time_offset: 0.4,
 		  end_time_offset: 1.4,

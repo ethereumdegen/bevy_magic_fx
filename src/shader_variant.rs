@@ -12,7 +12,7 @@ use crate::animated_material::AnimatedMaterial;
 #[derive(Debug, Clone, Asset, Serialize, Deserialize)]
 pub struct ShaderVariantManifest {
     //     variant: HashMap<String, ShaderVariant >
-    pub name: String, //used to load it
+   // pub name: String, //used to load it
     pub texture: String,
 
     pub animation_speed: Vec2,

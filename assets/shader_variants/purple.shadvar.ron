@@ -1,6 +1,6 @@
 (
     
-    name: "purple",
+   
     texture: "textures/fire_01.png",
     animation_speed: (0.5,0.1),  
 

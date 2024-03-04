@@ -4,6 +4,7 @@
 use std::f32::consts::PI;
 
   
+use bevy::asset::AssetPath;
 //use bevy::pbr::{ExtendedMaterial, OpaqueRendererMethod};
 use bevy::{gltf::GltfMesh, utils::HashMap};
 
@@ -67,12 +68,11 @@ fn main() {
     mesh_handles_map: HashMap<String, Handle<Mesh>>,
     shader_variants_map: HashMap<String, Handle<ShaderVariantManifest>>,
 
-    //shader var name -> animated material 
+    
      animated_material_map: HashMap<String, Handle<AnimatedMaterial>>,
 
 
-    //name of shader variant - > built animated material
-    // animated_materials_map: HashMap<String, Handle<AnimatedMaterialExtension> >,
+   
 }
 
 fn setup(
@@ -83,9 +83,9 @@ fn setup(
     mut asset_loading_resource: ResMut<AssetLoadingResource>,
 
     mut meshes: ResMut<Assets<Mesh>>,
-    // images: ResMut<Assets<Image>>,
+    
     mut materials: ResMut<Assets<StandardMaterial>>,
-    // custom_materials: ResMut<Assets<AnimatedMaterialExtension>>,
+     
 ) {
     /*
 
@@ -198,7 +198,7 @@ fn update_loading_shader_variant_manifest(
     mut asset_handles_resource: ResMut<AssetHandlesResource>,
 
     mut asset_loading_resource: ResMut<AssetLoadingResource>,
-   mut animated_materials: ResMut<Assets<AnimatedMaterial>>,
+    mut animated_materials: ResMut<Assets<AnimatedMaterial>>,
 
 
     shader_variant_manifest_resource: Res<Assets<ShaderVariantManifest>>,
@@ -210,7 +210,7 @@ fn update_loading_shader_variant_manifest(
             AssetEvent::LoadedWithDependencies { id } => {
                 //once the shader variant loads, we can start loading our magic fx
 
-                for shader_manifest_handle in asset_loading_resource.shader_variants_map.clone().values() {
+                for (file_path, shader_manifest_handle) in asset_loading_resource.shader_variants_map.clone().iter() {
                 if id == &shader_manifest_handle.id() {
 
                      let shader_variant_manifest: &ShaderVariantManifest = shader_variant_manifest_resource
@@ -219,21 +219,23 @@ fn update_loading_shader_variant_manifest(
 
                     //finish loading and building the shader variant and add it to the map 
                     let texture_handles_map = &asset_loading_resource.texture_handles_map;
-                 
-                    let shadvar_name = & shader_variant_manifest.name;
+                    
+
+                        let file_path_clone = file_path.clone();
+                    let shadvar_name = AssetPath::parse(file_path_clone.as_str()).path().file_stem().unwrap().to_str().unwrap().to_string()  ;
 
                     let shader_material_handle = animated_materials.add( build_animated_material(
                         shader_variant_manifest,
                         &texture_handles_map
                         ).unwrap()
                     ); 
-
+                    println!("adding shadvar_name {:?}",&shadvar_name);
 
                     asset_loading_resource.animated_material_map.insert( 
-                        shadvar_name .clone(), 
+                         shadvar_name , 
                         shader_material_handle );
 
-                    println!("adding shadvar_name {:?}",shadvar_name);
+                  // 
 
                    if asset_loading_resource.animated_material_map.clone().into_values().len()   >= 3 {
                      asset_handles_resource.magic_fx_variant_manifest_handle =

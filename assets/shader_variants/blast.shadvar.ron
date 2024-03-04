@@ -1,6 +1,6 @@
 (
     
-    name: "blast",
+    
     texture: "textures/blast_01.png",
     animation_speed: (0.5,0.1),  
 
