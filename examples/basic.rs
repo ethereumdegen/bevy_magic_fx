@@ -98,6 +98,12 @@ fn setup(
         .insert("textures/fire_01.png".to_string(), particle_texture_handle);
 
 
+  let shards_texture_handle = asset_server.load("textures/shards.png");
+    asset_loading_resource
+        .texture_handles_map
+        .insert("textures/shards.png".to_string(), shards_texture_handle);
+
+
   let blast_texture_handle = asset_server.load("textures/blast_01.png");
     asset_loading_resource
         .texture_handles_map
