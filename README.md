@@ -17,15 +17,15 @@ cargo run --example basic
 
 
 1. Add this plugin to your bevy application
+   
 ```
-
-app
-   .add_plugins( MagicFxPlugin )
+app .add_plugins( MagicFxPlugin )
 ```
 
 2. Load and register your shader variants from files 
 
-   ``` 
+
+``` 
  		let shadvar_name = & shader_variant_manifest.name;
 
                     let shader_material_handle = animated_materials.add( build_animated_material(
@@ -37,6 +37,7 @@ app
                     asset_loading_resource.animated_material_map.insert( 
                         shadvar_name .clone(), 
                         shader_material_handle );
+   
 ```
 
 3.  Load and register your magic fx variants from files
@@ -71,6 +72,7 @@ app
 
 4.   Spawn your magic fx variants whenever you want 
 
+
 ```
              let _magic_fx_root = commands
                         .spawn(SpatialBundle::default())
@@ -80,6 +82,7 @@ app
                         })
                         .id();
 ```
+
 
 
 
