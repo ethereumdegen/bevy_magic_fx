@@ -49,7 +49,7 @@ fn main() {
 
         .add_systems(OnEnter(LoadingState::FundamentalAssetsLoad), update_loading_shader_variant_manifest)
         .add_systems(OnEnter(LoadingState::ShadersLoad), update_loading_magic_fx_variant_manifest)
-           
+         .add_systems(OnEnter(LoadingState::Complete) , spawn_magic_fx) 
 
         
         .add_systems(Startup, setup)
@@ -338,9 +338,11 @@ fn update_loading_magic_fx_variant_manifest(
 
     mut commands: Commands,
 
-   built_vfx_resource: ResMut<BuiltVfxResource>,
+   mut built_vfx_resource: ResMut<BuiltVfxResource>,
  
     asset_loading_resource: Res<AssetLoadingResource>,
+
+    mut next_state: ResMut<NextState<LoadingState>>,
  
 
     time: Res<Time>,
@@ -372,18 +374,38 @@ fn update_loading_magic_fx_variant_manifest(
                      
                         
                     ).unwrap();
+                    info!("loaded {:?}",file_path.to_string());
+                    built_vfx_resource.magic_fx_variants.insert(file_path.to_string(), magic_fx);
 
-                    //now we can store this in a resource 
-                    println!("spawning magic fx  ");
+                   
+                 
+        }
 
-                    //at a later time, whenever, spawn the magic fx . This is usually from a spell cast.
+
+           next_state.set(LoadingState::Complete);
+}
+
+
+fn spawn_magic_fx(
+    mut commands: Commands, 
+     built_vfx_resource: Res <BuiltVfxResource>,
+
+     time: Res<Time>
+    ){
+
+            let magic_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/waterfall.magicfx.ron").unwrap();
+ 
+          println!("spawning magic fx  ");
+
+          //at a later time, whenever, spawn the magic fx . This is usually from a spell cast.
                     let _magic_fx_root = commands
                         .spawn(SpatialBundle::default())
                         .insert(MagicFxVariantComponent {
-                            magic_fx,
+                            magic_fx: magic_fx.clone(),
                             start_time: time.elapsed(),
                         })
                         .id();
-                 
-        }
+
+
+
 }
