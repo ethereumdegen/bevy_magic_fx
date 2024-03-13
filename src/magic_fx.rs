@@ -71,8 +71,9 @@ pub fn update_magic_fx_variants(
                  if magic_fx.repeating {
                     //reset 
                      magic_fx_comp.start_time = current_time;
+                     
                      }else { 
-                        commands.entity(fx_entity).despawn_recursive();
+                    commands.entity(fx_entity).despawn_recursive();
                 }
             }
         
@@ -105,7 +106,7 @@ pub fn update_magic_fx_instances(
         let start_xform = instance.start_transform;
         let end_xform = instance.end_transform;
 
-        let is_visible = current_time > start_time && current_time < end_time;
+        let is_visible = current_time >= start_time && current_time <= end_time;
 
         *fx_visibility = match is_visible {
             true => Visibility::Inherited,

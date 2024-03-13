@@ -10,6 +10,7 @@ pub mod magic_fx_variant;
 pub mod shader_variant;
 pub(crate) mod util;
 
+pub  mod camera;
 
 
 pub struct MagicFxPlugin;
