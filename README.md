@@ -10,7 +10,7 @@ Define mesh-based VFX in RON files and load them into bevy
 ### How to use 
 
 ```
-cargo run --example basic
+cargo run --example waterfall
 ```
 
 
