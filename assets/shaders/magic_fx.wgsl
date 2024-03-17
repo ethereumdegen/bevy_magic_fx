@@ -1,5 +1,5 @@
  
-//see bindings in terrain_material.rs 
+ 
   
  #import bevy_pbr::{
     mesh_view_bindings::globals, 
@@ -7,9 +7,10 @@
     pbr_fragment::pbr_input_from_standard_material,
       pbr_functions::{alpha_discard, apply_pbr_lighting, main_pass_post_lighting_processing},
     pbr_types::STANDARD_MATERIAL_FLAGS_UNLIT_BIT,
-      pbr_deferred_functions::deferred_output,
+      pbr_deferred_functions::deferred_output
 }
-   
+ #import bevy_pbr::mesh_functions
+ #import bevy_pbr::prepass_utils
 
 struct StandardMaterial {
     time: f32,
@@ -33,6 +34,8 @@ struct CustomMaterialUniforms {
    
     distortion_amount: f32 ,
     distortion_cutoff: f32 ,
+
+    depth_cutoff_offset: f32 
     
     
 };
@@ -68,15 +71,25 @@ fn get_repeated_uv_coords(coords: vec2<f32>) -> vec2<f32> {
 fn fragment(
     mesh: VertexOutput,
     @builtin(front_facing) is_front: bool,
+ 
+  //  #ifdef MULTISAMPLED
+  //      @builtin(sample_index) sample_index: u32,
+  //  #endif
+
 ) ->   FragmentOutput {
     
+  //  #ifndef MULTISAMPLED
+        let sample_index = 0u;
+  //  #endif
+
+
     let scroll_amount_x = (globals.time * custom_uniforms.scroll_speed_x)  ;
     let scroll_amount_y = (globals.time * custom_uniforms.scroll_speed_y)  ;
   //make the cutoff big and it wont have any effect
-    let distortion_radians_x = 6.28 * (globals.time * custom_uniforms.distortion_speed_x % mesh.uv[0]) ;
+    let distortion_radians_x =  (globals.time * custom_uniforms.distortion_speed_x + mesh.uv[0] * 2.0 ) % 6.28 ;
     let distortion_amount_x = ( sin(distortion_radians_x) * custom_uniforms.distortion_amount  ) % custom_uniforms.distortion_cutoff   ;
     
-    let distortion_radians_y = 6.28 * (globals.time * custom_uniforms.distortion_speed_y % mesh.uv[1]) ;
+    let distortion_radians_y =   (globals.time * custom_uniforms.distortion_speed_y + mesh.uv[1] * 2.0 ) % 6.28 ;
     let distortion_amount_y = ( cos(distortion_radians_y) * custom_uniforms.distortion_amount  ) % custom_uniforms.distortion_cutoff  ;
  
     let tiled_uv =   get_repeated_uv_coords (mesh.uv + vec2(scroll_amount_x,scroll_amount_y)  ) 
@@ -121,9 +134,14 @@ fn fragment(
    pbr_out.color = final_color;
    // pbr_out.emissive = pbr_input.material.emissive;
 
-   // if (final_color.a < 0.1) { // Use your threshold value here
-    //    discard;
-   // }
+
+   var position = mesh.position; //this is frag_coord ? 
+
+   //apply the depth_cutoff_offset
+   let depth = prepass_utils::prepass_depth(position,sample_index);
+   if ( (position.z - depth ) * 100.0  < custom_uniforms.depth_cutoff_offset   ) { 
+       discard;
+    }
 
        
       

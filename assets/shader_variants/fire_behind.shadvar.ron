@@ -1,0 +1,27 @@
+(
+    
+    
+    texture: "textures/T_Random_47.png",
+    animation_speed: (0.0,0.04),  
+
+    distortion_speed: (3.0,3.0),
+    scroll_repeats: ( 2.0,2.0),
+    distortion_amount: 0.08 , 
+    depth_cutoff_offset: Some(0.05),
+
+    color: Rgba(
+        red: 0.2,
+        green: 0.3,
+        blue: 0.7,
+        alpha: 0.8
+    ),
+     emissive: Rgba(
+         red: 1.0,
+        green: 0.3,
+        blue: 70.0,
+        alpha: 30.6
+    )
+      
+)
+
+

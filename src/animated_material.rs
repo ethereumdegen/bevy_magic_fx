@@ -46,6 +46,7 @@ pub fn build_animated_material(
                             distortion_cutoff: 1.0,
                             scroll_repeats_x: shader_variant_manifest.scroll_repeats.x,
                             scroll_repeats_y: shader_variant_manifest.scroll_repeats.y,
+                            depth_cutoff_offset: shader_variant_manifest.depth_cutoff_offset.unwrap_or( 0.0 ),  // typically use  0.05, like for magic fire that is rendered behind stuff 
                             ..default()
                         },
                         ..default()
@@ -68,6 +69,7 @@ pub struct AnimatedMaterialUniforms {
     pub scroll_speed_y: f32,
     pub distortion_amount: f32,
     pub distortion_cutoff: f32,
+    pub depth_cutoff_offset: f32 
 }
 impl Default for AnimatedMaterialUniforms {
     fn default() -> Self {
@@ -80,6 +82,7 @@ impl Default for AnimatedMaterialUniforms {
             distortion_cutoff: 1.0,
             scroll_repeats_x: 12.0,
             scroll_repeats_y: 3.0,
+            depth_cutoff_offset: 0.0
         }
     }
 }

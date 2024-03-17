@@ -4,7 +4,7 @@
     magic_fx_instances: [
 ( 
 
-          shader_variant_name: "water.shadvar",
+          shader_variant_name: "fire_behind.shadvar",
 	      mesh_name:  "meshes/waterfall01.obj", 
 		  start_time_offset: 0.0,
 		  end_time_offset: 300.0,

@@ -5,6 +5,7 @@ use std::f32::consts::PI;
 
   
 use bevy::asset::AssetPath;
+use bevy::core_pipeline::prepass::DepthPrepass;
 //use bevy::pbr::{ExtendedMaterial, OpaqueRendererMethod};
 use bevy::{gltf::GltfMesh, utils::HashMap};
 
@@ -189,6 +190,7 @@ fn setup(
             ..default()
         },
         BloomSettings::default(), // 2. Enable bloom for the camera
+        DepthPrepass
     ));
 }
 

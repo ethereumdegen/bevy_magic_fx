@@ -5,6 +5,7 @@ use std::f32::consts::PI;
 
   
 use bevy::asset::{AssetPath, LoadedFolder};
+use bevy::core_pipeline::prepass::DepthPrepass;
 //use bevy::pbr::{ExtendedMaterial, OpaqueRendererMethod};
 use bevy::{gltf::GltfMesh, utils::HashMap};
 
@@ -189,14 +190,10 @@ fn setup(
             ..default()
         },
         BloomSettings::default(), // 2. Enable bloom for the camera
+        DepthPrepass
     ));
 }
-
-fn rotate(mut query: Query<&mut Transform, With<Handle<Mesh>>>, time: Res<Time>) {
-    for mut transform in &mut query {
-        transform.rotate_y(time.delta_seconds() / 2.);
-    }
-}
+ 
 
 
 fn update_load_folders(
