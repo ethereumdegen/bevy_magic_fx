@@ -1,6 +1,6 @@
 [package]
 name = "bevy_magic_fx"
-version = "0.3.0"
+version = "0.3.1"
 license = "MIT"
 description = "Define mesh-based vfx in serialized files"
 edition = "2021" 

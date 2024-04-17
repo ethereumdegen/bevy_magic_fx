@@ -69,7 +69,8 @@ pub struct AnimatedMaterialUniforms {
     pub scroll_speed_y: f32,
     pub distortion_amount: f32,
     pub distortion_cutoff: f32,
-    pub depth_cutoff_offset: f32 
+    pub depth_cutoff_offset: f32,
+    pub animation_layers: u32 //if this is 1, we know we have a normal static texture.  Otherwise, we have an animated scrolly one 
 }
 impl Default for AnimatedMaterialUniforms {
     fn default() -> Self {
@@ -82,7 +83,8 @@ impl Default for AnimatedMaterialUniforms {
             distortion_cutoff: 1.0,
             scroll_repeats_x: 12.0,
             scroll_repeats_y: 3.0,
-            depth_cutoff_offset: 0.0
+            depth_cutoff_offset: 0.0,
+            animation_layers:1
         }
     }
 }

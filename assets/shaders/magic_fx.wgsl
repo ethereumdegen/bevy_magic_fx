@@ -35,7 +35,8 @@ struct CustomMaterialUniforms {
     distortion_amount: f32 ,
     distortion_cutoff: f32 ,
 
-    depth_cutoff_offset: f32 
+    depth_cutoff_offset: f32 ,
+    animation_layers: u32 
     
     
 };
@@ -64,6 +65,24 @@ fn get_repeated_uv_coords(coords: vec2<f32>) -> vec2<f32> {
 }
 
 
+fn get_slideshow_uv_coords(coords: vec2<f32>, index: u32) -> vec2<f32> {
+    
+
+    let num_layers = custom_uniforms.animation_layers;
+    let layer_height = 1.0 / f32(num_layers);
+    let y_offset = f32(index) * layer_height;
+    
+    let slideshow_coords = vec2<f32>(
+        coords.x,
+        (coords.y * layer_height) + y_offset
+    );
+    
+    return slideshow_coords;
+
+    
+}
+
+
 //should consider adding vertex painting to this .. need another binding of course.. performs a color shift 
 
  
@@ -84,22 +103,36 @@ fn fragment(
 
 
     let scroll_amount_x = (globals.time * custom_uniforms.scroll_speed_x)  ;
-    let scroll_amount_y = (globals.time * custom_uniforms.scroll_speed_y)  ;
-  //make the cutoff big and it wont have any effect
+    let scroll_amount_y = (globals.time * custom_uniforms.scroll_speed_y)  ; 
+ 
+    var tiled_uv =   get_repeated_uv_coords (mesh.uv + vec2(scroll_amount_x,scroll_amount_y)  )   ;
+
+
+    if (custom_uniforms.animation_layers > 1u) {
+        //for anim layer 
+        let current_layer_index = u32( (globals.time / custom_uniforms.scroll_speed_x) % (f32(custom_uniforms.animation_layers )) );
+
+        //this should 
+        tiled_uv =  get_slideshow_uv_coords(  mesh.uv ,current_layer_index)   ;   //fix me some how ?
+
+
+     }
+
+
+  
+
+      //make the cutoff big and it wont have any effect
+    
     let distortion_radians_x =  (globals.time * custom_uniforms.distortion_speed_x + mesh.uv[0] * 2.0 ) % 6.28 ;
     let distortion_amount_x = ( sin(distortion_radians_x) * custom_uniforms.distortion_amount  ) % custom_uniforms.distortion_cutoff   ;
     
     let distortion_radians_y =   (globals.time * custom_uniforms.distortion_speed_y + mesh.uv[1] * 2.0 ) % 6.28 ;
     let distortion_amount_y = ( cos(distortion_radians_y) * custom_uniforms.distortion_amount  ) % custom_uniforms.distortion_cutoff  ;
+
+
+    let distorted_uv = tiled_uv + vec2( distortion_amount_x, distortion_amount_y );
  
-    let tiled_uv =   get_repeated_uv_coords (mesh.uv + vec2(scroll_amount_x,scroll_amount_y)  ) 
-       + vec2( distortion_amount_x, distortion_amount_y ) ;
-     
-    
-    //this technique lets us use 255 total textures BUT we can only layer 2 at a time.  
-    let color_from_texture_0 = textureSample(base_color_texture, base_color_sampler, tiled_uv );
- 
-    let blended_color = color_from_texture_0   ;
+    let blended_color = textureSample(base_color_texture, base_color_sampler, tiled_uv )   ;
 
 
    
