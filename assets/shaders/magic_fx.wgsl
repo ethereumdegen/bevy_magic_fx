@@ -36,7 +36,11 @@ struct CustomMaterialUniforms {
     distortion_cutoff: f32 ,
 
     depth_cutoff_offset: f32 ,
-    animation_layers: u32 
+    animation_frame_dimension_x: u32 ,
+     animation_frame_dimension_y: u32 ,
+    current_animation_frame_index: u32,
+
+    tint_color: vec4<f32>,
     
     
 };
@@ -65,14 +69,20 @@ fn get_repeated_uv_coords(coords: vec2<f32>) -> vec2<f32> {
 }
 
  
-fn get_slideshow_uv_coords(coords: vec2<f32>, index: u32) -> vec2<f32> {
+fn get_slideshow_uv_coords(coords: vec2<f32>, anim_frame_dimension_x: u32, anim_frame_dimension_y: u32, index: u32) -> vec2<f32> {
     
 
-    let num_layers = custom_uniforms.animation_layers;
-    let layer_height = 1.0 / f32(num_layers);
+    let num_layers_x = anim_frame_dimension_x;
+    let num_layers_y = anim_frame_dimension_y;
+    
+     let layer_width = 1.0 / f32(num_layers_x);
+    let layer_height = 1.0 / f32(num_layers_y);
 
-    let x_offset = f32(index) * layer_height;
-    let y_offset = f32(index) * layer_height;
+    let x_index = index % num_layers_x;
+     let y_index = index / num_layers_x;
+
+    let x_offset = f32(x_index) * layer_width;
+    let y_offset = f32(y_index) * layer_height;
     
     let slideshow_coords = vec2<f32>(
         (coords.x * layer_height) + x_offset ,
@@ -112,12 +122,14 @@ fn fragment(
     var tiled_uv =   get_repeated_uv_coords (mesh.uv + vec2(scroll_amount_x,scroll_amount_y)  )   ;
 
 
-    if (custom_uniforms.animation_layers > 1u) {
+    if (custom_uniforms.animation_frame_dimension_x > 1u || custom_uniforms.animation_frame_dimension_y > 1u) {
         //for anim layer 
-        let current_layer_index = u32( (globals.time * custom_uniforms.scroll_speed_x) % (f32(custom_uniforms.animation_layers )) );
+       // let current_layer_index = u32( (globals.time * custom_uniforms.scroll_speed_x) % (f32( custom_uniforms.animation_layers * custom_uniforms.animation_layers )) );
+
+       let current_layer_index = custom_uniforms.current_animation_frame_index;
 
         //this should 
-        tiled_uv =  get_slideshow_uv_coords(  mesh.uv ,current_layer_index)   ;   
+        tiled_uv =  get_slideshow_uv_coords(  mesh.uv ,custom_uniforms.animation_frame_dimension_x,custom_uniforms.animation_frame_dimension_y,current_layer_index)   ;   
 
 
      }
@@ -168,8 +180,11 @@ fn fragment(
 
 
     // -----
-   pbr_out.color = final_color;
-   // pbr_out.emissive = pbr_input.material.emissive;
+
+    //tint also affect emissive color? 
+
+   pbr_out.color = final_color * custom_uniforms.tint_color;
+    // pbr_out.emissive = pbr_input.material.emissive * custom_uniforms.tint_color;
 
 
    var position = mesh.position; //this is frag_coord ? 

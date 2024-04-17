@@ -31,6 +31,12 @@ pub fn build_animated_material(
                         opaque_render_method: OpaqueRendererMethod::Auto,
                         alpha_mode: AlphaMode::Blend,
 
+                        double_sided: true,
+                        cull_mode: None,
+                        //unlit:true, 
+
+
+
                         ..Default::default()
                     },
                     extension: AnimatedMaterialBase{
@@ -47,7 +53,8 @@ pub fn build_animated_material(
                             scroll_repeats_x: shader_variant_manifest.scroll_repeats.x,
                             scroll_repeats_y: shader_variant_manifest.scroll_repeats.y,
                             depth_cutoff_offset: shader_variant_manifest.depth_cutoff_offset.unwrap_or( 0.0 ),  // typically use  0.05, like for magic fire that is rendered behind stuff 
-                            animation_layers: shader_variant_manifest.animation_layers.unwrap_or( 1 ), 
+                            animation_frame_dimension_x: shader_variant_manifest.animation_frame_dimensions.map(|d| d[0]).unwrap_or(   1 ), 
+                             animation_frame_dimension_y: shader_variant_manifest.animation_frame_dimensions.map(|d| d[1]).unwrap_or(   1 ), 
 
                             ..default()
                         },
@@ -72,7 +79,11 @@ pub struct AnimatedMaterialUniforms {
     pub distortion_amount: f32,
     pub distortion_cutoff: f32,
     pub depth_cutoff_offset: f32,
-    pub animation_layers: u32 //if this is 1, we know we have a normal static texture.  Otherwise, we have an animated scrolly one 
+    pub animation_frame_dimension_x: u32, //if this is 1, we know we have a normal static texture.  Otherwise, we have an animated scrolly one 
+    pub animation_frame_dimension_y: u32,
+    pub current_animation_frame_index: u32,
+
+    pub tint_color: Color 
 }
 impl Default for AnimatedMaterialUniforms {
     fn default() -> Self {
@@ -86,7 +97,10 @@ impl Default for AnimatedMaterialUniforms {
             scroll_repeats_x: 12.0,
             scroll_repeats_y: 3.0,
             depth_cutoff_offset: 0.0,
-            animation_layers:1
+            animation_frame_dimension_x : 1,
+            animation_frame_dimension_y: 1,
+            current_animation_frame_index: 0, 
+            tint_color: Color::WHITE
         }
     }
 }

@@ -33,8 +33,12 @@ impl Plugin for MagicFxPlugin {
             })
              .add_systems(Update, magic_fx::update_magic_fx_variants_added)
             .add_systems(Update, magic_fx::update_magic_fx_variants)
-            .add_systems(Update, magic_fx::update_magic_fx_instances)
+            .add_systems(Update, magic_fx::update_magic_fx_instances_visibility)
+            .add_systems(Update, magic_fx::update_magic_fx_instances_translation_scale )
+             .add_systems(Update, magic_fx::update_magicfx_standard_rotation)
             .add_systems(Update, magic_fx::update_magicfx_billboard_rotation)
+            .add_systems(Update, magic_fx::update_magicfx_anim_frames)
+            .add_systems(Update, magic_fx::update_magicfx_tint_color)
             ;
 
     }

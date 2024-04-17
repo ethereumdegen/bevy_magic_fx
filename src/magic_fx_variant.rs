@@ -35,6 +35,10 @@ pub struct MagicFxInstanceManifest {
     pub end_time_offset: f32,
     pub start_transform: EulerTransform,
     pub end_transform: EulerTransform,
+
+     pub start_tint_color: Option<Color>,
+     pub end_tint_color: Option<Color>,
+
 }
 
 impl TypePath for MagicFxVariantManifest {
@@ -101,9 +105,13 @@ pub struct MagicFxInstance {
     pub billboard_mesh : bool, 
     pub start_time_offset: Duration,
     pub end_time_offset: Duration,
-    pub start_transform: Transform,
-    pub end_transform: Transform,
+    pub start_transform: EulerTransform,
+    pub end_transform: EulerTransform,
      pub shader_material_handle: Handle<AnimatedMaterial>,
+
+     pub start_tint_color: Option<Color>,
+     pub end_tint_color: Option<Color>,
+
 
 
 }
@@ -133,8 +141,11 @@ impl MagicFxInstance {
             mesh_handle: mesh_handle.clone (),
             billboard_mesh: manifest.billboard_mesh,
             start_time_offset: Duration::from_secs_f32(manifest.start_time_offset),
-            start_transform: manifest.start_transform.to_transform(),
-            end_transform: manifest.end_transform.to_transform(),
+            start_transform: manifest.start_transform ,
+            end_transform: manifest.end_transform ,
+
+            start_tint_color: manifest.start_tint_color,
+            end_tint_color: manifest.end_tint_color,
         })
     }
 
@@ -146,7 +157,7 @@ impl MagicFxInstance {
                 mesh: self.mesh_handle.clone(),
                 material: shader_material.clone(),
 
-                transform: self.start_transform,
+                transform: self.start_transform.clone().to_transform(),
                 visibility: Visibility::Hidden,
 
                 ..default()

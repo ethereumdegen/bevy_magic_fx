@@ -26,7 +26,7 @@ pub struct ShaderVariantManifest {
 
     pub depth_cutoff_offset: Option<f32> ,
 
-    pub animation_layers: Option<u32>
+    pub animation_frame_dimensions: Option<[u32;2]>
 }
 
 impl TypePath for ShaderVariantManifest {

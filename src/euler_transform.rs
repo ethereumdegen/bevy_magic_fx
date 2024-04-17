@@ -10,12 +10,15 @@ pub struct EulerTransform {
 
 impl EulerTransform {
     pub fn to_transform(self) -> Transform {
+
+        
+  
         Transform {
             translation: self.translation,
-            rotation: Quat::from_euler(
+           rotation: Quat::from_euler(  //this is truncating or finding the shortest path! wrong 
                 bevy::math::EulerRot::YXZ,
-                self.rotation.y,
                 self.rotation.x,
+                self.rotation.y,
                 self.rotation.z,
             ),
             scale: self.scale,

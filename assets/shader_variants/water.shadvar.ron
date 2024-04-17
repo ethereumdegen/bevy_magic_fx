@@ -7,7 +7,7 @@
     scroll_repeats: ( 1.0,1.0),
     distortion_amount: 0.002 , 
 
-   // animation_layers: Some(4),
+   
 
     color: Rgba(
         red: 1.0,

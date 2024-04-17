@@ -2,7 +2,8 @@
     
     
     magic_fx_instances: [
-( 
+
+	( 
 
           shader_variant_name: "water.shadvar",
 	      mesh_name:  "meshes/waterfall01.obj", 
@@ -12,6 +13,7 @@
 		  start_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.0,1.0,1.0)),
 		  end_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.0,1.0,1.0)),
 
+		 
     ),
 
      
