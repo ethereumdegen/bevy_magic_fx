@@ -6,6 +6,7 @@
 
      shader_variant_name: "purple.shadvar",
 	  mesh_name:  "meshes/projectile.obj", 
+	    billboard_mesh: false,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.3,
 		  start_transform: (translation: (3.0,2.0,0.0), rotation:(0.0,0.0,0.0),scale:(0.2,0.6,0.2)),
@@ -16,7 +17,8 @@
     ( 
 
      shader_variant_name: "beam.shadvar",
-	  mesh_name:  "meshes/shatter.obj", 
+	  mesh_name:  "meshes/shatter.obj",
+	      billboard_mesh: false, 
 		  start_time_offset: 0.4,
 		  end_time_offset: 1.4,
 		  start_transform: (translation: (3.0,2.0,0.0), rotation:(0.0,0.0,0.0),scale:(0.2,0.2,0.2)),
@@ -28,6 +30,7 @@
 
      shader_variant_name: "blast.shadvar",
 	  mesh_name:  "meshes/shatter.obj", 
+	      billboard_mesh: false,
 		  start_time_offset: 0.4,
 		  end_time_offset: 1.4,
 		  start_transform: (translation: (3.0,2.0,0.0), rotation:(30.0,30.0,0.0),scale:(0.2,0.2,0.2)),

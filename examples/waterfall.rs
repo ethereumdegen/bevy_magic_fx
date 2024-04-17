@@ -18,7 +18,7 @@ use bevy::core_pipeline::tonemapping::Tonemapping;
 
 use bevy::{core_pipeline::bloom::BloomCompositeMode, prelude::*};
 
-use bevy_magic_fx::magic_fx::MagicFxVariantComponent;
+use bevy_magic_fx::magic_fx::{MagicFxVariantComponent,MagicFxBillboardTarget};
 use bevy_magic_fx::{ MagicFxPlugin};
 
 //use bevy_magic_fx::magic_fx::{  MagicFxVariantComponent, };
@@ -47,6 +47,7 @@ fn main() {
 
 
          .add_systems(Update, update_load_folders)
+ 
 
         .add_systems(OnEnter(LoadingState::FundamentalAssetsLoad), update_loading_shader_variant_manifest)
         .add_systems(OnEnter(LoadingState::ShadersLoad), update_loading_magic_fx_variant_manifest)
@@ -190,7 +191,8 @@ fn setup(
             ..default()
         },
         BloomSettings::default(), // 2. Enable bloom for the camera
-        DepthPrepass
+        DepthPrepass,
+        MagicFxBillboardTarget {},
     ));
 }
  

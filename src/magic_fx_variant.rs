@@ -29,6 +29,8 @@ pub struct MagicFxInstanceManifest {
     pub shader_variant_name: String,
 
     pub mesh_name: String,
+    pub billboard_mesh : bool, 
+
     pub start_time_offset: f32,
     pub end_time_offset: f32,
     pub start_transform: EulerTransform,
@@ -37,10 +39,10 @@ pub struct MagicFxInstanceManifest {
 
 impl TypePath for MagicFxVariantManifest {
     fn short_type_path() -> &'static str {
-        "mfxvar.ron"
+        "magicfx.ron"
     }
     fn type_path() -> &'static str {
-        "mfxvar.ron"
+        "magicfx.ron"
     }
 }
 
@@ -96,6 +98,7 @@ impl MagicFxVariant {
 pub struct MagicFxInstance {
     
     pub mesh_handle: Handle<Mesh>,
+    pub billboard_mesh : bool, 
     pub start_time_offset: Duration,
     pub end_time_offset: Duration,
     pub start_transform: Transform,
@@ -125,8 +128,10 @@ impl MagicFxInstance {
             end_time_offset: Duration::from_secs_f32(manifest.end_time_offset),
          
          	shader_material_handle,
+
         
             mesh_handle: mesh_handle.clone (),
+            billboard_mesh: manifest.billboard_mesh,
             start_time_offset: Duration::from_secs_f32(manifest.start_time_offset),
             start_transform: manifest.start_transform.to_transform(),
             end_transform: manifest.end_transform.to_transform(),

@@ -138,3 +138,9 @@ app .add_plugins( MagicFxPlugin )
 
 
 ```
+
+
+
+### Billboarding 
+
+To use billboarding on meshes, you must insert a MagicFxBillboardTarget component to your camera. 
