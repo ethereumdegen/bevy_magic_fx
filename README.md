@@ -4,7 +4,7 @@ Define mesh-based VFX in RON files and load them into bevy
 
 ![2024-03-13 18-33-39](https://github.com/ethereumdegen/bevy_magic_fx/assets/6249263/b91d55d1-dcc7-4078-9b6b-425ef7c2187a)
 
-![image](https://github.com/ethereumdegen/bevy_magic_fx/assets/6249263/ad0dc5f6-e56c-4439-a417-02cbc2205e05)
+![magic_fx_sample_1](https://github.com/ethereumdegen/bevy_magic_fx/assets/6249263/692dca74-c915-4578-b23b-041d4c83810b)
 
 
 ### How to use 
