@@ -148,7 +148,7 @@ fn fragment(
 
     let distorted_uv = tiled_uv + vec2( distortion_amount_x, distortion_amount_y );
  
-    let blended_color = textureSample(base_color_texture, base_color_sampler, tiled_uv )   ;
+    let blended_color = textureSample(base_color_texture, base_color_sampler, distorted_uv )   ;
 
 
    

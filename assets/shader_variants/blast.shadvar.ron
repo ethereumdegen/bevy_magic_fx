@@ -1,7 +1,7 @@
 (
     
     
-    texture: "textures/shards.png",
+    texture: "textures/kenney/shards.png",
     animation_speed: (0.5,0.1),  
 
     distortion_speed: (0.02,0.01),

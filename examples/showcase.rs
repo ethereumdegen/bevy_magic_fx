@@ -190,7 +190,9 @@ fn setup(
                 .looking_at(Vec3::new(0., 1., 0.), Vec3::Y),
             ..default()
         },
-        BloomSettings::default(), // 2. Enable bloom for the camera
+      //  BloomSettings::default(), // 2. Enable bloom for the camera
+
+         BloomSettings::OLD_SCHOOL,
         DepthPrepass,
         MagicFxBillboardTarget {},
     ));
