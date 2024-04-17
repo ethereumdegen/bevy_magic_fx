@@ -8,6 +8,8 @@
     scroll_repeats: ( 3.0,3.0),
     distortion_amount: 0.02 , 
 
+    
+
     color: Rgba(
         red: 0.2,
         green: 0.3,

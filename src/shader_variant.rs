@@ -24,7 +24,9 @@ pub struct ShaderVariantManifest {
     pub color: Color,
     pub emissive: Color,
 
-    pub depth_cutoff_offset: Option<f32> 
+    pub depth_cutoff_offset: Option<f32> ,
+
+    pub animation_layers: Option<u32>
 }
 
 impl TypePath for ShaderVariantManifest {

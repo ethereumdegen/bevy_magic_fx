@@ -47,6 +47,8 @@ pub fn build_animated_material(
                             scroll_repeats_x: shader_variant_manifest.scroll_repeats.x,
                             scroll_repeats_y: shader_variant_manifest.scroll_repeats.y,
                             depth_cutoff_offset: shader_variant_manifest.depth_cutoff_offset.unwrap_or( 0.0 ),  // typically use  0.05, like for magic fire that is rendered behind stuff 
+                            animation_layers: shader_variant_manifest.animation_layers.unwrap_or( 1 ), 
+
                             ..default()
                         },
                         ..default()
