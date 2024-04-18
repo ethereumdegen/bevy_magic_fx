@@ -1,0 +1,29 @@
+(
+    
+    
+    texture: "textures/kenney/dirt_03.png",
+    animation_speed: (0.0,0.0),  
+
+    distortion_speed: (0.02,0.01),
+    scroll_repeats: ( 1.0,1.0),
+    distortion_amount: 0.02 , 
+
+      depth_cutoff_offset: Some(0.05),
+
+
+    color: Rgba(
+        red: 1.0,
+        green: 1.0,
+        blue: 1.0,
+        alpha: 1.0
+    ),
+     emissive: Rgba(
+         red: 1.0,
+        green: 1.0,
+        blue: 1.0,
+        alpha: 1.0
+    )
+      
+)
+
+ 

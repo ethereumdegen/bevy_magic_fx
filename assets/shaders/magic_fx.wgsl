@@ -85,7 +85,7 @@ fn get_slideshow_uv_coords(coords: vec2<f32>, anim_frame_dimension_x: u32, anim_
     let y_offset = f32(y_index) * layer_height;
     
     let slideshow_coords = vec2<f32>(
-        (coords.x * layer_height) + x_offset ,
+        (coords.x * layer_width) + x_offset ,
         (coords.y * layer_height) + y_offset
     );
     
@@ -123,13 +123,17 @@ fn fragment(
 
 
     if (custom_uniforms.animation_frame_dimension_x > 1u || custom_uniforms.animation_frame_dimension_y > 1u) {
-        //for anim layer 
-       // let current_layer_index = u32( (globals.time * custom_uniforms.scroll_speed_x) % (f32( custom_uniforms.animation_layers * custom_uniforms.animation_layers )) );
+        
 
        let current_layer_index = custom_uniforms.current_animation_frame_index;
 
         //this should 
-        tiled_uv =  get_slideshow_uv_coords(  mesh.uv ,custom_uniforms.animation_frame_dimension_x,custom_uniforms.animation_frame_dimension_y,current_layer_index)   ;   
+        tiled_uv =  get_slideshow_uv_coords( 
+         mesh.uv ,
+         custom_uniforms.animation_frame_dimension_x,
+         custom_uniforms.animation_frame_dimension_y,
+         current_layer_index
+         )   ;   
 
 
      }

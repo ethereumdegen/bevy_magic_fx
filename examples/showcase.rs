@@ -414,11 +414,25 @@ fn spawn_magic_fx(
 
           commands .spawn(SpatialBundle {
 
-                            transform: Transform::from_xyz(5.0,0.0,0.0) ,
+                            transform: Transform::from_xyz(2.0,0.0,0.0) ,
                             ..default()
                         })
                         .insert(MagicFxVariantComponent {
                             magic_fx: spellcast1_fx.clone(),
+                            start_time: time.elapsed(),
+                        }) ;
+
+
+
+         let smoke_poof_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/smoke_poof.magicfx.ron").unwrap();
+
+          commands .spawn(SpatialBundle {
+
+                            transform: Transform::from_xyz(4.0,0.0,0.0) ,
+                            ..default()
+                        })
+                        .insert(MagicFxVariantComponent {
+                            magic_fx: smoke_poof_fx.clone(),
                             start_time: time.elapsed(),
                         }) ;
  
