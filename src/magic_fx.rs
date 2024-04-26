@@ -427,39 +427,21 @@ pub fn update_magicfx_tint_color(
 
 pub fn update_magicfx_billboard_rotation(
 
-    target_query: Query<&Transform, (With<MagicFxBillboardTarget>, Without<MagicFxBillboardComponent>)>,
+    target_query: Query<&GlobalTransform, (With<MagicFxBillboardTarget>, Without<MagicFxBillboardComponent>)>,
 
-    mut magicfx_billboard_query: Query<&mut Transform, (With<MagicFxBillboardComponent>,Without<MagicFxBillboardTarget>)>
+    mut magicfx_billboard_query: Query<(&mut Transform, &GlobalTransform), (With<MagicFxBillboardComponent>,Without<MagicFxBillboardTarget>)>
 
 ){
 
-    let target_xform = target_query.get_single().cloned().unwrap_or(Transform::from_xyz(0.0,0.0,0.0));
+    let target_xform = target_query.get_single().cloned().unwrap_or(GlobalTransform::from_xyz(0.0,0.0,0.0));
+  
+    for( mut magicfx_xform, -magicfx_global_xform) in magicfx_billboard_query.iter_mut(){
  
- 
-
-    for mut magicfx_xform in magicfx_billboard_query.iter_mut(){
- // Calculate the direction from the billboarded object to the camera
-        let direction = target_xform.translation - magicfx_xform.translation;
-
-        // Normalize the direction vector
-        let direction_normalized = direction.normalize();
-
-        // Calculate the pitch angle using the arc sine of the Y component
-        let pitch_angle = f32::asin(direction_normalized.y);
-
-        // Create a rotation quaternion from the pitch angle
-        let pitch_rotation = Quat::from_rotation_x(pitch_angle);
-
         // Update the rotation of the billboarded object
-        magicfx_xform.rotation = pitch_rotation;
-
-    }
+        magicfx_xform.look_at ( target_xform.translation() , Vec3::Y  );
 
 
-
- 
-
-
+    } 
 
 
 }
