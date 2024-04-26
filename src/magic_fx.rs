@@ -435,7 +435,7 @@ pub fn update_magicfx_billboard_rotation(
 
     let target_xform = target_query.get_single().cloned().unwrap_or(GlobalTransform::from_xyz(0.0,0.0,0.0));
   
-    for( mut magicfx_xform, -magicfx_global_xform) in magicfx_billboard_query.iter_mut(){
+    for( mut magicfx_xform, _magicfx_global_xform) in magicfx_billboard_query.iter_mut(){
  
         // Update the rotation of the billboarded object
         magicfx_xform.look_at ( target_xform.translation() , Vec3::Y  );
