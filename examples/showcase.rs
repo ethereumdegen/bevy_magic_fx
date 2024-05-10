@@ -436,7 +436,18 @@ fn spawn_magic_fx(
                             start_time: time.elapsed(),
                         }) ;
  
+         let impact_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/impact1.magicfx.ron").unwrap();
 
+          commands .spawn(SpatialBundle {
+
+                            transform: Transform::from_xyz(6.0,0.0,0.0) ,
+                            ..default()
+                        })
+                        .insert(MagicFxVariantComponent {
+                            magic_fx: impact_fx.clone(),
+                            start_time: time.elapsed(),
+                        }) ;
+ 
 
 
 }

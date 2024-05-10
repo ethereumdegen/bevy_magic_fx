@@ -93,14 +93,23 @@ pub fn update_magic_fx_variants(
         let magic_fx = &magic_fx_comp.magic_fx;
 
        // let repeating = magic_fx.repeating;
+
+            let Some( max_time_offset ) = magic_fx.max_time_offset else {
+
+                 magic_fx_comp.start_time = current_time;
+                 
+                continue
+
+            };
        
-            if current_time > magic_fx_comp.start_time + magic_fx.max_time_offset {
+            if current_time > magic_fx_comp.start_time + max_time_offset {
                 
                  if magic_fx.repeating {
                     //reset 
                      magic_fx_comp.start_time = current_time;
                      
                      }else { 
+
                     commands.entity(fx_entity).despawn_recursive();
                 }
             }

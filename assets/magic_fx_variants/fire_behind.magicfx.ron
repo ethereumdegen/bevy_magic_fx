@@ -18,7 +18,7 @@
 
     ] ,  
 
-    max_time: 300.0,
+    max_time: None,
     repeating: true 
 
 

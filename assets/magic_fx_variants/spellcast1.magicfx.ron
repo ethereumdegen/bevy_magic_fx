@@ -73,7 +73,7 @@
 
     ] ,  
 
-    max_time: 2.0,
+    max_time: Some(2.0),
     repeating: true 
 
 
