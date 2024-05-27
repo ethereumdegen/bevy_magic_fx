@@ -79,7 +79,8 @@ pub struct AnimatedMaterialUniforms {
     pub animation_frame_dimension: Vec2, //if this is 1, we know we have a normal static texture.  Otherwise, we have an animated scrolly one 
     pub current_animation_frame_index: u32,
 
-    pub tint_color: Color 
+    pub tint_color: Color ,
+    pub fresnel_color: Color 
 }
 impl Default for AnimatedMaterialUniforms {
     fn default() -> Self {
@@ -96,7 +97,8 @@ impl Default for AnimatedMaterialUniforms {
             animation_frame_dimension: Vec2::new(1.0,1.0),
          
             current_animation_frame_index: 0, 
-            tint_color: Color::WHITE
+            tint_color: Color::WHITE,
+            fresnel_color: Color::rgba( 0.2,0.2,0.6,0.4)
         }
     }
 }

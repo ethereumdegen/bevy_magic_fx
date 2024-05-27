@@ -12,6 +12,9 @@
  #import bevy_pbr::mesh_functions
  #import bevy_pbr::prepass_utils
 
+ #import bevy_shader_utils::fresnel::fresnel
+ #import bevy_pbr::mesh_view_bindings view
+
 struct StandardMaterial {
     time: f32,
     base_color: vec4<f32>,
@@ -41,7 +44,10 @@ struct CustomMaterialUniforms {
 
     tint_color: vec4<f32>,
 
-    //fresnel ? 
+
+    fresnel_color: vec4<f32>,
+    //fresnel color ?
+    // disturbance effect ?  
     
     
 };
@@ -156,6 +162,17 @@ fn fragment(
     let blended_color = textureSample(base_color_texture, base_color_sampler, distorted_uv )   ;
 
 
+
+    var fresnel_color = custom_uniforms.fresnel_color;
+   let fresnel_power = 2.0;
+   let fresnel_strength = 1.0;
+   let fresnel = fresnel(view.world_position.xyz, mesh.world_position.xyz, mesh.world_normal, fresnel_power, fresnel_strength);
+  
+   fresnel_color.a =   ( fresnel_color.a *  saturate(   fresnel )  );
+     //mult this by fresnel color and add ? 
+
+
+
    
   // generate a PbrInput struct from the StandardMaterial bindings
     var pbr_input = pbr_input_from_standard_material(mesh, is_front);
@@ -189,6 +206,8 @@ fn fragment(
     //tint also affect emissive color? 
 
    pbr_out.color = final_color * custom_uniforms.tint_color;
+
+   pbr_out.color = pbr_out.color *  fresnel_color ; 
     // pbr_out.emissive = pbr_input.material.emissive * custom_uniforms.tint_color;
 
 
@@ -205,5 +224,14 @@ fn fragment(
  
     return pbr_out;
     
+}
+
+
+
+
+fn alpha_blend(top: vec4<f32>, bottom: vec4<f32>) -> vec4<f32> {
+    let color = top.rgb * top.a + bottom.rgb * (1.0 - top.a);
+    let alpha = top.a + bottom.a * (1.0 - top.a);
+    return vec4<f32>(color, alpha);  
 }
  

@@ -1,7 +1,7 @@
 use bevy::{prelude::*, utils::HashMap};
 use serde::{Deserialize, Serialize};
 
-use crate::animated_material::AnimatedMaterial;
+
 
 //this gets loaded in
 
