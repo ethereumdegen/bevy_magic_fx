@@ -45,7 +45,7 @@ struct CustomMaterialUniforms {
     tint_color: vec4<f32>,
 
 
-    fresnel_color: vec4<f32>,
+    fresnel_power: f32 ,
     //fresnel color ?
     // disturbance effect ?  
     
@@ -163,12 +163,20 @@ fn fragment(
 
 
 
-    var fresnel_color = custom_uniforms.fresnel_color;
-   let fresnel_power = 2.0;
+    //var fresnel_color = custom_uniforms.fresnel_color;
+    let fresnel_power = custom_uniforms.fresnel_power;
    let fresnel_strength = 1.0;
-   let fresnel = fresnel(view.world_position.xyz, mesh.world_position.xyz, mesh.world_normal, fresnel_power, fresnel_strength);
-  
-   fresnel_color.a =   ( fresnel_color.a *  saturate(   fresnel )  );
+   var fresnel = saturate (0.4 * fresnel(
+    view.world_position.xyz, 
+    mesh.world_position.xyz, 
+    mesh.world_normal, 
+    fresnel_power, 
+    fresnel_strength
+    ));
+
+
+   
+   //fresnel_color.a =   ( fresnel_color.a *  saturate(   fresnel )  );
      //mult this by fresnel color and add ? 
 
 
@@ -207,7 +215,10 @@ fn fragment(
 
    pbr_out.color = final_color * custom_uniforms.tint_color;
 
-   pbr_out.color = pbr_out.color *  fresnel_color ; 
+   //using fresnel
+    if  (fresnel_power > 0.01){
+           pbr_out.color.a =  pbr_out.color.a * fresnel ; 
+      }
     // pbr_out.emissive = pbr_input.material.emissive * custom_uniforms.tint_color;
 
 

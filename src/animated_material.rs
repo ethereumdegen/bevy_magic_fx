@@ -80,7 +80,7 @@ pub struct AnimatedMaterialUniforms {
     pub current_animation_frame_index: u32,
 
     pub tint_color: Color ,
-    pub fresnel_color: Color 
+    pub fresnel_power: f32 
 }
 impl Default for AnimatedMaterialUniforms {
     fn default() -> Self {
@@ -98,7 +98,7 @@ impl Default for AnimatedMaterialUniforms {
          
             current_animation_frame_index: 0, 
             tint_color: Color::WHITE,
-            fresnel_color: Color::rgba( 0.2,0.2,0.6,0.4)
+            fresnel_power:  0.0  //typically like 2.0
         }
     }
 }
