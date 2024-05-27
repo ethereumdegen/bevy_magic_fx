@@ -1,3 +1,4 @@
+use bevy::asset::load_internal_asset;
 use bevy::prelude::*;
 use bevy_common_assets::ron::RonAssetPlugin;
 use magic_fx_variant::MagicFxVariantManifest;
@@ -18,6 +19,17 @@ pub struct MagicFxPlugin;
 // Step 2: Implement the Plugin trait for your struct
 impl Plugin for MagicFxPlugin {
     fn build(&self, app: &mut App) {
+
+
+         load_internal_asset!(
+            app,
+            MAGIC_FX_SHADER_HANDLE,
+            "shaders/magic_fx.wgsl",
+            Shader::from_wgsl
+        );
+
+
+
         // Step 3: Add systems, resources, and configurations to the Bevy app
         app
             .add_plugins(RonAssetPlugin::<ShaderVariantManifest>::new(&[
@@ -43,4 +55,13 @@ impl Plugin for MagicFxPlugin {
 
     }
 }
+
+
+
+
+          
+
+   pub(crate) const MAGIC_FX_SHADER_HANDLE: Handle<Shader> =
+    Handle::weak_from_u128(7_473_426_912_151_597_127);
+
 

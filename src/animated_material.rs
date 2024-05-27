@@ -1,3 +1,4 @@
+use crate::MAGIC_FX_SHADER_HANDLE;
 use bevy::prelude::*;
 use bevy::reflect::TypePath;
 use bevy::render::render_resource::*;
@@ -114,10 +115,10 @@ pub struct AnimatedMaterialBase {
 
 impl MaterialExtension for AnimatedMaterialBase {
     fn fragment_shader() -> ShaderRef {
-        "shaders/magic_fx.wgsl".into()
+        MAGIC_FX_SHADER_HANDLE.into()
     }
 
     fn deferred_fragment_shader() -> ShaderRef {
-        "shaders/magic_fx.wgsl".into()
+        MAGIC_FX_SHADER_HANDLE.into()
     }
 }

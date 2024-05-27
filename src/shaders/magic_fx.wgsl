@@ -36,12 +36,12 @@ struct CustomMaterialUniforms {
 
     depth_cutoff_offset: f32 ,
     animation_frame_dimension: vec2<f32>, 
-
-   // animation_frame_dimension_x: u32 ,
-   //  animation_frame_dimension_y: u32 ,
+ 
     current_animation_frame_index: u32,
 
     tint_color: vec4<f32>,
+
+    //fresnel ? 
     
     
 };
