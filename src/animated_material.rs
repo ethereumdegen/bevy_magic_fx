@@ -98,7 +98,7 @@ impl Default for AnimatedMaterialUniforms {
          
             current_animation_frame_index: 0, 
             tint_color: Color::WHITE,
-            fresnel_power:  0.0  //typically like 2.0
+            fresnel_power:  0.0  //typically like 2.0 if used 
         }
     }
 }
