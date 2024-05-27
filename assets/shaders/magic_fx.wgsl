@@ -25,19 +25,20 @@ struct StandardMaterial {
 };
  
 struct CustomMaterialUniforms {
-   distortion_speed_x:  f32   ,
-    distortion_speed_y:  f32   ,
-   scroll_repeats_x: f32 ,
-   scroll_repeats_y: f32 ,
-    scroll_speed_x: f32,
-    scroll_speed_y: f32,
+
+    distortion_speed:  vec2<f32>, 
+    scroll_repeats :  vec2<f32>, 
+     scroll_speed :  vec2<f32>, 
+   
    
     distortion_amount: f32 ,
     distortion_cutoff: f32 ,
 
     depth_cutoff_offset: f32 ,
-    animation_frame_dimension_x: u32 ,
-     animation_frame_dimension_y: u32 ,
+    animation_frame_dimension: vec2<f32>, 
+
+   // animation_frame_dimension_x: u32 ,
+   //  animation_frame_dimension_y: u32 ,
     current_animation_frame_index: u32,
 
     tint_color: vec4<f32>,
@@ -62,8 +63,8 @@ var base_color_sampler: sampler;
 
 fn get_repeated_uv_coords(coords: vec2<f32>) -> vec2<f32> {
     let repeated_coords = vec2<f32>(
-        (coords.x % (1. / f32(custom_uniforms.scroll_repeats_x))) * f32(custom_uniforms.scroll_repeats_x),
-        (coords.y % (1. / f32(custom_uniforms.scroll_repeats_y))) * f32(custom_uniforms.scroll_repeats_y)
+        (coords.x % (1. / f32(custom_uniforms.scroll_repeats.x))) * f32(custom_uniforms.scroll_repeats.x),
+        (coords.y % (1. / f32(custom_uniforms.scroll_repeats.y))) * f32(custom_uniforms.scroll_repeats.y)
     );
     return repeated_coords;
 }
@@ -116,13 +117,13 @@ fn fragment(
   //  #endif
 
 
-    let scroll_amount_x = (globals.time * custom_uniforms.scroll_speed_x)  ;
-    let scroll_amount_y = (globals.time * custom_uniforms.scroll_speed_y)  ; 
+    let scroll_amount_x = (globals.time * custom_uniforms.scroll_speed.x)  ;
+    let scroll_amount_y = (globals.time * custom_uniforms.scroll_speed.y)  ; 
  
     var tiled_uv =   get_repeated_uv_coords (mesh.uv + vec2(scroll_amount_x,scroll_amount_y)  )   ;
 
 
-    if (custom_uniforms.animation_frame_dimension_x > 1u || custom_uniforms.animation_frame_dimension_y > 1u) {
+    if (u32(custom_uniforms.animation_frame_dimension.x) > 1u || u32(custom_uniforms.animation_frame_dimension.y) > 1u) {
         
 
        let current_layer_index = custom_uniforms.current_animation_frame_index;
@@ -130,8 +131,8 @@ fn fragment(
         //this should 
         tiled_uv =  get_slideshow_uv_coords( 
          mesh.uv ,
-         custom_uniforms.animation_frame_dimension_x,
-         custom_uniforms.animation_frame_dimension_y,
+         u32(custom_uniforms.animation_frame_dimension.x),
+         u32(custom_uniforms.animation_frame_dimension.y),
          current_layer_index
          )   ;   
 
@@ -143,10 +144,10 @@ fn fragment(
 
       //make the cutoff big and it wont have any effect
     
-    let distortion_radians_x =  (globals.time * custom_uniforms.distortion_speed_x + mesh.uv[0] * 2.0 ) % 6.28 ;
+    let distortion_radians_x =  (globals.time * custom_uniforms.distortion_speed.x + mesh.uv[0] * 2.0 ) % 6.28 ;
     let distortion_amount_x = ( sin(distortion_radians_x) * custom_uniforms.distortion_amount  ) % custom_uniforms.distortion_cutoff   ;
     
-    let distortion_radians_y =   (globals.time * custom_uniforms.distortion_speed_y + mesh.uv[1] * 2.0 ) % 6.28 ;
+    let distortion_radians_y =   (globals.time * custom_uniforms.distortion_speed.y + mesh.uv[1] * 2.0 ) % 6.28 ;
     let distortion_amount_y = ( cos(distortion_radians_y) * custom_uniforms.distortion_amount  ) % custom_uniforms.distortion_cutoff  ;
 
 

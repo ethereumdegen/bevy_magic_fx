@@ -351,7 +351,7 @@ pub fn update_magicfx_anim_frames(
         if let Some(anim_mat) = animated_material_assets.get_mut(anim_mat_handle){
 
 
-             let total_frames = anim_mat.extension.custom_uniforms.animation_frame_dimension_x * anim_mat.extension.custom_uniforms.animation_frame_dimension_y;
+             let total_frames = anim_mat.extension.custom_uniforms.animation_frame_dimension.x as u32 * anim_mat.extension.custom_uniforms.animation_frame_dimension.y as u32;
             
               if total_frames <= 1 {continue};
 
