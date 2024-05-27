@@ -1,6 +1,6 @@
 [package]
 name = "bevy_magic_fx"
-version = "0.3.7"
+version = "0.13.8"
 license = "MIT"
 description = "Define mesh-based vfx in serialized files"
 edition = "2021" 
@@ -21,7 +21,6 @@ ron = "0.8.1"
 [[example]]
 name = "basic"
 path = "examples/basic.rs"
-
 
 [[example]]
 name = "waterfall"

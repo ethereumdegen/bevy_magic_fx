@@ -1,3 +1,4 @@
+use crate::MagicFxShader;
 use std::time::Duration;
 
 use bevy::pbr::{ExtendedMaterial, OpaqueRendererMethod};
@@ -26,6 +27,7 @@ pub struct MagicFxVariantManifest {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MagicFxInstanceManifest {
+    pub shader_base: Option<MagicFxShader>,  
     pub shader_variant_name: String,
 
     pub mesh_name: String,
