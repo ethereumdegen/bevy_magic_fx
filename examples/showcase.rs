@@ -461,6 +461,18 @@ fn spawn_magic_fx(
                         }) ;
  
 
+         let sword_slash_1_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/sword_slash_horizontal_1.magicfx.ron").unwrap();
+
+          commands .spawn(SpatialBundle {
+
+                            transform: Transform::from_xyz(10.0,0.0,0.0) ,
+                            ..default()
+                        })
+                        .insert(MagicFxVariantComponent {
+                            magic_fx: sword_slash_1_fx.clone(),
+                            start_time: time.elapsed(),
+                        }) ;
+ 
 
 
 }
