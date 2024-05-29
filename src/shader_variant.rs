@@ -23,8 +23,10 @@ pub struct ShaderVariantManifest {
 
     pub color: Color,
     pub emissive: Color,
+ 
+    pub depth_cutoff_offset: Option<f32> ,   // use depth bias for this ? 
 
-    pub depth_cutoff_offset: Option<f32> ,
+    pub fresnel_power: Option<f32>,
 
     pub animation_frame_dimensions: Option<[u32;2]>
 }

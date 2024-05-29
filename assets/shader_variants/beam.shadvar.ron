@@ -6,6 +6,7 @@
     distortion_speed: (0.02,0.01),
     scroll_repeats: ( 1.0,1.0),
     distortion_amount: 0.02 , 
+    fresnel_power: Some(2.0),
 
     color: Rgba(
         red: 0.2,

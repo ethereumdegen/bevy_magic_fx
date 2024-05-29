@@ -21,6 +21,8 @@ pub fn build_animated_material(
    let base_color = (&shader_variant_manifest.color).clone();
    let emissive = (&shader_variant_manifest.emissive).clone();
 
+  
+
    let texture_handle = texture_handles_map.get(&shader_variant_manifest.texture)?;
  
    Some(
@@ -52,6 +54,7 @@ pub fn build_animated_material(
                             distortion_cutoff: 1.0,
                             scroll_repeats: shader_variant_manifest.scroll_repeats,
                             
+                            fresnel_power: shader_variant_manifest.fresnel_power.unwrap_or( 0.0 ), 
                             depth_cutoff_offset: shader_variant_manifest.depth_cutoff_offset.unwrap_or( 0.0 ),  // typically use  0.05, like for magic fire that is rendered behind stuff 
                             animation_frame_dimension: shader_variant_manifest.animation_frame_dimensions.map(|d|  Vec2::new(d[0] as f32,d[1] as f32)  ).unwrap_or(  Vec2::new(1.0,1.0) ), 
                          //   animation_frame_dimension_y: shader_variant_manifest.animation_frame_dimensions.map(|d| d[1]).unwrap_or(   1 ), 

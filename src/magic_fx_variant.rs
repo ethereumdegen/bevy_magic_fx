@@ -39,7 +39,7 @@ pub struct MagicFxInstanceManifest {
      pub start_tint_color: Option<Color>,
      pub end_tint_color: Option<Color>,
 
-    pub fresnel_power: Option<f32>, 
+   
 
 }
 
@@ -114,7 +114,7 @@ pub struct MagicFxInstance {
      pub start_tint_color: Option<Color>,
      pub end_tint_color: Option<Color>,
 
-     pub fresnel_power: Option<f32>, 
+    
 
 }
 
@@ -148,8 +148,7 @@ impl MagicFxInstance {
 
             start_tint_color: manifest.start_tint_color,
             end_tint_color: manifest.end_tint_color,
-
-            fresnel_power: manifest.fresnel_power
+  
         })
     }
 
