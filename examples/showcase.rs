@@ -473,6 +473,19 @@ fn spawn_magic_fx(
                             start_time: time.elapsed(),
                         }) ;
  
+        let portal_1_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/portal_1.magicfx.ron").unwrap();
+
+          commands .spawn(SpatialBundle {
+
+                            transform: Transform::from_xyz(12.0,0.0,0.0) ,
+                            ..default()
+                        })
+                        .insert(MagicFxVariantComponent {
+                            magic_fx: portal_1_fx.clone(),
+                            start_time: time.elapsed(),
+                        }) ;
+ 
+
 
 
 }
