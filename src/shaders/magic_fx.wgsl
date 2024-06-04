@@ -48,6 +48,8 @@ struct CustomMaterialUniforms {
     fresnel_power: f32 ,
     //fresnel color ?
     // disturbance effect ?  
+
+    use_masking_texture: u32, //flags?? 
     
     
 };
@@ -64,7 +66,10 @@ var base_color_texture: texture_2d<f32>;
 var base_color_sampler: sampler;
  
  
-
+@group(2) @binding(23)
+var  masking_texture: texture_2d<f32>;
+@group(2) @binding(24)
+var  masking_sampler: sampler;
 
 
 fn get_repeated_uv_coords(coords: vec2<f32>) -> vec2<f32> {
@@ -220,6 +225,15 @@ fn fragment(
            pbr_out.color.a =  pbr_out.color.a * fresnel ; 
       }
     // pbr_out.emissive = pbr_input.material.emissive * custom_uniforms.tint_color;
+
+
+
+     // Apply masking texture if available
+    if (custom_uniforms.use_masking_texture > 0u) {
+        let mask_value = textureSample(masking_texture, masking_sampler, mesh.uv ).r;
+        pbr_out.color.a =  pbr_out.color.a * mask_value;  // apply mask 
+    }
+
 
 
    var position = mesh.position; //this is frag_coord ? 

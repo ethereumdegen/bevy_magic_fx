@@ -6,8 +6,8 @@
  
 
   (
-    shader_variant_name: "portal_1.shadvar",
-	  mesh_name:  "meshes/portal_spiral_plane.obj", 
+    shader_variant_name: "corona_blue.shadvar",
+	  mesh_name:  "meshes/FX_glowy_circle.obj", 
 	    billboard_mesh: false,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,
@@ -25,7 +25,7 @@
 			        red: 1.0,
 			        green:1.0,
 			        blue: 1.0,
-			        alpha: 0.1
+			        alpha: 1.0
 			    )), 
 
     ),

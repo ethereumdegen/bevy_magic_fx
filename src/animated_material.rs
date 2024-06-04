@@ -24,7 +24,15 @@ pub fn build_animated_material(
   
 
    let texture_handle = texture_handles_map.get(&shader_variant_manifest.texture)?;
- 
+
+   let masking_texture_handle = shader_variant_manifest.masking_texture.as_ref().map(|m|  texture_handles_map.get( m ) ) .flatten();
+    
+
+   let use_masking_texture = match masking_texture_handle {
+    Some(_) => 1,
+    None => 0
+   };
+
    Some(
     ExtendedMaterial {
                     base: StandardMaterial {
@@ -45,6 +53,8 @@ pub fn build_animated_material(
                     extension: AnimatedMaterialBase{
                         base_color_texture: Some(texture_handle.clone()),
 
+                        masking_texture: masking_texture_handle.cloned(),
+
                        
                         custom_uniforms: AnimatedMaterialUniforms {
                             scroll_speed: shader_variant_manifest.animation_speed,
@@ -56,7 +66,10 @@ pub fn build_animated_material(
                             
                             fresnel_power: shader_variant_manifest.fresnel_power.unwrap_or( 0.0 ), 
                             depth_cutoff_offset: shader_variant_manifest.depth_cutoff_offset.unwrap_or( 0.0 ),  // typically use  0.05, like for magic fire that is rendered behind stuff 
-                            animation_frame_dimension: shader_variant_manifest.animation_frame_dimensions.map(|d|  Vec2::new(d[0] as f32,d[1] as f32)  ).unwrap_or(  Vec2::new(1.0,1.0) ), 
+                            animation_frame_dimension: shader_variant_manifest.animation_frame_dimensions.map(|d|  Vec2::new(d[0] as f32,d[1] as f32)  ).unwrap_or(  Vec2::new(1.0,1.0) ),
+
+
+                            use_masking_texture ,
                          //   animation_frame_dimension_y: shader_variant_manifest.animation_frame_dimensions.map(|d| d[1]).unwrap_or(   1 ), 
 
                             ..default()
@@ -83,7 +96,8 @@ pub struct AnimatedMaterialUniforms {
     pub current_animation_frame_index: u32,
 
     pub tint_color: Color ,
-    pub fresnel_power: f32 
+    pub fresnel_power: f32 ,
+    pub use_masking_texture: u32
 }
 impl Default for AnimatedMaterialUniforms {
     fn default() -> Self {
@@ -101,7 +115,9 @@ impl Default for AnimatedMaterialUniforms {
          
             current_animation_frame_index: 0, 
             tint_color: Color::WHITE,
-            fresnel_power:  0.0  //typically like 2.0 if used 
+            fresnel_power:  0.0 , //typically like 2.0 if used 
+
+            use_masking_texture: 0
         }
     }
 }
@@ -116,6 +132,13 @@ pub struct AnimatedMaterialBase {
     #[texture(21)]
     #[sampler(22)]
     pub base_color_texture: Option<Handle<Image>>,
+
+    // Adding masking texture
+    #[texture(23)]
+    #[sampler(24)]
+    pub masking_texture: Option<Handle<Image>>,
+  //  #[sampler(24)]
+  //  pub masking_sampler: Option<Handle<Sampler>>,
 }
 
 impl MaterialExtension for AnimatedMaterialBase {

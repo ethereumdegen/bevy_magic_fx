@@ -304,7 +304,7 @@ fn update_loading_shader_variant_manifest(
                     let shader_material_handle = animated_materials.add( build_animated_material(
                         shader_variant_manifest,
                         &texture_handles_map
-                        ).unwrap()
+                        ).expect(format!("Could not load {:?}", &shadvar_name).as_str())
                     ); 
                     println!("adding shadvar_name {:?}",&shadvar_name);
 
@@ -374,7 +374,7 @@ fn update_loading_magic_fx_variant_manifest(
                         &animated_materials_map,
                      
                         
-                    ).unwrap();
+                    ).expect(format!("could not load {:?}",file_path.to_string()).as_str());
                     info!("loaded {:?}",file_path.to_string());
                     built_vfx_resource.magic_fx_variants.insert(file_path.to_string(), magic_fx);
 
@@ -484,7 +484,19 @@ fn spawn_magic_fx(
                             magic_fx: portal_1_fx.clone(),
                             start_time: time.elapsed(),
                         }) ;
- 
+    
+
+    let  corona_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/glowy_corona.magicfx.ron").unwrap();
+
+          commands .spawn(SpatialBundle {
+
+                            transform: Transform::from_xyz(14.0,0.0,0.0) ,
+                            ..default()
+                        })
+                        .insert(MagicFxVariantComponent {
+                            magic_fx: corona_fx.clone(),
+                            start_time: time.elapsed(),
+                        }) ;
 
 
 
