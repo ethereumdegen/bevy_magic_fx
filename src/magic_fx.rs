@@ -362,7 +362,7 @@ pub fn update_magicfx_anim_frames(
              let time_since_start = current_time - start_time;
              let current_frame_index = ( time_since_start.as_millis() /  time_per_frame.as_millis()  ) % total_frames as u128  ;
 
-             info!("current frame index {:?}", current_frame_index);
+             // info!("current frame index {:?}", current_frame_index);
 
              anim_mat.extension.custom_uniforms.current_animation_frame_index = current_frame_index as u32;
 
