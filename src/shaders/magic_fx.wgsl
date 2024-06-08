@@ -195,6 +195,9 @@ fn fragment(
      // alpha discard
     pbr_input.material.base_color =  pbr_input.material.base_color * blended_color ;
 
+
+    pbr_input.material.emissive = pbr_input.material.emissive * blended_color;
+
     var final_color = alpha_discard(pbr_input.material, pbr_input.material.base_color  )  ;
 
     
@@ -224,7 +227,7 @@ fn fragment(
     if  (fresnel_power > 0.01){
            pbr_out.color.a =  pbr_out.color.a * fresnel ; 
       }
-    // pbr_out.emissive = pbr_input.material.emissive * custom_uniforms.tint_color;
+    // pbr_out.emissive = pbr_input.material.emissive * blended_color;
 
 
 
