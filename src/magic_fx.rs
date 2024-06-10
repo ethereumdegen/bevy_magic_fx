@@ -58,17 +58,21 @@ pub fn update_magic_fx_variants_added(
         for instance in magic_fx.magic_fx_instances.iter() {
             //println!("spawn magic fx instance!!");
 
-            let bundle = &instance.to_bundle();
+            let anim_mat_bundle = &instance.to_anim_material_bundle();
 
             let magic_fx_child = commands
-                .spawn((
-                    bundle.clone(),
+                .spawn(
+                  anim_mat_bundle.clone()  //this include spatial bundle 
+                    
+                ).insert (
+                    ( 
                     MagicFxInstanceComponent {
                         instance: instance.clone(),
                        // start_time: time.elapsed(),
                     },
                     bevy::pbr::NotShadowCaster,
-                ))
+                    )
+                )
                 .id();
 
             commands.entity(fx_entity).add_child(magic_fx_child);
@@ -442,15 +446,34 @@ pub fn update_magicfx_billboard_rotation(
 
 ){
 
-    let target_xform = target_query.get_single().cloned().unwrap_or(GlobalTransform::from_xyz(0.0,0.0,0.0));
-  
-    for( mut magicfx_xform, _magicfx_global_xform) in magicfx_billboard_query.iter_mut(){
- 
-        // Update the rotation of the billboarded object
-        magicfx_xform.look_at ( target_xform.translation() , Vec3::Y  );
+    //let target_xform = target_query.get_single().cloned() ;
+
+    if let Some(target_xform ) = target_query.get_single().ok().cloned() {
+    
+      
+      
+        for( mut magicfx_xform,  magicfx_global_xform) in magicfx_billboard_query.iter_mut(){
+     
+          
+            let dir = (target_xform.translation() - magicfx_global_xform.translation()).normalize();
+
+            // Calculate yaw and pitch
+            let yaw = -dir.z.atan2(dir.x);
+            let pitch = -dir.y.asin();
+
+            // Create quaternion from yaw and pitch
+            let yaw_rotation = Quat::from_rotation_y(yaw);
+         //   let pitch_rotation = Quat::from_rotation_x(pitch);
+
+            // Combine rotations
+            magicfx_xform.rotation = yaw_rotation ; // * pitch_rotation;
 
 
-    } 
+        }       
+
+
+
+    }
 
 
 }

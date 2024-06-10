@@ -47,14 +47,24 @@ impl Plugin for MagicFxPlugin {
                  prepass_enabled: false,
                 ..default() 
             })
-             .add_systems(Update, magic_fx::update_magic_fx_variants_added)
-            .add_systems(Update, magic_fx::update_magic_fx_variants)
-            .add_systems(Update, magic_fx::update_magic_fx_instances_visibility)
-            .add_systems(Update, magic_fx::update_magic_fx_instances_translation_scale )
-             .add_systems(Update, magic_fx::update_magicfx_standard_rotation)
-            .add_systems(Update, magic_fx::update_magicfx_billboard_rotation)
-            .add_systems(Update, magic_fx::update_magicfx_anim_frames)
-            .add_systems(Update, magic_fx::update_magicfx_tint_color)
+
+             .add_systems(Update,( 
+
+                magic_fx::update_magic_fx_variants_added,
+                 magic_fx::update_magic_fx_variants,
+                 magic_fx::update_magic_fx_instances_visibility,
+                  magic_fx::update_magic_fx_instances_translation_scale,
+                  magic_fx::update_magicfx_standard_rotation,
+                magic_fx::update_magicfx_billboard_rotation,
+                  magic_fx::update_magicfx_anim_frames,
+                   magic_fx::update_magicfx_tint_color
+
+
+
+
+                ) .chain() ) 
+
+             
             ;
 
     }

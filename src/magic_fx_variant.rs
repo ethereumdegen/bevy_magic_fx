@@ -153,7 +153,7 @@ impl MagicFxInstance {
     }
 
    
-    pub fn to_bundle(&self) -> AnimatedMaterialBundle {
+    pub fn to_anim_material_bundle(&self) -> AnimatedMaterialBundle {
         let shader_material = &self.shader_material_handle;
 
         return  animated_material::AnimatedMaterialBundle {
