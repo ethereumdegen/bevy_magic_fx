@@ -13,6 +13,7 @@ use serde::{Deserialize, Serialize};
 pub struct ShaderVariantManifest {
    
     pub texture: String,
+    pub masking_texture: Option<String>,
 
     pub animation_speed: Vec2,
     pub distortion_speed: Vec2,

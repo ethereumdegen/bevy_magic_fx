@@ -100,7 +100,7 @@ pub fn update_magic_fx_variants(
 
             let Some( max_time_offset ) = magic_fx.max_time_offset else {
 
-                 magic_fx_comp.start_time = current_time;
+               //  magic_fx_comp.start_time = current_time;
                  
                 continue
 
@@ -145,9 +145,10 @@ pub fn update_magic_fx_instances_visibility(
         let start_time = magic_fx_variant.start_time + instance.start_time_offset;
         let end_time = magic_fx_variant.start_time + instance.end_time_offset;
 
-      
+        
 
-        let is_visible = current_time >= start_time && current_time <= end_time;
+
+        let is_visible = magic_fx_variant.magic_fx.repeating ||   current_time >= start_time && current_time <= end_time;
 
         *fx_visibility = match is_visible {
             true => Visibility::Inherited,
@@ -363,7 +364,9 @@ pub fn update_magicfx_anim_frames(
              let time_per_frame = total_run_time / total_frames;
 
              let time_since_start = current_time - start_time;
-             let current_frame_index = time_since_start.as_millis() /  time_per_frame.as_millis()   ;
+             let current_frame_index = ( time_since_start.as_millis() /  time_per_frame.as_millis()  ) % total_frames as u128  ;
+
+             // info!("current frame index {:?}", current_frame_index);
 
              anim_mat.extension.custom_uniforms.current_animation_frame_index = current_frame_index as u32;
 
