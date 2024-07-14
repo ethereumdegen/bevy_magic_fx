@@ -93,13 +93,13 @@ fn setup(
              Simulate our bevy asset loader with 'asset_loading_resource'
     */
 
-    let particle_texture_handle = asset_server.load("textures/fire_01.png");
+    let particle_texture_handle = asset_server.load("textures/kenney/fire_01.png");
     asset_loading_resource
         .texture_handles_map
         .insert("textures/fire_01.png".to_string(), particle_texture_handle);
 
 
-  let shards_texture_handle = asset_server.load("textures/shards.png");
+  let shards_texture_handle = asset_server.load("textures/kenney/shards.png");
     asset_loading_resource
         .texture_handles_map
         .insert("textures/shards.png".to_string(), shards_texture_handle);

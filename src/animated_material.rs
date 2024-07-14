@@ -11,11 +11,13 @@ use crate::shader_variant::ShaderVariantManifest;
 
 pub type AnimatedMaterial = ExtendedMaterial<StandardMaterial, AnimatedMaterialBase>;
 
+ 
+
 pub fn build_animated_material(
     shader_variant_manifest: &ShaderVariantManifest,
     texture_handles_map: & HashMap<String,Handle<Image>>, 
 
-    ) -> Option<AnimatedMaterial>{
+    ) -> Result<AnimatedMaterial,String>{
 
 
    let base_color = (&shader_variant_manifest.color).clone();
@@ -23,7 +25,7 @@ pub fn build_animated_material(
 
   
 
-   let texture_handle = texture_handles_map.get(&shader_variant_manifest.texture)?;
+   let texture_handle = texture_handles_map.get(&shader_variant_manifest.texture).ok_or(  format!("missing texture {:?}", &shader_variant_manifest.texture )  )?;
 
    let masking_texture_handle = shader_variant_manifest.masking_texture.as_ref().map(|m|  texture_handles_map.get( m ) ) .flatten();
     
@@ -33,7 +35,7 @@ pub fn build_animated_material(
     None => 0
    };
 
-   Some(
+   Ok(
     ExtendedMaterial {
                     base: StandardMaterial {
                         base_color,

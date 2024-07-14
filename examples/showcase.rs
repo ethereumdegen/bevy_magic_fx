@@ -168,14 +168,16 @@ fn setup(
     });
 
      commands.insert_resource(AmbientLight {
-        color: Color::ANTIQUE_WHITE,
+        color: Color::linear_rgba(1.0, 1.0, 1.0, 1.0),
         brightness: 4000.0,
     });
+
+     let silver_color = Color::linear_rgba(0.7, 0.7, 0.7, 1.0);
 
     // ground plane
     commands.spawn(PbrBundle {
         mesh: meshes.add(Plane3d::default().mesh().size(50.0, 50.0)),
-        material: materials.add(Color::SILVER),
+        material: materials.add( silver_color ),
         ..default()
     });
 
