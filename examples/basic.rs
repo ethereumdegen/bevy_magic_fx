@@ -171,10 +171,12 @@ fn setup(
         ..default()
     });
 
+    let material_color : Color = LinearRgba::rgb(0.5, 0.5, 0.5).into();
+
     // ground plane
     commands.spawn(PbrBundle {
         mesh: meshes.add(Plane3d::default().mesh().size(50.0, 50.0)),
-        material: materials.add(Color::SILVER),
+        material: materials.add( material_color ),
         ..default()
     });
 

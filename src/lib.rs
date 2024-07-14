@@ -4,7 +4,7 @@ use bevy_common_assets::ron::RonAssetPlugin;
 use magic_fx_variant::MagicFxVariantManifest;
 use shader_variant::ShaderVariantManifest;
 
-use bevy_shader_utils::ShaderUtilsPlugin;
+//use bevy_shader_utils::ShaderUtilsPlugin;
 
 pub mod animated_material;
 pub mod euler_transform;
@@ -35,7 +35,7 @@ impl Plugin for MagicFxPlugin {
         // Step 3: Add systems, resources, and configurations to the Bevy app
         app
 
-            .add_plugins(ShaderUtilsPlugin)
+            //.add_plugins(ShaderUtilsPlugin)
             .add_plugins(RonAssetPlugin::<ShaderVariantManifest>::new(&[
             "shadvar.ron",
             ]))

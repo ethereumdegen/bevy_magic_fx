@@ -425,7 +425,7 @@ pub fn update_magicfx_tint_color(
 
                 let lerped_tint_color = lerp_colors(&tint_start_color,&tint_end_color,lerp_amount);
               
-                 anim_mat.extension.custom_uniforms.tint_color = lerped_tint_color;
+                 anim_mat.extension.custom_uniforms.tint_color = lerped_tint_color.into();
 
              }
             }

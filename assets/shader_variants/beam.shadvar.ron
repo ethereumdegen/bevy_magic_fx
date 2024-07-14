@@ -8,18 +8,18 @@
     distortion_amount: 0.02 , 
     fresnel_power: Some(2.0),
 
-    color: Rgba(
-        red: 0.2,
-        green: 0.3,
-        blue: 0.2,
-        alpha: 0.8
-    ),
-     emissive: Rgba(
-         red: 4.0,
-        green: 0.3,
-        blue: 70.0,
-        alpha: 3.6
-    )
+    color: LinearRgba((
+            red: 0.2,
+            green: 0.3,
+            blue: 0.2,
+            alpha: 0.8
+        )),
+     emissive: LinearRgba((
+              red: 4.0,
+             green: 0.3,
+             blue: 70.0,
+             alpha: 3.6
+         ))
       
 )
 

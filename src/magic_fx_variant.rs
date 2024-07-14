@@ -36,8 +36,8 @@ pub struct MagicFxInstanceManifest {
     pub start_transform: EulerTransform,
     pub end_transform: EulerTransform,
 
-     pub start_tint_color: Option<Color>,
-     pub end_tint_color: Option<Color>,
+     pub start_tint_color: Option<LinearRgba>,
+     pub end_tint_color: Option<LinearRgba>,
 
    
 
@@ -111,8 +111,8 @@ pub struct MagicFxInstance {
     pub end_transform: EulerTransform,
      pub shader_material_handle: Handle<AnimatedMaterial>,
 
-     pub start_tint_color: Option<Color>,
-     pub end_tint_color: Option<Color>,
+     pub start_tint_color: Option<LinearRgba>,
+     pub end_tint_color: Option<LinearRgba>,
 
     
 
