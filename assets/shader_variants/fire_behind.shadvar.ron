@@ -9,18 +9,18 @@
     distortion_amount: 0.08 , 
     depth_cutoff_offset: Some(0.05),
 
-    color: Rgba(
-        red: 0.2,
-        green: 0.3,
-        blue: 0.7,
-        alpha: 0.8
-    ),
-     emissive: Rgba(
-         red: 1.0,
-        green: 0.3,
-        blue: 70.0,
-        alpha: 30.6
-    )
+    color: LinearRgba(
+            red: 0.2,
+            green: 0.3,
+            blue: 0.7,
+            alpha: 0.8
+        ),
+     emissive: LinearRgba(
+              red: 1.0,
+             green: 0.3,
+             blue: 70.0,
+             alpha: 30.6
+         )
       
 )
 

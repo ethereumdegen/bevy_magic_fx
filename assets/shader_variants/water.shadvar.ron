@@ -10,17 +10,17 @@
    
 
     color: LinearRgba(
-        red: 1.0,
-        green:  1.0,
-        blue:  1.0,
-        alpha: 0.8
-    ),
+            red: 1.0,
+            green:  1.0,
+            blue:  1.0,
+            alpha: 0.8
+        ),
      emissive: LinearRgba(
-         red: 1.0,
-        green: 1.0,
-        blue: 6.0,
-        alpha: 1.0
-    )
+              red: 1.0,
+             green: 1.0,
+             blue: 6.0,
+             alpha: 1.0
+         )
       
 )
 

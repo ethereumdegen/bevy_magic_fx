@@ -8,17 +8,17 @@
     distortion_amount: 0.12 , 
 
     color: LinearRgba(
-        red: 0.2,
-        green: 0.3,
-        blue: 0.2,
-        alpha: 0.8
-    ),
+            red: 0.2,
+            green: 0.3,
+            blue: 0.2,
+            alpha: 0.8
+        ),
      emissive: LinearRgba(
-         red: 33.0,
-        green: 0.3,
-        blue: 55.0,
-        alpha: 3.6
-    )
+              red: 33.0,
+             green: 0.3,
+             blue: 55.0,
+             alpha: 3.6
+        ) 
       
 )
 

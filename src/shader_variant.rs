@@ -22,8 +22,8 @@ pub struct ShaderVariantManifest {
 
     pub distortion_amount: f32,
 
-    pub color: Color,
-    pub emissive: Color,
+    pub color: LinearRgba,
+    pub emissive: LinearRgba,
  
     pub depth_cutoff_offset: Option<f32> ,   // use depth bias for this ? 
 

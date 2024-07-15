@@ -38,7 +38,7 @@ pub fn build_animated_material(
    Ok(
     ExtendedMaterial {
                     base: StandardMaterial {
-                        base_color,
+                        base_color : base_color.into(),
                         emissive: emissive.into(),
                         // can be used in forward or deferred mode.
                         opaque_render_method: OpaqueRendererMethod::Auto,
