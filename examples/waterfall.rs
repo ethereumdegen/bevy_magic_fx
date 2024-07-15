@@ -38,7 +38,7 @@ fn main() {
         .insert_resource(BuiltVfxResource::default())
         .insert_resource(AssetLoadingResource::default())
         .insert_resource(FolderLoadingResource::default())
-         .init_state::<LoadingState>()
+         
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
         .add_plugins(bevy_obj::ObjPlugin)
 
@@ -48,7 +48,7 @@ fn main() {
 
          .add_systems(Update, update_load_folders)
  
-
+         .init_state::<LoadingState>()
         .add_systems(OnEnter(LoadingState::FundamentalAssetsLoad), update_loading_shader_variant_manifest)
         .add_systems(OnEnter(LoadingState::ShadersLoad), update_loading_magic_fx_variant_manifest)
          .add_systems(OnEnter(LoadingState::Complete) , spawn_magic_fx) 
