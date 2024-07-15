@@ -12,7 +12,7 @@
  #import bevy_pbr::mesh_functions
  #import bevy_pbr::prepass_utils
 
- #import bevy_shader_utils::fresnel::fresnel
+//  #import bevy_shader_utils::fresnel::fresnel
  #import bevy_pbr::mesh_view_bindings view
 
 struct StandardMaterial {
@@ -263,3 +263,35 @@ fn alpha_blend(top: vec4<f32>, bottom: vec4<f32>) -> vec4<f32> {
     return vec4<f32>(color, alpha);  
 }
  
+
+
+ //from bevy_shader_utils 
+fn fresnel(
+    camera_view_world_position: vec3<f32>,
+    world_position: vec3<f32>,
+    world_normal: vec3<f32>,
+    power: f32,
+    strength: f32,
+) -> f32 {
+    // The view vector. V is a unit vector pointing from the fragment
+    // on the sphere toward the camera.
+    //
+    // this comment is how you would write it in your own code
+    // var V = normalize(view.world_position.xyz - world_position.xyz);
+    var V = normalize(camera_view_world_position - world_position);
+
+    // The dot product returns the angle between N and V where 
+    // fragments on the sphere that are pointing at the camera
+    // (have the same angle as the V) are 1.0, faces perpendicular 
+    // to V are 0.0, faces pointing away are -1.0.
+    var fresnel = 1.0 - dot(world_normal, V);
+
+    // The fresnel value here is the inverse of NdotV. 
+    // So fragments pointing away will now be 1.0 and ones 
+    // pointing at the camera will be 0.0
+    // var fresnel = clamp(1.0 - NdotV, 0.0, 1.0);
+
+    // Here's were increasing the contrast with pow 
+    // and making it brighter by multiplying by 2
+    return pow(fresnel, power) * strength;
+};
