@@ -11,6 +11,7 @@ pub mod euler_transform;
 pub mod magic_fx;
 pub mod magic_fx_variant;
 pub mod shader_variant;
+pub mod magic_fx_beam;
 pub(crate) mod util;
 
 pub  mod camera;
@@ -48,23 +49,9 @@ impl Plugin for MagicFxPlugin {
                 ..default() 
             })
 
-             .add_systems(Update,( 
-
-                magic_fx::update_magic_fx_variants_added,
-                 magic_fx::update_magic_fx_variants,
-                 magic_fx::update_magic_fx_instances_visibility,
-                  magic_fx::update_magic_fx_instances_translation_scale,
-                  magic_fx::update_magicfx_standard_rotation,
-                magic_fx::update_magicfx_billboard_rotation,
-                  magic_fx::update_magicfx_anim_frames,
-                   magic_fx::update_magicfx_tint_color
-
-
-
-
-                ) .chain() ) 
-
-             
+            .add_plugins(magic_fx_beam::magic_fx_beam_plugin)
+            .add_plugins(magic_fx::magic_fx_comp_plugin)
+ 
             ;
 
     }

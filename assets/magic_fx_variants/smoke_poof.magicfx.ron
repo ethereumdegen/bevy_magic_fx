@@ -7,7 +7,7 @@
   (
     shader_variant_name: "smoke_cloud_1.shadvar",
 	  mesh_name:  "meshes/plane_vertical.obj", 
-	    billboard_mesh: true,
+	   fx_style: Billboard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,
 		  start_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.2,1.2,1.2)),
@@ -33,7 +33,7 @@
   (
     shader_variant_name: "explosion_1.shadvar",
 	  mesh_name:  "meshes/plane_vertical.obj", 
-	    billboard_mesh: true,
+	   fx_style: Billboard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,
 		  start_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.2,1.2,1.2)),
@@ -59,7 +59,7 @@
   (
     shader_variant_name: "dirt_1.shadvar",
 	  mesh_name:  "meshes/plane_horizontal.obj", 
-	    billboard_mesh: false,
+	   fx_style: Standard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,
 		  start_transform: (translation: (0.0,0.2,0.0), rotation:(0.0,0.0,0.0),scale:(1.2,1.2,1.2)),
@@ -85,7 +85,7 @@
      (
     shader_variant_name: "smoke_streak_1.shadvar",
 	  mesh_name:  "meshes/plane_vertical.obj", 
-	    billboard_mesh: false,
+	   fx_style: Standard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,
 		  start_transform: (translation: (1.0,0.0,0.0), rotation:(3.14,0.0,0.0),scale:(0.5,0.5,0.5)),
@@ -111,7 +111,7 @@
      (
     shader_variant_name: "smoke_streak_1.shadvar",
 	  mesh_name:  "meshes/plane_vertical.obj", 
-	    billboard_mesh: false,
+	    fx_style: Standard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,
 		  start_transform: (translation: (-1.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(0.5,0.5,0.5)),
@@ -137,7 +137,7 @@
     (
     shader_variant_name: "smoke_streak_1.shadvar",
 	  mesh_name:  "meshes/plane_vertical.obj", 
-	    billboard_mesh: false,
+	    fx_style: Standard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,
 		  start_transform: (translation: (0.0,0.0,1.0), rotation:(1.57,0.0,0.0),scale:(0.5,0.5,0.5)),
@@ -162,7 +162,7 @@
      (
     shader_variant_name: "smoke_streak_1.shadvar",
 	  mesh_name:  "meshes/plane_vertical.obj", 
-	    billboard_mesh: false,
+	   fx_style: Standard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,
 		  start_transform: (translation: (0.0,0.0,-1.0), rotation:(4.71,0.0,0.0),scale:(0.5,0.5,0.5)),

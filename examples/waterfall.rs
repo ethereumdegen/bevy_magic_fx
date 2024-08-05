@@ -35,14 +35,14 @@ use bevy_magic_fx::camera;
 
 fn main() {
     App::new()
+
+        .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
+        .add_plugins(bevy_obj::ObjPlugin)
+
         .insert_resource(BuiltVfxResource::default())
         .insert_resource(AssetLoadingResource::default())
         .insert_resource(FolderLoadingResource::default())
          
-        .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
-        .add_plugins(bevy_obj::ObjPlugin)
-
-
         .add_plugins( MagicFxPlugin )
 
 

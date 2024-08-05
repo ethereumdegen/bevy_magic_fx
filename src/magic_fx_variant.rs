@@ -29,7 +29,8 @@ pub struct MagicFxInstanceManifest {
     pub shader_variant_name: String,
 
     pub mesh_name: String,
-    pub billboard_mesh : bool, 
+    //pub billboard_mesh : bool, 
+    pub fx_style: MagicFxStyle,
 
     pub start_time_offset: f32,
     pub end_time_offset: f32,
@@ -50,6 +51,14 @@ impl TypePath for MagicFxVariantManifest {
     fn type_path() -> &'static str {
         "magicfx.ron"
     }
+}
+
+#[derive(Clone,Serialize,Deserialize,Debug,Component,Eq,PartialEq,Hash )]
+pub enum MagicFxStyle {
+    Standard, 
+    Billboard , 
+    Beam 
+
 }
 
 #[derive(Debug, Clone)]
@@ -104,7 +113,7 @@ impl MagicFxVariant {
 pub struct MagicFxInstance {
     
     pub mesh_handle: Handle<Mesh>,
-    pub billboard_mesh : bool, 
+    pub fx_style : MagicFxStyle, 
     pub start_time_offset: Duration,
     pub end_time_offset: Duration,
     pub start_transform: EulerTransform,
@@ -141,7 +150,7 @@ impl MagicFxInstance {
 
         
             mesh_handle: mesh_handle.clone (),
-            billboard_mesh: manifest.billboard_mesh,
+            fx_style: manifest.fx_style.clone(),
             start_time_offset: Duration::from_secs_f32(manifest.start_time_offset),
             start_transform: manifest.start_transform ,
             end_transform: manifest.end_transform ,

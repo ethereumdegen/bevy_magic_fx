@@ -6,7 +6,7 @@
 
      shader_variant_name: "beam.shadvar",
 	  mesh_name:  "meshes/spin_swirl.obj", 
-	    billboard_mesh: false,
+	   fx_style: Standard,
 		  start_time_offset: 0.2,
 		  end_time_offset: 1.5,
 		  start_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.0,0.2,1.0)),
@@ -17,7 +17,7 @@
   (
     shader_variant_name: "lightning_01.shadvar",
 	  mesh_name:  "meshes/sunshafts.obj", 
-	    billboard_mesh: false,
+	    fx_style: Standard,
 		  start_time_offset: 0.2,
 		  end_time_offset: 0.5,
 		  start_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.0,1.0,1.0)),
@@ -33,7 +33,7 @@
    (
     shader_variant_name: "beam.shadvar",
 	  mesh_name:  "meshes/sunshafts.obj", 
-	    billboard_mesh: false,
+	    fx_style: Standard,
 		  start_time_offset: 0.3,
 		  end_time_offset: 0.5,
 		  start_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(0.4,1.0,0.4)),
@@ -47,7 +47,7 @@
   (
     shader_variant_name: "magic_01.shadvar",
 	  mesh_name:  "meshes/plane_horizontal.obj", 
-	    billboard_mesh: false,
+	    fx_style: Standard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.5,
 		  start_transform: (translation: (0.0,0.4,0.0), rotation:(0.0,0.0,0.0),scale:(1.0,1.0,1.0)),

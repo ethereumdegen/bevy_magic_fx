@@ -1,6 +1,7 @@
 //! This example demonstrates the built-in 3d shapes in Bevy.
 //! The scene includes a patterned texture and a rotation for visualizing the normals and UVs.
 
+use bevy_magic_fx::magic_fx_beam::MagicFxBeamComponent;
 use std::f32::consts::PI;
 
   
@@ -18,7 +19,7 @@ use bevy::core_pipeline::tonemapping::Tonemapping;
 
 use bevy::{core_pipeline::bloom::BloomCompositeMode, prelude::*};
 
-use bevy_magic_fx::magic_fx::{MagicFxVariantComponent,MagicFxBillboardTarget};
+use bevy_magic_fx::magic_fx::{MagicFxNoAutoTransform,MagicFxVariantComponent,MagicFxBillboardTarget};
 use bevy_magic_fx::{ MagicFxPlugin};
 
 //use bevy_magic_fx::magic_fx::{  MagicFxVariantComponent, };
@@ -35,12 +36,14 @@ use bevy_magic_fx::camera;
 
 fn main() {
     App::new()
-        .insert_resource(BuiltVfxResource::default())
+   
+        .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
+        .add_plugins(bevy_obj::ObjPlugin)
+
+             .insert_resource(BuiltVfxResource::default())
         .insert_resource(AssetLoadingResource::default())
         .insert_resource(FolderLoadingResource::default())
          .init_state::<LoadingState>()
-        .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
-        .add_plugins(bevy_obj::ObjPlugin)
 
 
         .add_plugins( MagicFxPlugin )
@@ -488,7 +491,7 @@ fn spawn_magic_fx(
                         }) ;
     
 
-    let  corona_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/glowy_corona.magicfx.ron").unwrap();
+       let  corona_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/glowy_corona.magicfx.ron").unwrap();
 
           commands .spawn(SpatialBundle {
 
@@ -499,6 +502,25 @@ fn spawn_magic_fx(
                             magic_fx: corona_fx.clone(),
                             start_time: time.elapsed(),
                         }) ;
+
+
+         let simple_beam_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/simple_beam.magicfx.ron").unwrap();
+
+          commands.spawn(SpatialBundle {
+
+                            transform: Transform::from_xyz(16.0,0.0,0.0) ,
+                            ..default()
+                        })
+                        .insert(MagicFxVariantComponent {
+                            magic_fx: simple_beam_fx.clone(),
+                            start_time: time.elapsed(),
+                        })
+
+                        .insert(MagicFxBeamComponent {
+                             end_point: Vec3::new( 16.0,20.0, -8.0 ) 
+                        })
+                         
+                         ;
 
 
 

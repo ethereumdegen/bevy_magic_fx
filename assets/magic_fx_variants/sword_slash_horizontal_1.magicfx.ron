@@ -7,7 +7,7 @@
   (
     shader_variant_name: "sword_slash_1.shadvar",
 	  mesh_name:  "meshes/slash_180.obj", 
-	    billboard_mesh: false,
+	    fx_style: Standard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 0.5,
 

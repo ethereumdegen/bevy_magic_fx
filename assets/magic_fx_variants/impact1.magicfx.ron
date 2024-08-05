@@ -8,7 +8,7 @@
   (
     shader_variant_name: "impact_1.shadvar",
 	  mesh_name:  "meshes/plane_vertical.obj", 
-	    billboard_mesh: true,
+	    fx_style: Billboard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,
 		  start_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(0.6,0.6,0.6)),

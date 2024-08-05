@@ -3,6 +3,7 @@ use std::{ops::Div, time::Duration};
 
 use bevy::prelude::*;
 
+use crate::magic_fx_variant::MagicFxStyle;
 use crate::{
     animated_material::{AnimatedMaterial, AnimatedMaterialBase}, 
     magic_fx_variant::{MagicFxInstance, MagicFxVariant},
@@ -23,6 +24,7 @@ pub struct MagicFxBillboardTarget {
 }
 
 
+/*
 #[derive(Component)]
 pub struct MagicFxBillboardComponent {
      
@@ -33,6 +35,8 @@ pub struct MagicFxStandardRotationComponent {
      
 }
 
+*/
+
 
 
 #[derive(Component)]
@@ -40,6 +44,35 @@ pub struct MagicFxInstanceComponent {
     pub instance: MagicFxInstance,
   //  pub start_time: Duration, // find from parent 
 }
+
+
+
+pub(crate) fn magic_fx_comp_plugin(app: &mut App) {
+    
+    app
+        .add_systems(Update,( 
+
+                 update_magic_fx_variants_added,
+                 update_magic_fx_variants,
+                 update_magic_fx_instances_visibility,
+                  update_magic_fx_instances_translation_scale,
+                  update_magicfx_standard_rotation,
+                  update_magicfx_billboard_rotation,
+                  update_magicfx_anim_frames,
+                   update_magicfx_tint_color
+
+
+
+
+                ) .chain() ) 
+       
+       ;
+
+}
+
+#[derive(Component,Debug,Clone)]
+pub struct MagicFxNoAutoTransform; 
+
 
 /*
 
@@ -77,11 +110,11 @@ pub fn update_magic_fx_variants_added(
 
             commands.entity(fx_entity).add_child(magic_fx_child);
 
-            if *&instance.billboard_mesh {
-                commands.entity(magic_fx_child).insert(MagicFxBillboardComponent{});
-            }else{
-                 commands.entity(magic_fx_child).insert(MagicFxStandardRotationComponent{});
-            }
+            let style_component = &instance.fx_style;
+
+            commands.entity(magic_fx_child).insert( style_component.clone() );
+
+          
         }
     }
 }
@@ -174,7 +207,8 @@ pub fn update_magic_fx_instances_translation_scale(
          
         &mut Transform,
         &MagicFxInstanceComponent,
-        &Parent
+        &Parent,
+        &MagicFxStyle,
     )>,
 
     magic_fx_variant_query: Query<&MagicFxVariantComponent>,
@@ -182,9 +216,15 @@ pub fn update_magic_fx_instances_translation_scale(
 ) {
     let current_time = time.elapsed();
 
-    for (entity,   mut fx_xform, instance_comp, parent) in magic_fx_instance_query.iter_mut() {
+    for (entity,   mut fx_xform, instance_comp, parent, magic_fx_style) in magic_fx_instance_query.iter_mut() {
        
-        let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.get()  ).ok() else {continue};
+       
+        if magic_fx_style != &MagicFxStyle::Standard &&  magic_fx_style != &MagicFxStyle::Billboard {
+            continue;
+        }
+
+         let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.get()  ).ok() else {continue};
+
 
 
         let instance = &instance_comp.instance;
@@ -196,9 +236,7 @@ pub fn update_magic_fx_instances_translation_scale(
 
         let is_visible = current_time >= start_time && current_time <= end_time;
  
-        //if not billboarded, that means rotation should occur 
-       
-
+         
             let start_xform = instance.start_transform.clone();
             let end_xform = instance.end_transform.clone();
 
@@ -220,10 +258,7 @@ pub fn update_magic_fx_instances_translation_scale(
                  fx_xform.translation = new_transform.translation;
                  fx_xform.scale = new_transform.scale;
 
-                 // if !is_billboarded {
-                 //   fx_xform.rotation = new_transform.rotation;
-                 // }
-
+                 
             } else {
                 // If not visible, or outside the lerp range, you might want to set it to start or end transform
                 // Adjust this based on your needs, for now, let's assume it resets to start_xform if not visible
@@ -232,13 +267,7 @@ pub fn update_magic_fx_instances_translation_scale(
                  fx_xform.translation = new_transform.translation;
                  fx_xform.scale = new_transform.scale;
 
-                  //if !is_billboarded {
-                  //  fx_xform.rotation = new_transform.rotation;
-                  //}
-
-
-
-               // *fx_xform = start_xform;
+                   
             }
 
           
@@ -255,17 +284,23 @@ pub fn update_magicfx_standard_rotation(
          
         &mut Transform,
         &MagicFxInstanceComponent,
-        &Parent
-    ), With<MagicFxStandardRotationComponent> >,
+        &Parent,
+        &MagicFxStyle
+    )  >,
 
     magic_fx_variant_query: Query<&MagicFxVariantComponent>,
     time: Res<Time>,
 ) {
     let current_time = time.elapsed();
 
-    for (entity,   mut fx_xform, instance_comp, parent) in magic_fx_instance_query.iter_mut() {
+    for (entity,   mut fx_xform, instance_comp, parent, magic_fx_style) in magic_fx_instance_query.iter_mut() {
        
-        let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.get()  ).ok() else {continue};
+       
+        if magic_fx_style != &MagicFxStyle::Standard {
+            continue;
+        }
+
+         let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.get()  ).ok() else {continue};
 
 
         let instance = &instance_comp.instance;
@@ -443,9 +478,9 @@ pub fn update_magicfx_tint_color(
 
 pub fn update_magicfx_billboard_rotation(
 
-    target_query: Query<&GlobalTransform, (With<MagicFxBillboardTarget>, Without<MagicFxBillboardComponent>)>,
+    target_query: Query<&GlobalTransform, With<MagicFxBillboardTarget> >,
 
-    mut magicfx_billboard_query: Query<(&mut Transform, &GlobalTransform), (With<MagicFxBillboardComponent>,Without<MagicFxBillboardTarget>)>
+    mut magicfx_billboard_query: Query<(&mut Transform, &GlobalTransform, &MagicFxStyle), Without<MagicFxBillboardTarget> >
 
 ){
 
@@ -453,10 +488,14 @@ pub fn update_magicfx_billboard_rotation(
 
     if let Some(target_xform ) = target_query.get_single().ok().cloned() {
     
+
       
       
-        for( mut magicfx_xform,  magicfx_global_xform) in magicfx_billboard_query.iter_mut(){
-     
+        for( mut magicfx_xform,  magicfx_global_xform, magic_fx_style) in magicfx_billboard_query.iter_mut(){
+        
+            if magic_fx_style != &MagicFxStyle::Billboard {
+                continue;
+            }
           
             let dir = (target_xform.translation() - magicfx_global_xform.translation()).normalize();
 
