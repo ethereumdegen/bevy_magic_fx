@@ -338,13 +338,17 @@ fn update_loading_magic_fx_variant_manifest(
    // mut ev_asset: EventReader<AssetEvent<MagicFxVariantManifest>>,
     fx_variant_assets: ResMut<Assets<MagicFxVariantManifest>>,
 
-    mut commands: Commands,
+    mut _commands: Commands,
 
    mut built_vfx_resource: ResMut<BuiltVfxResource>,
  
     asset_loading_resource: Res<AssetLoadingResource>,
 
     mut next_state: ResMut<NextState<LoadingState>>,
+
+      animated_materials_assets: Res<Assets<AnimatedMaterial>>,
+    mut asset_server: ResMut<AssetServer>,
+
  
 
     time: Res<Time>,
@@ -373,6 +377,11 @@ fn update_loading_magic_fx_variant_manifest(
                         &mesh_handles_map,
                       
                         &animated_materials_map,
+
+
+                        &animated_materials_assets,
+                        &mut asset_server 
+     
                      
                         
                     ).unwrap();

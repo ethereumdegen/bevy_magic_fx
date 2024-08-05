@@ -1,6 +1,7 @@
 
 
  
+use crate::magic_fx::MagixFxStandardUpdateSet;
 use crate::magic_fx::MagicFxBillboardTarget;
 use crate::magic_fx_variant::MagicFxStyle;
 use bevy::prelude::*;
@@ -14,7 +15,10 @@ pub(crate) fn magic_fx_beam_plugin(app: &mut App) {
        		update_magic_beam_xform,
        		//update_magic_beam_rotation
 
-       		).chain())
+       		).chain()
+       	.after( MagixFxStandardUpdateSet )
+
+       	)
        ;
 
 }
@@ -33,7 +37,7 @@ pub struct MagicFxBeamComponent {
 fn update_magic_beam_xform(
 
  
-    billboard_target_query: Query<Entity, With<MagicFxBillboardTarget> >,
+   billboard_target_query: Query<Entity, With<MagicFxBillboardTarget> >,
 
    global_xform_query: Query<&GlobalTransform>,
 
@@ -98,7 +102,9 @@ fn update_magic_beam_xform(
 	        magicfx_xform.rotation = rotation_to_end * rotation_to_face_billboard_target;
 
 	        // Scale the plane along the Z-axis to match the distance from start to end
-	        magicfx_xform.scale = Vec3::new(1.0, beam_length, 1.0);
+	       // magicfx_xform.scale = Vec3::new(1.0, beam_length, 1.0);
+
+	        magicfx_xform.scale.y = beam_length; 
 
 	        //info!("beam xform {:?}",magicfx_xform);
 

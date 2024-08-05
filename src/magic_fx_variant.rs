@@ -80,6 +80,9 @@ impl MagicFxVariant {
         mesh_handles_map: &HashMap<String, Handle<Mesh>>,
      
         animated_materials_map: &HashMap<String,Handle<AnimatedMaterial>>,
+
+         animated_materials_assets: &Res<Assets<AnimatedMaterial>>,
+        asset_server: &ResMut<AssetServer>
      
     ) -> Option<Self> {
        // let current_time = time.elapsed();
@@ -93,6 +96,8 @@ impl MagicFxVariant {
                     instance_manifest,
                     mesh_handles_map,
                     animated_materials_map,
+                    animated_materials_assets,
+                    asset_server,
                 )
             })
             .collect::<Option<Vec<MagicFxInstance>>>()?; // Early return None if any item is None
@@ -134,19 +139,34 @@ impl MagicFxInstance {
         mesh_handles_map: &HashMap<String, Handle<Mesh>>,
  
         animated_materials_map: &HashMap<String,Handle<AnimatedMaterial>>,
+
+        animated_materials_assets: &Res<Assets<AnimatedMaterial>>,
+        asset_server: &ResMut<AssetServer>
     ) -> Option<Self> {
 
         let mesh_handle = mesh_handles_map.get(&manifest.mesh_name)?;
+
+
  
 
          let shader_material_handle  = animated_materials_map
          .get(&manifest.shader_variant_name)?.clone();
+
+
+
+        let shader_material_deep_ref = animated_materials_assets.get(&shader_material_handle)? ;
+
+        let shader_material_deep_clone = shader_material_deep_ref.clone();
+
+        let new_shader_material_handle = asset_server.add( shader_material_deep_clone );
+
+
        
         Some(Self { 
 
             end_time_offset: Duration::from_secs_f32(manifest.end_time_offset),
          
-         	shader_material_handle,
+         	shader_material_handle:new_shader_material_handle,
 
         
             mesh_handle: mesh_handle.clone (),

@@ -59,16 +59,24 @@ pub(crate) fn magic_fx_comp_plugin(app: &mut App) {
                   update_magicfx_standard_rotation,
                   update_magicfx_billboard_rotation,
                   update_magicfx_anim_frames,
-                   update_magicfx_tint_color
+                  update_magicfx_tint_color
 
 
 
 
-                ) .chain() ) 
+                ) .chain() 
+                .in_set( MagixFxStandardUpdateSet )
+            ) 
        
        ;
 
 }
+
+#[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
+pub struct MagixFxStandardUpdateSet;
+
+
+
 
 #[derive(Component,Debug,Clone)]
 pub struct MagicFxNoAutoTransform; 
@@ -219,9 +227,9 @@ pub fn update_magic_fx_instances_translation_scale(
     for (entity,   mut fx_xform, instance_comp, parent, magic_fx_style) in magic_fx_instance_query.iter_mut() {
        
        
-        if magic_fx_style != &MagicFxStyle::Standard &&  magic_fx_style != &MagicFxStyle::Billboard {
-            continue;
-        }
+        //if magic_fx_style != &MagicFxStyle::Standard &&  magic_fx_style != &MagicFxStyle::Billboard {
+        //    continue;
+        //}
 
          let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.get()  ).ok() else {continue};
 

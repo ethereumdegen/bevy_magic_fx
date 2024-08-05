@@ -351,6 +351,9 @@ fn update_loading_magic_fx_variant_manifest(
     mut next_state: ResMut<NextState<LoadingState>>,
  
 
+    animated_materials_assets: Res<Assets<AnimatedMaterial>>,
+    mut asset_server: ResMut<AssetServer>,
+
     time: Res<Time>,
 ) {
      
@@ -377,6 +380,12 @@ fn update_loading_magic_fx_variant_manifest(
                         &mesh_handles_map,
                       
                         &animated_materials_map,
+
+
+                        &animated_materials_assets,
+                        &mut asset_server 
+     
+
                      
                         
                     ).expect(format!("could not load {:?}",file_path.to_string()).as_str());
