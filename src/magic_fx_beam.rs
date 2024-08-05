@@ -11,7 +11,7 @@ pub(crate) fn magic_fx_beam_plugin(app: &mut App) {
     app
          
        	.add_systems(Update, (
-       		update_magic_beam_scale,
+       		update_magic_beam_xform,
        		//update_magic_beam_rotation
 
        		).chain())
@@ -30,7 +30,7 @@ pub struct MagicFxBeamComponent {
 
 
 
-fn update_magic_beam_scale(
+fn update_magic_beam_xform(
 
  
     billboard_target_query: Query<Entity, With<MagicFxBillboardTarget> >,
@@ -79,70 +79,31 @@ fn update_magic_beam_scale(
 	        // Calculate the quaternion rotation to align the beam with the direction from start to end
 	        let rotation_to_end = Quat::from_rotation_arc(Vec3::Y, beam_direction);
 
-	        // Calculate the quaternion rotation to face the target direction (billboard effect)
-	        // Assuming that `Vec3::Y` is the up vector of the plane, use the cross product to find the required rotation axis
-	       // let rotation_to_face_target = Quat::from_rotation_arc(Vec3::Z, Vec3::new(target_direction.x, target_direction.z, 0.0).normalize());
+	               // Calculate the horizontal direction to the target
+	        let horizontal_target_direction = Vec3::new(target_direction.x, 0.0, target_direction.z).normalize();
 
+	        // Calculate the rotation to face the target on the XZ plane (around Y-axis)
+	        let current_beam_direction = Vec3::new(beam_direction.x, 0.0, beam_direction.z).normalize();
+	        let rotation_to_face_billboard_target = Quat::from_rotation_arc(current_beam_direction, horizontal_target_direction);
+
+
+
+ 
 	        // Update the transform
 	        // Set the position to the start point
 	        magicfx_xform.translation = Vec3::new(0.0,0.0,0.0);
 
 	        // Set the rotation to align the plane with the direction from start to end
 	        // Combine the rotations for beam direction and facing the target
-	        magicfx_xform.rotation = rotation_to_end ;
+	        magicfx_xform.rotation = rotation_to_end * rotation_to_face_billboard_target;
 
 	        // Scale the plane along the Z-axis to match the distance from start to end
 	        magicfx_xform.scale = Vec3::new(1.0, beam_length, 1.0);
 
-	        info!("beam xform {:?}",magicfx_xform);
+	        //info!("beam xform {:?}",magicfx_xform);
 
 
         }       
 
 
-}
-
-fn update_magic_beam_rotation(
-
-	//mut magic_fx_query: Query< ( &mut Transform , &MagicFxBeamComponent) > ,
-    target_query: Query<&GlobalTransform, With<MagicFxBillboardTarget> >,
-
-    mut magicfx_query: Query<(&mut Transform, &GlobalTransform, &MagicFxStyle), Without<MagicFxBillboardTarget> >
-
-){
-
-    //let target_xform = target_query.get_single().cloned() ;
-
-    if let Some(target_xform ) = target_query.get_single().ok().cloned() {
-    
-
-      
-      
-        for( mut magicfx_xform,  magicfx_global_xform, magic_fx_style) in magicfx_query.iter_mut(){
-        
-            if magic_fx_style != &MagicFxStyle::Beam {
-                continue;
-            }
-          
-            let dir = (target_xform.translation() - magicfx_global_xform.translation()).normalize();
-
-            // Calculate yaw and pitch
-            let yaw = -dir.z.atan2(dir.x);
-            let pitch = -dir.y.asin();
-
-            // Create quaternion from yaw and pitch
-            let yaw_rotation = Quat::from_rotation_y(yaw);
-         //   let pitch_rotation = Quat::from_rotation_x(pitch);
-
-            // Combine rotations
-            magicfx_xform.rotation = yaw_rotation ; // * pitch_rotation;
-
-
-        }       
-
-
-
-    }
-
-
-}
+} 

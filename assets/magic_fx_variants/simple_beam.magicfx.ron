@@ -15,16 +15,16 @@
 
 		  start_tint_color: Some(   LinearRgba(
 			        red: 1.0,
-			        green: 20.0,
+			        green: 1.0,
 			        blue: 1.0,
-			        alpha: 20.0
+			        alpha: 1.0
 			    )),
 
 		  end_tint_color: Some(   LinearRgba(
 			        red: 1.0,
-			        green:20.0,
+			        green:1.0,
 			        blue: 1.0,
-			        alpha: 20.0
+			        alpha: 1.0
 			    )), 
 
     ),
