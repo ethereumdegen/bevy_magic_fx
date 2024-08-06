@@ -526,7 +526,7 @@ fn spawn_magic_fx(
                         })
 
                         .insert(MagicFxBeamComponent {
-                             end_point: Vec3::new( 16.0,20.0, -8.0 ) 
+                             end_point: Some( Vec3::new( 16.0,20.0, -8.0 ) ) 
                         })
                          
                          ;
