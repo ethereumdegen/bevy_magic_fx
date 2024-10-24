@@ -538,11 +538,21 @@ fn spawn_magic_fx(
                         })
 
                         .insert(MagicFxBeamComponent {
-                             end_point: Vec3::new( 16.0,20.0, -8.0 ) 
+                             end_point: Some( Vec3::new( 16.0,20.0, -8.0 ) ) 
                         })
                          
                          ;
 
 
+       let  heart_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/heart.magicfx.ron").unwrap();
 
+          commands .spawn(SpatialBundle {
+
+                            transform: Transform::from_xyz(18.0,2.0,0.0) ,
+                            ..default()
+                        })
+                        .insert(MagicFxVariantComponent {
+                            magic_fx: heart_fx.clone(),
+                            start_time: time.elapsed(),
+                        }) ;          
 }

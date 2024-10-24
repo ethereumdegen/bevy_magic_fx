@@ -24,10 +24,10 @@ pub(crate) fn magic_fx_beam_plugin(app: &mut App) {
 }
 
 
-#[derive(Component,Clone,Debug)]
+#[derive(Component,Clone,Debug,Default)]
 pub struct MagicFxBeamComponent {
 
-	pub end_point: Vec3
+	pub end_point: Option<Vec3>
 
 
 }	
@@ -65,7 +65,7 @@ fn update_magic_beam_xform(
   			let Some(magic_fx_beam_comp) = beam_comp_query.get( parent.get() ).ok() else {continue};
 
   			let start_point  = parent_global_xform.translation();
-  			let end_point  = magic_fx_beam_comp.end_point.clone();
+  			let Some(end_point)  = magic_fx_beam_comp.end_point.clone() else{continue};
 
   			let billboard_target_position = billboard_target_xform.translation();
 

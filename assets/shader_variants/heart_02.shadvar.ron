@@ -1,0 +1,31 @@
+
+
+
+(
+    
+    
+    texture: "textures/heart_02.TGA",
+
+    masking_texture: Some( "textures/heart_02.TGA" ),
+
+    animation_speed: (0.0,0.0),  
+
+    distortion_speed: (0.02,0.01),
+    scroll_repeats: ( 1.0,1.0),
+    distortion_amount: 0.02 , 
+
+    color: LinearRgba(
+            red: 0.5,
+            green: 0.3,
+            blue: 0.2,
+            alpha: 0.8
+        ),
+     emissive: LinearRgba(
+              red: 0.8,
+             green: 0.5,
+             blue: 0.5,
+             alpha: 0.5
+         )
+      
+)
+
