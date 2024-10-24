@@ -464,15 +464,30 @@ fn spawn_magic_fx(
 
         let explosion_simple_2 = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/explosion_simple.magicfx.ron").unwrap();
 
+
+        //simulates a torch and proves that there are issues 
           commands .spawn(SpatialBundle {
 
                             transform: Transform::from_xyz(-4.0,0.0,4.0).with_rotation( Quat::from_rotation_z( 1.0 ) ),
                             ..default()
                         })
-                        .insert(MagicFxVariantComponent {
-                            magic_fx: explosion_simple_2.clone(),
-                            start_time: time.elapsed(),
-                        }) ;
+                        .with_children( |parent|   {
+
+                              parent .spawn(SpatialBundle {
+
+                                   // transform: Transform::from_xyz(0.0,0.0,0.0).with_rotation( Quat::from_rotation_z( 0.0 ) ),
+                                    ..default()
+                                })
+                                .insert(MagicFxVariantComponent {
+                                    magic_fx: explosion_simple_2.clone(),
+                                    start_time: time.elapsed(),
+                                }) ;
+
+
+                               
+                        }  ) ;
+
+        
  
  
          let impact_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/impact1.magicfx.ron").unwrap();
