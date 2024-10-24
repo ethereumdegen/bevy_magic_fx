@@ -1,0 +1,41 @@
+(
+    
+    
+    magic_fx_instances: [
+  
+
+  (
+    shader_variant_name: "explosion_1.shadvar",
+	  mesh_name:  "meshes/plane_vertical.obj", 
+	   fx_style: Billboard,
+		  start_time_offset: 0.0,
+		  end_time_offset: 1.0,
+		  start_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.2,1.2,1.2)),
+		  end_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.4,1.4,1.4)),
+
+		  start_tint_color: Some(   LinearRgba(
+			        red: 1.0,
+			        green: 1.0,
+			        blue: 1.0,
+			        alpha: 1.0
+			    )),
+
+		  end_tint_color: Some(   LinearRgba(
+			        red: 1.0,
+			        green:1.0,
+			        blue: 1.0,
+			        alpha: 0.1
+			    )), 
+
+    ),
+ 
+ 
+    
+
+    ] ,  
+
+    max_time: Some(1.0),
+    repeating: true 
+
+
+)

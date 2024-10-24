@@ -450,17 +450,30 @@ fn spawn_magic_fx(
                             start_time: time.elapsed(),
                         }) ;
 
-         let smoke_poof_fx_2 = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/smoke_poof.magicfx.ron").unwrap();
+         let explosion_simple_1 = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/explosion_simple.magicfx.ron").unwrap();
 
           commands .spawn(SpatialBundle {
 
-                            transform: Transform::from_xyz(4.0,0.0,4.0).with_rotation( Quat::from_rotation_z( 1.0 ) ),
+                            transform: Transform::from_xyz(-4.0,0.0,0.0).with_rotation( Quat::from_rotation_z( 0.0 ) ),
                             ..default()
                         })
                         .insert(MagicFxVariantComponent {
-                            magic_fx: smoke_poof_fx_2.clone(),
+                            magic_fx: explosion_simple_1.clone(),
                             start_time: time.elapsed(),
                         }) ;
+
+        let explosion_simple_2 = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/explosion_simple.magicfx.ron").unwrap();
+
+          commands .spawn(SpatialBundle {
+
+                            transform: Transform::from_xyz(-4.0,0.0,4.0).with_rotation( Quat::from_rotation_z( 1.0 ) ),
+                            ..default()
+                        })
+                        .insert(MagicFxVariantComponent {
+                            magic_fx: explosion_simple_2.clone(),
+                            start_time: time.elapsed(),
+                        }) ;
+ 
  
          let impact_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/impact1.magicfx.ron").unwrap();
 
