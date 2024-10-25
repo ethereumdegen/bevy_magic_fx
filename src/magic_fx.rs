@@ -486,21 +486,34 @@ pub fn update_magicfx_tint_color(
 
 pub fn update_magicfx_billboard_rotation(
 
-    target_query: Query<&GlobalTransform, With<MagicFxBillboardTarget> >,
+    target_query: Query<Entity, With<MagicFxBillboardTarget> >,
 
-    mut magicfx_billboard_query: Query<(&mut Transform, &GlobalTransform, &MagicFxStyle), Without<MagicFxBillboardTarget> >
+    global_xform_query: Query<&GlobalTransform>,
+
+    mut magicfx_billboard_query: Query<(Entity, &mut Transform,  &Parent, &MagicFxStyle), Without<MagicFxBillboardTarget> >
 
 ){
 
     //let target_xform = target_query.get_single().cloned() ;
 
-    if let Some(target_xform ) = target_query.get_single().ok().cloned() {
+    if let Some(target_entity ) = target_query.get_single().ok()  {
+
+        let Some(target_xform) = global_xform_query.get(target_entity).ok() else {return};
     
 
+       
       
-      
-        for( mut magicfx_xform,  magicfx_global_xform, magic_fx_style) in magicfx_billboard_query.iter_mut(){
-        
+        for( billboard_entity, mut magicfx_xform,  parent, magic_fx_style) in magicfx_billboard_query.iter_mut(){
+            
+
+            let Some(magicfx_global_xform) = global_xform_query.get(billboard_entity).ok() else {continue};
+
+            let parent_entity = parent.get();
+
+             let Some(parent_global_xform) = global_xform_query.get(parent_entity).ok() else {continue};
+
+
+
             if magic_fx_style != &MagicFxStyle::Billboard {
                 continue;
             }
@@ -511,12 +524,18 @@ pub fn update_magicfx_billboard_rotation(
             let yaw = -dir.z.atan2(dir.x);
             let pitch = -dir.y.asin();
 
+
+            let (_, parent_rotation , _ ) = parent_global_xform.to_scale_rotation_translation();
+            let corrective_rotation = parent_rotation.inverse();
+
+        //    magicfx_xform.rotation = magicfx_xform.rotation * corrective_rotation;// now its global rot should be identity 
+
             // Create quaternion from yaw and pitch
             let yaw_rotation = Quat::from_rotation_y(yaw);
          //   let pitch_rotation = Quat::from_rotation_x(pitch);
 
             // Combine rotations
-            magicfx_xform.rotation = yaw_rotation ; // * pitch_rotation;
+            magicfx_xform.rotation = yaw_rotation * corrective_rotation ; // * pitch_rotation;
 
 
         }       
