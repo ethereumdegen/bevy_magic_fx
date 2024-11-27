@@ -31,3 +31,9 @@ path = "examples/waterfall.rs"
 [[example]]
 name = "showcase"
 path = "examples/showcase.rs"
+
+
+
+[[example]]
+name = "preview"
+path = "examples/preview.rs"

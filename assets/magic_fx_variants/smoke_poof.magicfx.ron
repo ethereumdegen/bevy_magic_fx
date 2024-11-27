@@ -6,7 +6,7 @@
 
   (
     shader_variant_name: "smoke_cloud_1.shadvar",
-	  mesh_name:  "meshes/plane_vertical2.obj", 
+	  mesh_name:  "meshes/plane_vertical_2.obj", 
 	   fx_style: Billboard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,
@@ -32,7 +32,7 @@
 
   (
     shader_variant_name: "explosion_1.shadvar",
-	  mesh_name:  "meshes/plane_vertical2.obj", 
+	 mesh_name:  "meshes/plane_vertical_2.obj", 
 	   fx_style: Billboard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,
@@ -84,7 +84,7 @@
 
      (
     shader_variant_name: "smoke_streak_1.shadvar",
-	  mesh_name:  "meshes/plane_vertical2.obj", 
+	   mesh_name:  "meshes/plane_vertical_2.obj", 
 	   fx_style: Standard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,
@@ -110,7 +110,7 @@
 
      (
     shader_variant_name: "smoke_streak_1.shadvar",
-	  mesh_name:  "meshes/plane_vertical2.obj", 
+	  mesh_name:  "meshes/plane_vertical_2.obj", 
 	    fx_style: Standard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,
@@ -136,7 +136,7 @@
 
     (
     shader_variant_name: "smoke_streak_1.shadvar",
-	  mesh_name:  "meshes/plane_vertical2.obj", 
+	 mesh_name:  "meshes/plane_vertical_2.obj", 
 	    fx_style: Standard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,
@@ -161,7 +161,7 @@
 
      (
     shader_variant_name: "smoke_streak_1.shadvar",
-	  mesh_name:  "meshes/plane_vertical2.obj", 
+	 mesh_name:  "meshes/plane_vertical_2.obj", 
 	   fx_style: Standard,
 		  start_time_offset: 0.0,
 		  end_time_offset: 1.0,

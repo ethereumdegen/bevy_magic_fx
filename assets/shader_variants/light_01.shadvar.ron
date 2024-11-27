@@ -1,0 +1,27 @@
+
+
+
+(
+    
+    
+    texture: "textures/kenney/trace_07.png",
+    animation_speed: (0.0,0.0),  
+
+    distortion_speed: (0.05,0.05),
+    scroll_repeats: ( 1.0,1.0),
+    distortion_amount: 0.02 , 
+
+    color: LinearRgba(
+            red: 2.2,
+            green: 2.3,
+            blue: 1.0,
+            alpha: 0.8
+        ),
+     emissive: LinearRgba(
+              red: 2.5,
+             green: 2.5,
+             blue: 1.0,
+             alpha: 0.5
+         )
+      
+)
