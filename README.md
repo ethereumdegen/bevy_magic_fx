@@ -11,11 +11,13 @@ Define mesh-based VFX in RON files and load them into bevy
 
 ![more_vfx](https://github.com/ethereumdegen/bevy_magic_fx/assets/6249263/ba2b1827-e7e2-44ab-ae91-31e937ec375d)
 
-### How to use 
+### Quickstart 
 
 ```
-cargo run --example waterfall
+cargo run --example preview 
 ```
+
+(if it fails to load, try to remove all of the magic_fx_variants to another folder except light_sparkles.magicfx.ron. Or fix them by importing your own textures. ) 
 
 
 
