@@ -17,7 +17,7 @@ Define mesh-based VFX in RON files and load them into bevy
 cargo run --example preview 
 ```
 
-(if it fails to load, try to remove all of the magic_fx_variants to another folder except light_sparkles.magicfx.ron. Or fix them by importing your own textures. ) 
+(if it fails to load, try to delete or move all of the magic_fx_variants assets to another folder except light_sparkles.magicfx.ron. Or fix them by importing your own textures. ) 
 
 
 
