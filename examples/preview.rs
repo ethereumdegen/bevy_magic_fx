@@ -175,20 +175,16 @@ fn setup(
         brightness: 4000.0,
     });
 
-<<<<<<< HEAD
+ 
      let gray_color = Color::linear_rgba(0.3, 0.3, 0.3, 1.0);
-=======
-     let silver_color = Color::linear_rgba(0.7, 0.7, 0.7, 1.0);
->>>>>>> 0.15
+ 
 
     // ground plane
     commands.spawn(PbrBundle {
         mesh: meshes.add(Plane3d::default().mesh().size(50.0, 50.0)),
-<<<<<<< HEAD
+ 
         material: materials.add( gray_color ),
-=======
-        material: materials.add( silver_color ),
->>>>>>> 0.15
+  
         ..default()
     });
 
