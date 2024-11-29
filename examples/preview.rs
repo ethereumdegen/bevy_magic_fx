@@ -181,9 +181,9 @@ fn setup(
 
     // ground plane
     commands.spawn(PbrBundle {
-        mesh: meshes.add(Plane3d::default().mesh().size(50.0, 50.0)),
+        mesh: Mesh3d( meshes.add(Plane3d::default().mesh().size(50.0, 50.0)) ),
  
-        material: materials.add( gray_color ),
+        material: MeshMaterial3d( materials.add( gray_color )) ,
   
         ..default()
     });
