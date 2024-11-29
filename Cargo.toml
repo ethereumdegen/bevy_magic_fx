@@ -1,6 +1,7 @@
 [package]
 name = "bevy_magic_fx"
-version = "0.14.3"
+version = "0.15.0"
+rust-version = "1.81"
 license = "MIT"
 description = "Define mesh-based vfx in serialized files"
 edition = "2021" 
@@ -8,10 +9,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = { version = "0.14.0", features = ["tga"] }
-bevy_obj = "0.14"
+bevy = { version = "0.15.0", features = ["tga"] }
+bevy_obj = "0.15"
 
-bevy_common_assets = { version = "0.11", features = ["ron", "toml"] }
+bevy_common_assets = { version = "0.12", features = ["ron", "toml"] }
 
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -27,6 +28,12 @@ path = "examples/basic.rs"
 [[example]]
 name = "waterfall"
 path = "examples/waterfall.rs"
+
+
+[[example]]
+name = "preview"
+path = "examples/preview.rs"
+
 
 [[example]]
 name = "showcase"
