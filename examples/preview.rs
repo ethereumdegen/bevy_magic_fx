@@ -175,12 +175,16 @@ fn setup(
         brightness: 4000.0,
     });
 
+ 
      let gray_color = Color::linear_rgba(0.3, 0.3, 0.3, 1.0);
+ 
 
     // ground plane
     commands.spawn(PbrBundle {
-        mesh: meshes.add(Plane3d::default().mesh().size(50.0, 50.0)),
-        material: materials.add( gray_color ),
+        mesh: Mesh3d( meshes.add(Plane3d::default().mesh().size(50.0, 50.0)) ),
+ 
+        material: MeshMaterial3d( materials.add( gray_color )) ,
+  
         ..default()
     });
 
@@ -416,7 +420,9 @@ fn spawn_magic_fx(
           //at a later time, whenever, spawn the magic fx . This is usually from a spell cast.
               commands  .spawn(SpatialBundle {
 
+ 
                             transform: Transform::from_xyz(0.0,2.0,0.0) ,
+ 
                             ..default()
                         })
                         .insert(MagicFxVariantComponent {

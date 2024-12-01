@@ -373,7 +373,7 @@ pub fn update_magicfx_anim_frames(
       magic_fx_instance_query: Query<(
         Entity,
         &MagicFxInstanceComponent,
-        &Handle<AnimatedMaterial>,
+        &MeshMaterial3d< AnimatedMaterial >,
         &Parent
     )  >,
 
@@ -427,7 +427,7 @@ pub fn update_magicfx_tint_color(
       magic_fx_instance_query: Query<(
         Entity,
         &MagicFxInstanceComponent,
-        &Handle<AnimatedMaterial>,
+        &MeshMaterial3d< AnimatedMaterial >,
         &Parent
     )  >,
 

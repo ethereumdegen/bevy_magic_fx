@@ -186,8 +186,8 @@ impl MagicFxInstance {
         let shader_material = &self.shader_material_handle;
 
         return  animated_material::AnimatedMaterialBundle {
-                mesh: self.mesh_handle.clone(),
-                material: shader_material.clone(),
+                mesh: Mesh3d( self.mesh_handle.clone() ) ,
+                material: MeshMaterial3d( shader_material.clone() ),
 
                 transform: self.start_transform.clone().to_transform(),
                 visibility: Visibility::Hidden,
