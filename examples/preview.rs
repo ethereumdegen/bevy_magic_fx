@@ -409,7 +409,8 @@ fn spawn_magic_fx(
     ){
 
           println!("spawning magic fx  ");
-            let preview_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/light_sparkles.magicfx.ron").unwrap();
+            let preview_fx = built_vfx_resource.magic_fx_variants
+                .get("magic_fx_variants/light_flash.magicfx.ron").unwrap();
  
 
           //at a later time, whenever, spawn the magic fx . This is usually from a spell cast.

@@ -1,0 +1,74 @@
+(
+    
+    
+    magic_fx_instances: [
+ 
+ 
+
+  (
+    shader_variant_name: "light_03.shadvar",
+	  mesh_name:  "meshes/sparkles_tall.obj", 
+	   fx_style: Standard,
+		  start_time_offset: 0.0,
+		  end_time_offset: 1.0,
+		  start_transform: (translation: (0.0,0.2,0.0), rotation:(0.0,0.0,0.0),scale:(0.6,0.6,0.6)),
+		  end_transform: (translation: (0.0,0.4,0.0), rotation:(0.0,0.0,0.0),scale:(0.6,0.8,0.6)),
+
+		  start_tint_color: Some(   LinearRgba(
+			        red: 1.0,
+			        green: 1.0,
+			        blue: 1.0,
+			        alpha: 0.5
+			    )),
+
+		  end_tint_color: Some(   LinearRgba(
+			        red: 1.0,
+			        green:1.0,
+			        blue: 1.0,
+			        alpha: 0.0
+			    )), 
+
+    ),
+
+
+
+    
+
+
+  (
+    shader_variant_name: "light_sparks.shadvar",
+	  mesh_name:  "meshes/sparkles.obj", 
+	   fx_style: Standard,
+		  start_time_offset: 0.0,
+		  end_time_offset: 1.0,
+		  start_transform: (translation: (0.0,0.1,0.0), rotation:(0.5,0.5,0.0),scale:(0.6,0.6,0.6)),
+		  end_transform: (translation: (0.0,0.8,0.0), rotation:(1.5,1.5,0.0),scale:(0.6,0.8,0.6)),
+
+		  start_tint_color: Some(   LinearRgba(
+			        red: 1.0,
+			        green: 1.0,
+			        blue: 1.0,
+			        alpha: 1.0
+			    )),
+
+		  end_tint_color: Some(   LinearRgba(
+			        red: 1.0,
+			        green:1.0,
+			        blue: 1.0,
+			        alpha: 0.0
+			    )), 
+
+    ),
+
+ 
+ 
+ 
+    
+
+    ] ,  
+
+    max_time: Some(1.0),
+    repeating: true 
+
+
+)

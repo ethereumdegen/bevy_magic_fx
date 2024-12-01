@@ -1,0 +1,47 @@
+(
+    
+    
+    magic_fx_instances: [
+ 
+  
+
+    	//why is it spun 90 deg ? 
+
+     (
+    shader_variant_name: "light_02.shadvar",
+	  mesh_name:  "meshes/plane_vertical_2.obj", 
+	   fx_style: Billboard,
+		  start_time_offset: 0.0,
+		  end_time_offset: 0.25,
+		  start_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(0.8,0.8,0.8)),
+		  end_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.0,1.0,1.0)),
+
+
+		  start_tint_color: Some(   LinearRgba(
+			        red: 1.0,
+			        green: 1.0,
+			        blue: 1.0,
+			        alpha: 1.0
+			    )),
+
+		  end_tint_color: Some(   LinearRgba(
+			        red: 1.0,
+			        green:1.0,
+			        blue: 1.0,
+			        alpha: 0.0
+			    )), 
+
+    ),
+
+
+      
+ 
+    
+
+    ] ,  
+
+    max_time: Some(0.25),
+    repeating: true 
+
+
+)
