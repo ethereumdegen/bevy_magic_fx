@@ -1,3 +1,5 @@
+use crate::rotate_to::{get_rotate_towards,UpDirection};
+ 
 use std::ops::Mul;
 use std::{ops::Div, time::Duration};
 
@@ -58,6 +60,7 @@ pub(crate) fn magic_fx_comp_plugin(app: &mut App) {
                   update_magic_fx_instances_translation_scale,
                   update_magicfx_standard_rotation,
                   update_magicfx_billboard_rotation,
+                  update_magicfx_billboard_vertical_rotation,
                   update_magicfx_anim_frames,
                   update_magicfx_tint_color
 
@@ -484,7 +487,68 @@ pub fn update_magicfx_tint_color(
 
 
 
+
 pub fn update_magicfx_billboard_rotation(
+
+    target_query: Query<Entity, With<MagicFxBillboardTarget> >,
+
+    parent_query: Query<&Parent>,
+    global_xform_query: Query<&GlobalTransform>,
+
+    mut magicfx_billboard_query: Query<(Entity, &mut Transform,  &Parent, &MagicFxStyle), Without<MagicFxBillboardTarget> >
+
+){
+ 
+
+    if let Some(target_entity ) = target_query.get_single().ok()  {
+
+    //let Some(target_xform) = global_xform_query.get(target_entity).ok() else {return};
+    
+
+       
+      
+        for( billboard_entity, mut magicfx_xform,  parent, magic_fx_style) in magicfx_billboard_query.iter_mut(){
+                
+           if magic_fx_style != &MagicFxStyle::Billboard  {
+                continue;
+            }
+          
+
+
+           // let Some(magicfx_global_xform) = global_xform_query.get(billboard_entity).ok() else {continue};
+
+           // let parent_entity = parent.get();
+
+            // let Some(parent_global_xform) = global_xform_query.get(parent_entity).ok() else {continue};
+
+
+             let new_rotation = get_rotate_towards (
+                billboard_entity,
+
+                target_entity,
+                 UpDirection::Dir(   Dir3::Y ),   // ? 
+                 &parent_query,
+                 &global_xform_query,
+
+
+                );
+
+             if let Some(new_rotation) = new_rotation {
+                magicfx_xform.rotation =  new_rotation ; 
+
+             }
+            
+        }       
+
+
+
+    }
+
+
+}
+
+
+pub fn update_magicfx_billboard_vertical_rotation(
 
     target_query: Query<Entity, With<MagicFxBillboardTarget> >,
 
@@ -506,6 +570,11 @@ pub fn update_magicfx_billboard_rotation(
         for( billboard_entity, mut magicfx_xform,  parent, magic_fx_style) in magicfx_billboard_query.iter_mut(){
             
 
+             if magic_fx_style != &MagicFxStyle::BillboardVertically {
+                continue;
+            }
+          
+
             let Some(magicfx_global_xform) = global_xform_query.get(billboard_entity).ok() else {continue};
 
             let parent_entity = parent.get();
@@ -514,10 +583,7 @@ pub fn update_magicfx_billboard_rotation(
 
 
 
-            if magic_fx_style != &MagicFxStyle::Billboard {
-                continue;
-            }
-          
+         
             let dir = (target_xform.translation() - magicfx_global_xform.translation()).normalize();
 
             // Calculate yaw and pitch

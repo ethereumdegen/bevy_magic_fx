@@ -4,6 +4,8 @@ use bevy_common_assets::ron::RonAssetPlugin;
 use magic_fx_variant::MagicFxVariantManifest;
 use shader_variant::ShaderVariantManifest;
 
+
+
 //use bevy_shader_utils::ShaderUtilsPlugin;
 
 pub mod animated_material;
@@ -14,8 +16,9 @@ pub mod shader_variant;
 pub mod magic_fx_beam;
 pub(crate) mod util;
 
-pub  mod camera;
+pub mod camera;
 
+pub mod rotate_to;
 
 pub struct MagicFxPlugin;
 
@@ -48,6 +51,8 @@ impl Plugin for MagicFxPlugin {
                  prepass_enabled: false,
                 ..default() 
             })
+
+
 
             .add_plugins(magic_fx_beam::magic_fx_beam_plugin)
             .add_plugins(magic_fx::magic_fx_comp_plugin)

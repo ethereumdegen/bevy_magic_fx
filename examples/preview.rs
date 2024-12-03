@@ -414,21 +414,20 @@ fn spawn_magic_fx(
 
           println!("spawning magic fx  ");
             let preview_fx = built_vfx_resource.magic_fx_variants
-                .get("magic_fx_variants/light_flash.magicfx.ron").unwrap();
+                .get("magic_fx_variants/explosion_simple.magicfx.ron").unwrap();
  
 
           //at a later time, whenever, spawn the magic fx . This is usually from a spell cast.
-              commands  .spawn(SpatialBundle {
+              commands.spawn( (
 
- 
-                            transform: Transform::from_xyz(0.0,2.0,0.0) ,
- 
-                            ..default()
-                        })
-                        .insert(MagicFxVariantComponent {
-                            magic_fx: preview_fx.clone(),
-                            start_time: time.elapsed(),
-                        }) ;
+                Transform::from_xyz(0.0,2.0,0.0),
+
+                MagicFxVariantComponent {
+                        magic_fx: preview_fx.clone(),
+                        start_time: time.elapsed(),
+                    }
+
+             ) )   ;
 
 
         

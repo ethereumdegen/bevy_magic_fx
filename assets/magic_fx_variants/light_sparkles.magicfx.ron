@@ -26,8 +26,7 @@
 		  end_tint_color: Some(   LinearRgba(
 			        red: 1.0,
 			        green:1.0,
-			        blue: 1.0,
-<<<<<<< HEAD
+			        blue: 1.0, 
 			        alpha: 0.0
 			    )), 
 
@@ -86,25 +85,16 @@
 			    )), 
 
     ),
- 
-=======
-			        alpha: 0.1
-			    )), 
-
-    ),
->>>>>>> 0.15
- 
+  
  
     
 
     ] ,  
 
     max_time: Some(1.0),
-<<<<<<< HEAD
+ 
     repeating: true 
-=======
-    repeating: false 
->>>>>>> 0.15
+ 
 
 
 )

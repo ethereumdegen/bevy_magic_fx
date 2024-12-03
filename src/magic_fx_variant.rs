@@ -57,6 +57,7 @@ impl TypePath for MagicFxVariantManifest {
 pub enum MagicFxStyle {
     Standard, 
     Billboard , 
+    BillboardVertically, //only spin about Z axis  
     Beam 
 
 }

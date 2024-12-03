@@ -801,7 +801,6 @@ version = "0.15.0"
 dependencies = [
  "bevy",
  "bevy_common_assets",
- "bevy_mod_lookat",
  "bevy_obj",
  "ron",
  "serde",
@@ -854,15 +853,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "da5ea3ad25d74ea36ea45418ad799f135d046db35c322b9704c4a8934eb65ce9"
 dependencies = [
  "glam",
-]
-
-[[package]]
-name = "bevy_mod_lookat"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ea6e9a3a8c2972d011062ff4841c35a41d7914f1b43f00e19e438e36a1f50f90"
-dependencies = [
- "bevy",
 ]
 
 [[package]]
