@@ -502,10 +502,7 @@ pub fn update_magicfx_billboard_rotation(
 
     if let Some(target_entity ) = target_query.get_single().ok()  {
 
-    //let Some(target_xform) = global_xform_query.get(target_entity).ok() else {return};
-    
-
-       
+        
       
         for( billboard_entity, mut magicfx_xform,  parent, magic_fx_style) in magicfx_billboard_query.iter_mut(){
                 
@@ -514,19 +511,13 @@ pub fn update_magicfx_billboard_rotation(
             }
           
 
-
-           // let Some(magicfx_global_xform) = global_xform_query.get(billboard_entity).ok() else {continue};
-
-           // let parent_entity = parent.get();
-
-            // let Some(parent_global_xform) = global_xform_query.get(parent_entity).ok() else {continue};
-
+ 
 
              let new_rotation = get_rotate_towards (
                 billboard_entity,
 
                 target_entity,
-                 UpDirection::Dir(   Dir3::Y ),   // ? 
+                 UpDirection::Target,   // use the cameras vertical as billboard vertical 
                  &parent_query,
                  &global_xform_query,
 
@@ -548,6 +539,63 @@ pub fn update_magicfx_billboard_rotation(
 }
 
 
+
+
+pub fn update_magicfx_billboard_vertical_rotation(
+
+    target_query: Query<Entity, With<MagicFxBillboardTarget> >,
+
+    parent_query: Query<&Parent>,
+    global_xform_query: Query<&GlobalTransform>,
+
+    mut magicfx_billboard_query: Query<(Entity, &mut Transform,  &Parent, &MagicFxStyle), Without<MagicFxBillboardTarget> >
+
+){
+ 
+
+    if let Some(target_entity ) = target_query.get_single().ok()  {
+
+    //let Some(target_xform) = global_xform_query.get(target_entity).ok() else {return};
+    
+
+       
+      
+        for( billboard_entity, mut magicfx_xform,  parent, magic_fx_style) in magicfx_billboard_query.iter_mut(){
+                
+           if magic_fx_style != &MagicFxStyle::BillboardVertically  {
+                continue;
+            }
+          
+
+ 
+
+             let new_rotation = get_rotate_towards (
+                billboard_entity,
+
+                target_entity,
+                 UpDirection::Parent,   // use the parents vertical as billboarding vertical 
+                 &parent_query,
+                 &global_xform_query,
+
+
+                );
+
+             if let Some(new_rotation) = new_rotation {
+                magicfx_xform.rotation =  new_rotation ; 
+
+             }
+            
+        }       
+
+
+
+    }
+
+
+}
+
+
+/* 
 pub fn update_magicfx_billboard_vertical_rotation(
 
     target_query: Query<Entity, With<MagicFxBillboardTarget> >,
@@ -612,3 +660,4 @@ pub fn update_magicfx_billboard_vertical_rotation(
 
 
 }
+*/
