@@ -1,6 +1,6 @@
 [package]
 name = "bevy_magic_fx"
-version = "0.15.0"
+version = "0.15.1"
 rust-version = "1.81"
 license = "MIT"
 description = "Define mesh-based vfx in serialized files"
@@ -10,8 +10,8 @@ edition = "2021"
 
 [dependencies]
 bevy = { version = "0.15.0", features = ["tga"] }
-bevy_obj = "0.15"
-
+bevy_obj = {version = "0.15" , features =["mesh"], default-features= false }
+ 
 bevy_common_assets = { version = "0.12", features = ["ron", "toml"] }
 
 serde = { version = "1", features = ["derive"] }
