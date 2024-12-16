@@ -102,11 +102,11 @@ pub fn update_magic_fx_variants_added(
         for instance in magic_fx.magic_fx_instances.iter() {
             //println!("spawn magic fx instance!!");
 
-            let anim_mat_bundle = &instance.to_anim_material_bundle();
+            let anim_mat_bundle =  instance.to_anim_material_bundle();
 
             let magic_fx_child = commands
                 .spawn(
-                  anim_mat_bundle.clone()  //this include spatial bundle 
+                  anim_mat_bundle   //this include spatial bundle 
                     
                 ).insert (
                     ( 

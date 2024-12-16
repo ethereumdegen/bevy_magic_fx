@@ -84,7 +84,7 @@ pub fn build_animated_material(
 }
 
 //pub type AnimatedMaterialExtension = ExtendedMaterial<StandardMaterial, AnimatedMaterial>;
-pub type AnimatedMaterialBundle = MaterialMeshBundle<AnimatedMaterial >;
+//pub type AnimatedMaterialBundle = MaterialMeshBundle<AnimatedMaterial >;
 
 #[derive(Clone, ShaderType, Debug)]
 pub struct AnimatedMaterialUniforms {

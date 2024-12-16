@@ -6,7 +6,7 @@ use bevy::utils::HashMap;
 use serde::{Deserialize, Serialize};
 
 use crate::animated_material::{
-    self, AnimatedMaterialBase, AnimatedMaterialBundle, AnimatedMaterial ,
+    self, AnimatedMaterialBase,  AnimatedMaterial ,
 };
 
 use crate::euler_transform::EulerTransform;
@@ -183,18 +183,18 @@ impl MagicFxInstance {
     }
 
    
-    pub fn to_anim_material_bundle(&self) -> AnimatedMaterialBundle {
+    pub fn to_anim_material_bundle(&self) ->  impl Bundle {
         let shader_material = &self.shader_material_handle;
 
-        return  animated_material::AnimatedMaterialBundle {
-                mesh: Mesh3d( self.mesh_handle.clone() ) ,
-                material: MeshMaterial3d( shader_material.clone() ),
+        return (
 
-                transform: self.start_transform.clone().to_transform(),
-                visibility: Visibility::Hidden,
+            Mesh3d( self.mesh_handle.clone() ) ,
+            MeshMaterial3d( shader_material.clone() ),
+            self.start_transform.clone().to_transform(),
+             Visibility::Hidden,
+         )
 
-                ..default()
-            }
+       
         
     }
 }
