@@ -179,11 +179,11 @@ pub fn update_magic_fx_variants_despawn(
 
     mut commands :Commands, 
 
-     mut magic_fx_query: Query<(Entity, & MagicFxVariantComponent), With<DespawnVFX>>
+       magic_fx_query: Query<(Entity, & MagicFxVariantComponent), With<DespawnVFX>>
 
 ){
 
-    for (magicfx_entity, variant_comp) in magic_fx_query.iter(){
+    for (magicfx_entity, _variant_comp) in magic_fx_query.iter(){
 
         if let Some(mut cmd) = commands.get_entity( magicfx_entity  ){
 
