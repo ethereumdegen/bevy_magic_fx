@@ -55,7 +55,9 @@ pub(crate) fn magic_fx_comp_plugin(app: &mut App) {
         .add_systems(Update,( 
 
                  update_magic_fx_variants_added,
+
                  update_magic_fx_variants,
+
                  update_magic_fx_instances_visibility,
                   update_magic_fx_instances_translation_scale,
                   update_magicfx_standard_rotation,
@@ -70,6 +72,8 @@ pub(crate) fn magic_fx_comp_plugin(app: &mut App) {
                 ) .chain() 
                 .in_set( MagixFxStandardUpdateSet )
             ) 
+
+        .add_systems(PostUpdate, update_magic_fx_variants_despawn )
        
        ;
 
@@ -158,11 +162,40 @@ pub fn update_magic_fx_variants(
                      
                      }else { 
 
-                    commands.entity(fx_entity).despawn_recursive();
+                    commands.entity(fx_entity).try_insert(DespawnVFX);
                 }
             }
         
     }
+}
+
+
+//careful w this 
+#[derive(Component)] 
+pub struct DespawnVFX;
+
+
+pub fn update_magic_fx_variants_despawn(
+
+    mut commands :Commands, 
+
+     mut magic_fx_query: Query<(Entity, & MagicFxVariantComponent), With<DespawnVFX>>
+
+){
+
+    for (magicfx_entity, variant_comp) in magic_fx_query.iter(){
+
+        if let Some(mut cmd) = commands.get_entity( magicfx_entity  ){
+
+
+            cmd.despawn_recursive(); 
+        }
+
+
+
+
+    } 
+
 }
 
 pub fn update_magic_fx_instances_visibility(
