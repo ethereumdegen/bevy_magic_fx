@@ -130,8 +130,11 @@ fn fragment(
 
     let scroll_amount_x = (globals.time * custom_uniforms.scroll_speed.x)  ;
     let scroll_amount_y = (globals.time * custom_uniforms.scroll_speed.y)  ; 
+
+
+    let uv_zoom_factor = 0.5;
  
-    var tiled_uv =   get_repeated_uv_coords (mesh.uv + vec2(scroll_amount_x,scroll_amount_y)  )   ;
+    var tiled_uv =   get_repeated_uv_coords (mesh.uv + vec2(scroll_amount_x,scroll_amount_y)  )   * uv_zoom_factor  ;
 
 
     if (u32(custom_uniforms.animation_frame_dimension.x) > 1u || u32(custom_uniforms.animation_frame_dimension.y) > 1u) {

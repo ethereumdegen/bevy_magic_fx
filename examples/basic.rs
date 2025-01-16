@@ -427,7 +427,7 @@ fn spawn_magic_fx(
     ){
 
           println!("spawning magic fx  ");
-            let waterfall_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/waterfall.magicfx.ron").unwrap();
+            let waterfall_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/sword_enchantment.magicfx.ron").unwrap();
  
 
           //at a later time, whenever, spawn the magic fx . This is usually from a spell cast.
@@ -440,7 +440,7 @@ fn spawn_magic_fx(
                             start_time: time.elapsed(),
                         }) ;
 
-
+            /*
          let spellcast1_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/spellcast1.magicfx.ron").unwrap();
 
           commands .spawn(   (Transform::from_xyz(2.0,0.0,0.0), Visibility::default( ) ) )
@@ -459,7 +459,7 @@ fn spawn_magic_fx(
                             start_time: time.elapsed(),
                         }) ;
 
-         
+         */
 
 
 }
