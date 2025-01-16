@@ -184,7 +184,7 @@ fn setup(
         brightness: 4000.0,
     });
 
-     let silver_color = Color::linear_rgba(0.7, 0.7, 0.7, 1.0);
+     let silver_color = Color::linear_rgba(0.22, 0.22, 0.22, 0.2);
 
     // ground plane
     commands.spawn(

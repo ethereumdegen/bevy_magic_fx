@@ -21,6 +21,8 @@ pub struct ShaderVariantManifest {
     pub scroll_repeats: Vec2,
 
     pub distortion_amount: f32,
+    
+    pub uv_scale_factor: Option<Vec2>, 
 
     pub color: LinearRgba,
     pub emissive: LinearRgba,

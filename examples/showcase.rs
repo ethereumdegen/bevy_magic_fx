@@ -565,7 +565,7 @@ fn spawn_magic_fx(
          let simple_beam_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/simple_beam.magicfx.ron").unwrap();
 
           commands.spawn(SpatialBundle {
-
+a
                             transform: Transform::from_xyz(16.0,0.0,0.0) ,
                             ..default()
                         })

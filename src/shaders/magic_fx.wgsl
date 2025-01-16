@@ -13,7 +13,7 @@
  #import bevy_pbr::prepass_utils
 
 //  #import bevy_shader_utils::fresnel::fresnel
- #import bevy_pbr::mesh_view_bindings view
+ #import bevy_pbr::mesh_view_bindings::view
 
 struct StandardMaterial {
     time: f32,
@@ -42,8 +42,11 @@ struct CustomMaterialUniforms {
  
     current_animation_frame_index: u32,
 
-    tint_color: vec4<f32>,
+     uv_scale_factor: vec2<f32>, 
 
+    tint_color: vec4<f32>,  
+
+   
 
     fresnel_power: f32 ,
     //fresnel color ?
@@ -132,9 +135,11 @@ fn fragment(
     let scroll_amount_y = (globals.time * custom_uniforms.scroll_speed.y)  ; 
 
 
-    let uv_zoom_factor = 0.5;
+
+    
+    let scaled_uv = (mesh.uv / custom_uniforms.uv_scale_factor) % 1.0;
  
-    var tiled_uv =   get_repeated_uv_coords (mesh.uv + vec2(scroll_amount_x,scroll_amount_y)  )   * uv_zoom_factor  ;
+    var tiled_uv =   get_repeated_uv_coords ( scaled_uv + vec2(scroll_amount_x,scroll_amount_y)  )    ;
 
 
     if (u32(custom_uniforms.animation_frame_dimension.x) > 1u || u32(custom_uniforms.animation_frame_dimension.y) > 1u) {

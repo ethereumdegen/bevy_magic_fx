@@ -1,13 +1,19 @@
 (
     
    
-    texture: "textures/kenney/fire_01.png",
-    animation_speed: (0.5,0.1),  
+  //  texture: "textures/kenney/fire_01.png",
+   texture: "textures/pixel_particles.png",
+
+   masking_texture: Some( "textures/kenney/fire_01.png"),
+
+   
+    animation_speed: (0.1,0.02),  
 
     distortion_speed: (0.02,0.01),
     scroll_repeats: ( 3.0,3.0),
     distortion_amount: 0.02 , 
 
+    uv_scale_factor: Some((4.0,4.0)) , 
     
 
     color: LinearRgba(

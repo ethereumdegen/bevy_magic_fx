@@ -61,6 +61,8 @@ pub fn build_animated_material(
                         custom_uniforms: AnimatedMaterialUniforms {
                             scroll_speed: shader_variant_manifest.animation_speed,
                             distortion_speed: shader_variant_manifest.distortion_speed,
+
+                            uv_scale_factor: shader_variant_manifest.uv_scale_factor.unwrap_or(Vec2::new(1.0,1.0)),
                          
                             distortion_amount: shader_variant_manifest.distortion_amount,
                             distortion_cutoff: 1.0,
@@ -97,6 +99,8 @@ pub struct AnimatedMaterialUniforms {
     pub animation_frame_dimension: Vec2, //if this is 1, we know we have a normal static texture.  Otherwise, we have an animated scrolly one 
     pub current_animation_frame_index: u32,
 
+    pub uv_scale_factor: Vec2, 
+
     pub tint_color: LinearRgba ,
     pub fresnel_power: f32 ,
     pub use_masking_texture: u32
@@ -111,6 +115,8 @@ impl Default for AnimatedMaterialUniforms {
             
             distortion_amount: 0.03,
             distortion_cutoff: 1.0,
+
+            uv_scale_factor: Vec2::new(1.0,1.0),
             
             depth_cutoff_offset: 0.0,
             animation_frame_dimension: Vec2::new(1.0,1.0),
