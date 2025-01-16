@@ -1,10 +1,11 @@
 //! This example demonstrates the built-in 3d shapes in Bevy.
 //! The scene includes a patterned texture and a rotation for visualizing the normals and UVs.
 
+use bevy_magic_fx::magic_fx_beam::MagicFxBeamComponent;
 use std::f32::consts::PI;
 
   
-use bevy::asset::AssetPath;
+use bevy::asset::{AssetPath, LoadedFolder};
 use bevy::core_pipeline::prepass::DepthPrepass;
 //use bevy::pbr::{ExtendedMaterial, OpaqueRendererMethod};
 use bevy::{gltf::GltfMesh, utils::HashMap};
@@ -12,13 +13,13 @@ use bevy::{gltf::GltfMesh, utils::HashMap};
 //use bevy::gltf::Gltf;
  
 
-use bevy::core_pipeline::bloom::BloomSettings;
+use bevy::core_pipeline::bloom::{Bloom };
 
 use bevy::core_pipeline::tonemapping::Tonemapping;
 
 use bevy::{core_pipeline::bloom::BloomCompositeMode, prelude::*};
 
-use bevy_magic_fx::magic_fx::MagicFxVariantComponent;
+use bevy_magic_fx::magic_fx::{MagicFxNoAutoTransform,MagicFxVariantComponent,MagicFxBillboardTarget};
 use bevy_magic_fx::{ MagicFxPlugin};
 
 //use bevy_magic_fx::magic_fx::{  MagicFxVariantComponent, };
@@ -30,38 +31,52 @@ use bevy_magic_fx::{
 };
   
 
-
+use bevy_magic_fx::camera;
 
 
 fn main() {
     App::new()
-        .insert_resource(AssetHandlesResource::default())
-        .insert_resource(AssetLoadingResource::default())
+   
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
         .add_plugins(bevy_obj::ObjPlugin)
+
+             .insert_resource(BuiltVfxResource::default())
+        .insert_resource(AssetLoadingResource::default())
+        .insert_resource(FolderLoadingResource::default())
+         .init_state::<LoadingState>()
 
 
         .add_plugins( MagicFxPlugin )
 
-        .add_systems(Update, update_loading_shader_variant_manifest)
-        .add_systems(Update, update_loading_magic_fx_variant_manifest)
-           
+
+         .add_systems(Update, update_load_folders)
+ 
+
+        .add_systems(OnEnter(LoadingState::FundamentalAssetsLoad), update_loading_shader_variant_manifest)
+        .add_systems(OnEnter(LoadingState::ShadersLoad), update_loading_magic_fx_variant_manifest)
+         .add_systems(OnEnter(LoadingState::Complete) , spawn_magic_fx) 
 
         
         .add_systems(Startup, setup)
-        .add_systems(Update, rotate)
+        .add_systems(Update, camera::update_camera_look)
+        .add_systems(Update, camera::update_camera_move)
 
         .run();
 }
+ 
+
+
 
 #[derive(Resource, Default)]
-  struct AssetHandlesResource {
-    magic_fx_variant_manifest_handle: Handle<MagicFxVariantManifest>,
-  //  shader_variant_manifest_handle: Handle<ShaderVariantManifest>,
-    // mesh_handle: Handle<Mesh>,
-    // anim_material: Handle<animated_material::AnimatedMaterialExtension> ,
-    // particle_texture_handle: Handle<Image>
+  struct BuiltVfxResource {
+
+
+    magic_fx_variants: HashMap<String, MagicFxVariant>      
+
 }
+
+
+
 
 #[derive(Resource, Default)]
   struct AssetLoadingResource {
@@ -69,19 +84,54 @@ fn main() {
     mesh_handles_map: HashMap<String, Handle<Mesh>>,
     shader_variants_map: HashMap<String, Handle<ShaderVariantManifest>>,
 
+    magic_fx_variants_map: HashMap<String, Handle<MagicFxVariantManifest>>,
+
     
      animated_material_map: HashMap<String, Handle<AnimatedMaterial>>,
-
-
-   
+ 
 }
+
+
+#[derive(Resource, Default)]
+  struct FolderLoadingResource {
+   
+
+    textures_folder_handle: Handle<LoadedFolder>,
+    shadvars_folder_handle: Handle<LoadedFolder>,
+    meshes_folder_handle: Handle<LoadedFolder>,
+
+      magicfx_folder_handle: Handle<LoadedFolder>,
+
+}
+
+/*
+#[derive(Event)]
+pub enum LoadStateEvent {
+
+    FundamentalAssetsLoaded 
+
+}
+
+*/
+
+#[derive(States,Hash,Eq,PartialEq,Debug,Clone,Default)]
+pub enum LoadingState {
+    #[default]
+    Init,
+    FundamentalAssetsLoad,
+    ShadersLoad,
+    Complete
+
+}
+
+
 
 fn setup(
     mut commands: Commands,
     asset_server: ResMut<AssetServer>,
+ 
 
-    mut asset_handles_resource: ResMut<AssetHandlesResource>,
-    mut asset_loading_resource: ResMut<AssetLoadingResource>,
+    mut folder_loading_resource: ResMut<FolderLoadingResource>,
 
     mut meshes: ResMut<Assets<Mesh>>,
     
@@ -93,119 +143,159 @@ fn setup(
              Simulate our bevy asset loader with 'asset_loading_resource'
     */
 
-    let particle_texture_handle = asset_server.load("textures/kenney/fire_01.png");
-    asset_loading_resource
-        .texture_handles_map
-        .insert("textures/fire_01.png".to_string(), particle_texture_handle);
+    let textures_folder = asset_server.load_folder("textures/");
+
+    let shadvars_folder = asset_server.load_folder("shader_variants/");
+
+     let meshes_folder = asset_server.load_folder("meshes/");
 
 
-  let shards_texture_handle = asset_server.load("textures/kenney/shards.png");
-    asset_loading_resource
-        .texture_handles_map
-        .insert("textures/shards.png".to_string(), shards_texture_handle);
+      let magic_fx_variants_folder = asset_server.load_folder("magic_fx_variants/");
 
 
-  let blast_texture_handle = asset_server.load("textures/blast_01.png");
-    asset_loading_resource
-        .texture_handles_map
-        .insert("textures/blast_01.png".to_string(), blast_texture_handle);
+     folder_loading_resource.textures_folder_handle = textures_folder;
+     folder_loading_resource.shadvars_folder_handle = shadvars_folder;
+     folder_loading_resource.meshes_folder_handle = meshes_folder;
+     folder_loading_resource.magicfx_folder_handle = magic_fx_variants_folder;
 
-   let magic_texture_handle = asset_server.load("textures/magic_01.png");
-    asset_loading_resource
-        .texture_handles_map
-        .insert("textures/magic_01.png".to_string(), magic_texture_handle);
-
-         let particle_beam_handle = asset_server.load("textures/beam_01.png");
-    asset_loading_resource
-        .texture_handles_map
-        .insert("textures/beam_01.png".to_string(), particle_beam_handle);
-
-    let shader_variant_manifest_handle = asset_server.load("shader_variants/purple.shadvar.ron");
-  
-    asset_loading_resource.shader_variants_map.insert(
-        "shader_variants/purple.shadvar.ron".to_string(),
-        shader_variant_manifest_handle.clone(),
-    );
-
-   // asset_handles_resource.shader_variant_manifest_handle = shader_variant_manifest_handle.clone();
+ 
+    commands.spawn(
 
 
-      let beam_shader_variant_manifest_handle = asset_server.load("shader_variants/beam.shadvar.ron");
-   
-    asset_loading_resource.shader_variants_map.insert(
-        "shader_variants/beam.shadvar.ron".to_string(),
-        beam_shader_variant_manifest_handle.clone(),
-    );
+        (
 
-      let blast_shader_variant_manifest_handle = asset_server.load("shader_variants/blast.shadvar.ron");
-   
-    asset_loading_resource.shader_variants_map.insert(
-        "shader_variants/blast.shadvar.ron".to_string(),
-        blast_shader_variant_manifest_handle.clone(),
-    );
+            PointLight {
+                intensity: 2000.0,
+                range: 100.,
+                shadows_enabled: false,
+                ..default()
+          },
 
 
-   // asset_handles_resource.shader_variant_manifest_handle = beam_shader_variant_manifest_handle.clone();
+            Transform::from_xyz(8.0, 16.0, 8.0)
 
 
+            )
 
-    let mesh_handle: Handle<Mesh> = asset_server.load("meshes/projectile.obj");
-    asset_loading_resource
-        .mesh_handles_map
-        .insert("meshes/projectile.obj".to_string(), mesh_handle);
+        );
 
-
-    let mesh_handle: Handle<Mesh> = asset_server.load("meshes/shatter.obj");
-    asset_loading_resource
-        .mesh_handles_map
-        .insert("meshes/shatter.obj".to_string(), mesh_handle);
-
-    commands.spawn(PointLightBundle {
-        point_light: PointLight {
-            intensity: 2000.0,
-            range: 100.,
-            shadows_enabled: false,
-            ..default()
-        },
-        transform: Transform::from_xyz(8.0, 16.0, 8.0),
-        ..default()
+     commands.insert_resource(AmbientLight {
+        color: Color::linear_rgba(1.0, 1.0, 1.0, 1.0),
+        brightness: 4000.0,
     });
 
-    let material_color : Color = LinearRgba::rgb(0.5, 0.5, 0.5).into();
+     let silver_color = Color::linear_rgba(0.7, 0.7, 0.7, 1.0);
 
     // ground plane
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Plane3d::default().mesh().size(50.0, 50.0)),
-        material: materials.add( material_color ),
-        ..default()
-    });
+    commands.spawn(
+
+
+        (
+            Mesh3d(  meshes.add(Plane3d::default().mesh().size(50.0, 50.0)) ) ,
+             MeshMaterial3d(  materials.add( silver_color ) )
+        )
+
+     );
 
     commands.spawn((
-        Camera3dBundle {
-            camera: Camera {
+
+        Camera3d::default() , 
+
+        Camera {
                 hdr: true, // 1. HDR must be enabled on the camera
                 ..default()
             },
-            tonemapping: Tonemapping::TonyMcMapface,
-            transform: Transform::from_xyz(0.0, 6., 12.0)
+
+            Tonemapping::TonyMcMapface,
+
+             Transform::from_xyz(0.0, 6., 12.0)
                 .looking_at(Vec3::new(0., 1., 0.), Vec3::Y),
-            ..default()
-        },
-        BloomSettings::default(), // 2. Enable bloom for the camera
-        DepthPrepass
+
+
+       
+      //  BloomSettings::default(), // 2. Enable bloom for the camera
+
+         Bloom::OLD_SCHOOL,
+        DepthPrepass,
+        MagicFxBillboardTarget {},
     ));
 }
+ 
 
-fn rotate(mut query: Query<&mut Transform, With<Handle<Mesh>>>, time: Res<Time>) {
-    for mut transform in &mut query {
-        transform.rotate_y(time.delta_seconds() / 2.);
+
+fn update_load_folders(
+       mut ev_asset: EventReader<AssetEvent<LoadedFolder>>,
+
+       asset_server: ResMut<AssetServer>,
+
+       loaded_folder_assets: Res<Assets<LoadedFolder>>,
+
+      mut asset_loading_resource: ResMut<AssetLoadingResource>,
+
+      mut next_state: ResMut<NextState<LoadingState>>
+
+    ){
+
+
+  for ev in ev_asset.read() {
+        match ev {
+            AssetEvent::LoadedWithDependencies { id } => {
+             
+            let loaded_folder = loaded_folder_assets.get( *id  ).unwrap();  
+
+
+            for handle in &loaded_folder.handles {
+                let asset_path = asset_server.get_path( handle.id()  ).unwrap(); 
+
+                info!("asset path {:?}", asset_path); 
+
+              
+                if (&asset_path.path()).starts_with("meshes") { 
+                         asset_loading_resource.mesh_handles_map.insert((&asset_path.path().to_str().unwrap().to_string()).clone(), asset_server.load(  &asset_path ) ) ;
+                }
+ 
+                if (&asset_path.path()).starts_with("textures") { 
+                         asset_loading_resource.texture_handles_map.insert((&asset_path.path().to_str().unwrap().to_string()).clone(), asset_server.load(  &asset_path ) ) ;
+                }
+
+                if (&asset_path.path()).starts_with("shader_variants") { 
+                         asset_loading_resource.shader_variants_map.insert((&asset_path.path().to_str().unwrap().to_string()).clone(), asset_server.load(  &asset_path ) ) ;
+                }
+
+                  if (&asset_path.path()).starts_with("magic_fx_variants") { 
+                         asset_loading_resource.magic_fx_variants_map.insert((&asset_path.path().to_str().unwrap().to_string()).clone(), asset_server.load(  &asset_path ) ) ;
+                }
+
+               
+            }
+
+
+            if ! asset_loading_resource.mesh_handles_map.is_empty() 
+            &&  !asset_loading_resource.texture_handles_map.is_empty()
+            &&  !asset_loading_resource.shader_variants_map.is_empty() 
+             &&  !asset_loading_resource.magic_fx_variants_map.is_empty() 
+
+            {
+
+                next_state.set(LoadingState::FundamentalAssetsLoad);
+            }
+
+
+
+
+         }
+         _ => {} 
+
+
+     }
+
     }
+
 }
 
 fn update_loading_shader_variant_manifest(
-    mut ev_asset: EventReader<AssetEvent<ShaderVariantManifest>>,
-    //  mut fx_variant_assets: ResMut<Assets<ShaderVariantManifest>>,
-    mut asset_handles_resource: ResMut<AssetHandlesResource>,
+    
+     
 
     mut asset_loading_resource: ResMut<AssetLoadingResource>,
     mut animated_materials: ResMut<Assets<AnimatedMaterial>>,
@@ -214,14 +304,14 @@ fn update_loading_shader_variant_manifest(
     shader_variant_manifest_resource: Res<Assets<ShaderVariantManifest>>,
 
     asset_server: ResMut<AssetServer>,
+
+     mut next_state: ResMut<NextState<LoadingState>>,
 ) {
-    for ev in ev_asset.read() {
-        match ev {
-            AssetEvent::LoadedWithDependencies { id } => {
+     
                 //once the shader variant loads, we can start loading our magic fx
 
                 for (file_path, shader_manifest_handle) in asset_loading_resource.shader_variants_map.clone().iter() {
-                if id == &shader_manifest_handle.id() {
+             
 
                      let shader_variant_manifest: &ShaderVariantManifest = shader_variant_manifest_resource
                         .get( shader_manifest_handle.id())
@@ -237,7 +327,7 @@ fn update_loading_shader_variant_manifest(
                     let shader_material_handle = animated_materials.add( build_animated_material(
                         shader_variant_manifest,
                         &texture_handles_map
-                        ).unwrap()
+                        ).expect(format!("Could not load {:?}", &shadvar_name).as_str())
                     ); 
                     println!("adding shadvar_name {:?}",&shadvar_name);
 
@@ -247,43 +337,56 @@ fn update_loading_shader_variant_manifest(
 
                   // 
 
-                   if asset_loading_resource.animated_material_map.clone().into_values().len()   >= 3 {
-                     asset_handles_resource.magic_fx_variant_manifest_handle =
-                        asset_server.load("magic_fx_variants/magic.magicfx.ron");
-
+                  if asset_loading_resource.animated_material_map.len() 
+                     >= asset_loading_resource.shader_variants_map.len() {
+                        info!("shaders load ");
+                                next_state.set(LoadingState::ShadersLoad);
                    }
+                    
+
+                  /* if asset_loading_resource.animated_material_map.clone().into_values().len()   >= 1 {
+                       asset_handles_resource.magic_fx_variant_manifest_handle =
+                          asset_server.load("magic_fx_variants/waterfall.magicfx.ron");
+
+                   }*/
                         //now that our shadvar materials are built and loaded, we load the magic fx 
-                    }
+                    
                    
                 }
-            }
-            _ => {}
-        }
-    }
+       
 }
 
 fn update_loading_magic_fx_variant_manifest(
-    mut ev_asset: EventReader<AssetEvent<MagicFxVariantManifest>>,
+   // mut ev_asset: EventReader<AssetEvent<MagicFxVariantManifest>>,
     fx_variant_assets: ResMut<Assets<MagicFxVariantManifest>>,
 
     mut commands: Commands,
 
-    asset_handles_resource: ResMut<AssetHandlesResource>,
+   mut built_vfx_resource: ResMut<BuiltVfxResource>,
  
     asset_loading_resource: Res<AssetLoadingResource>,
+
+    mut next_state: ResMut<NextState<LoadingState>>,
  
 
-    time: Res<Time>,
+    animated_materials_assets: Res<Assets<AnimatedMaterial>>,
+    mut asset_server: ResMut<AssetServer>,
+
+
 ) {
-    for ev in ev_asset.read() {
-        match ev {
-            AssetEvent::LoadedWithDependencies { id } => {
-                if id == &asset_handles_resource.magic_fx_variant_manifest_handle.id() {
+     
+
+       info!("update_loading_magic_fx_variant_manifest ");
+
+
+           for (file_path, magic_fx_handle) in asset_loading_resource.magic_fx_variants_map.clone().iter() {
                    
 
-                    let magic_fx_variant_manifest: &MagicFxVariantManifest = fx_variant_assets
-                        .get(&asset_handles_resource.magic_fx_variant_manifest_handle)
+            let magic_fx_variant_manifest: &MagicFxVariantManifest = fx_variant_assets
+                        .get( magic_fx_handle.id() )
                         .unwrap();
+
+
 
                      let mesh_handles_map = &asset_loading_resource.mesh_handles_map;
 
@@ -295,24 +398,68 @@ fn update_loading_magic_fx_variant_manifest(
                         &mesh_handles_map,
                       
                         &animated_materials_map,
+
+
+                        &animated_materials_assets,
+                        &mut asset_server 
+     
+
                      
                         
-                    ).unwrap();
+                    ).expect(format!("could not load {:?}",file_path.to_string()).as_str());
+                    info!("loaded {:?}",file_path.to_string());
+                    built_vfx_resource.magic_fx_variants.insert(file_path.to_string(), magic_fx);
 
-                    //now we can store this in a resource 
-                    println!("spawn the root ");
-
-                    //at a later time, whenever, spawn the magic fx . This is usually from a spell cast.
-                    let _magic_fx_root = commands
-                        .spawn(SpatialBundle::default())
-                        .insert(MagicFxVariantComponent {
-                            magic_fx,
-                            start_time: time.elapsed(),
-                        })
-                        .id();
-                }
-            }
-            _ => {}
+                   
+                 
         }
-    }
+
+
+           next_state.set(LoadingState::Complete);
+}
+
+
+fn spawn_magic_fx(
+    mut commands: Commands, 
+     built_vfx_resource: Res <BuiltVfxResource>,
+
+     time: Res<Time>
+    ){
+
+          println!("spawning magic fx  ");
+            let waterfall_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/waterfall.magicfx.ron").unwrap();
+ 
+
+          //at a later time, whenever, spawn the magic fx . This is usually from a spell cast.
+              commands  .spawn(
+
+                            (Transform::from_xyz(0.0,0.0,0.0), Visibility::default( ) )
+                            )
+                        .insert(MagicFxVariantComponent {
+                            magic_fx: waterfall_fx.clone(),
+                            start_time: time.elapsed(),
+                        }) ;
+
+
+         let spellcast1_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/spellcast1.magicfx.ron").unwrap();
+
+          commands .spawn(   (Transform::from_xyz(2.0,0.0,0.0), Visibility::default( ) ) )
+                        .insert(MagicFxVariantComponent {
+                            magic_fx: spellcast1_fx.clone(),
+                            start_time: time.elapsed(),
+                        }) ;
+
+
+
+         let smoke_poof_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/smoke_poof.magicfx.ron").unwrap();
+
+          commands .spawn(   (Transform::from_xyz(4.0,0.0,0.0), Visibility::default( ) ) )
+                        .insert(MagicFxVariantComponent {
+                            magic_fx: smoke_poof_fx.clone(),
+                            start_time: time.elapsed(),
+                        }) ;
+
+         
+
+
 }

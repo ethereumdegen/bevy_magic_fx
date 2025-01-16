@@ -13,7 +13,7 @@ use bevy::{gltf::GltfMesh, utils::HashMap};
 //use bevy::gltf::Gltf;
  
 
-use bevy::core_pipeline::bloom::BloomSettings;
+use bevy::core_pipeline::bloom::{Bloom, BloomSettings};
 
 use bevy::core_pipeline::tonemapping::Tonemapping;
 
@@ -178,26 +178,35 @@ fn setup(
      let silver_color = Color::linear_rgba(0.7, 0.7, 0.7, 1.0);
 
     // ground plane
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Plane3d::default().mesh().size(50.0, 50.0)),
-        material: materials.add( silver_color ),
-        ..default()
-    });
+    commands.spawn(
+
+
+        (
+            Mesh3d(  meshes.add(Plane3d::default().mesh().size(50.0, 50.0)) ) ,
+             MeshMaterial3d(  materials.add( silver_color ) )
+        )
+
+     );
 
     commands.spawn((
-        Camera3dBundle {
-            camera: Camera {
+
+        Camera3d::default() , 
+
+        Camera {
                 hdr: true, // 1. HDR must be enabled on the camera
                 ..default()
             },
-            tonemapping: Tonemapping::TonyMcMapface,
-            transform: Transform::from_xyz(0.0, 6., 12.0)
+
+            Tonemapping::TonyMcMapface,
+
+             Transform::from_xyz(0.0, 6., 12.0)
                 .looking_at(Vec3::new(0., 1., 0.), Vec3::Y),
-            ..default()
-        },
+
+
+       
       //  BloomSettings::default(), // 2. Enable bloom for the camera
 
-         BloomSettings::OLD_SCHOOL,
+         Bloom::OLD_SCHOOL,
         DepthPrepass,
         MagicFxBillboardTarget {},
     ));
