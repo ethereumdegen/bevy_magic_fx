@@ -1,0 +1,36 @@
+ 
+(
+    
+    
+    texture: "textures/diffuse_noise/bluegreen_2.TGA",
+
+    masking_texture: Some( "textures/fx_fireskill/fire_particles_mask_sheet.png"),
+
+     animate_masking_texture: true ,
+
+    animation_speed: (8.0,0.0),  
+
+    distortion_speed: (3.0,3.0),
+    scroll_repeats: ( 1.0,1.0),
+    distortion_amount: 0.02 , 
+    depth_cutoff_offset: Some(0.00),
+
+    animation_frame_dimensions: Some( (4,4) ),
+
+    color: LinearRgba(
+        red: 1.0,
+        green: 1.0,
+        blue: 1.0,
+        alpha: 1.0
+    ),
+     emissive: LinearRgba(
+         red: 1.0,
+        green: 1.0,
+        blue: 1.0,
+        alpha: 2.6
+    )
+      
+)
+
+
+
