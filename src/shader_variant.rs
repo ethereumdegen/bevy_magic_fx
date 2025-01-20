@@ -15,6 +15,9 @@ pub struct ShaderVariantManifest {
     pub texture: String,
     pub masking_texture: Option<String>,
 
+    #[serde(default)]
+    pub animate_masking_texture: bool, 
+
     pub animation_speed: Vec2,
     pub distortion_speed: Vec2,
 

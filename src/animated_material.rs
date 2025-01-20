@@ -29,11 +29,19 @@ pub fn build_animated_material(
 
    let masking_texture_handle = shader_variant_manifest.masking_texture.as_ref().map(|m|  texture_handles_map.get( m ) ) .flatten();
     
+   let use_masking_texture = masking_texture_handle.is_some();
+   let animate_masking_texture = shader_variant_manifest.animate_masking_texture ;
 
-   let use_masking_texture = match masking_texture_handle {
-    Some(_) => 1,
-    None => 0
-   };
+    
+     // Create a list of flag states
+    let flags = [
+        (MaskingTextureConfigBits::UseMaskingTexture, use_masking_texture),
+        (MaskingTextureConfigBits::AnimateMaskingTexture, animate_masking_texture),
+    ];
+
+    // Build the bitfield
+    let masking_texture_config_bits = build_masking_texture_config_bits(&flags);
+
 
    Ok(
     ExtendedMaterial {
@@ -41,12 +49,12 @@ pub fn build_animated_material(
                         base_color : base_color.into(),
                         emissive: emissive.into(),
                         // can be used in forward or deferred mode.
-                        opaque_render_method: OpaqueRendererMethod::Auto,
+                        //opaque_render_method: OpaqueRendererMethod::Auto,
                         alpha_mode: AlphaMode::Blend,
 
                         double_sided: true,
                         cull_mode: None,
-                        //unlit:true, 
+                      //  unlit:true,   // need this for emissive ? 
 
 
 
@@ -73,7 +81,7 @@ pub fn build_animated_material(
                             animation_frame_dimension: shader_variant_manifest.animation_frame_dimensions.map(|d|  Vec2::new(d[0] as f32,d[1] as f32)  ).unwrap_or(  Vec2::new(1.0,1.0) ),
 
 
-                            use_masking_texture ,
+                            masking_texture_config_bits ,
                          //   animation_frame_dimension_y: shader_variant_manifest.animation_frame_dimensions.map(|d| d[1]).unwrap_or(   1 ), 
 
                             ..default()
@@ -103,7 +111,7 @@ pub struct AnimatedMaterialUniforms {
 
     pub tint_color: LinearRgba ,
     pub fresnel_power: f32 ,
-    pub use_masking_texture: u32
+    pub masking_texture_config_bits: u32
 }
 impl Default for AnimatedMaterialUniforms {
     fn default() -> Self {
@@ -125,7 +133,7 @@ impl Default for AnimatedMaterialUniforms {
             tint_color: Color::WHITE.into(),
             fresnel_power:  0.0 , //typically like 2.0 if used 
 
-            use_masking_texture: 0
+            masking_texture_config_bits: 0
         }
     }
 }
@@ -157,4 +165,31 @@ impl MaterialExtension for AnimatedMaterialBase {
     fn deferred_fragment_shader() -> ShaderRef {
         MAGIC_FX_SHADER_HANDLE.into()
     }
+}
+
+
+
+// ----- 
+
+
+// Define an enum for the bit positions
+#[repr(u32)]
+#[derive(Clone,Copy)]
+enum MaskingTextureConfigBits {
+    UseMaskingTexture = 0,       // Bit 0
+    AnimateMaskingTexture = 1,   // Bit 1
+    // Add more bits as needed
+}
+
+// A helper function to construct the bitfield
+fn build_masking_texture_config_bits(flags: &[(MaskingTextureConfigBits, bool)]) -> u32 {
+    let mut config_bits = 0;
+
+    for (bit, enabled) in flags {
+        if *enabled {
+            config_bits |= 1 << *bit as u32;
+        }
+    }
+
+    config_bits
 }

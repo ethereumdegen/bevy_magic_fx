@@ -52,7 +52,7 @@ struct CustomMaterialUniforms {
     //fresnel color ?
     // disturbance effect ?  
 
-    use_masking_texture: u32, //flags?? 
+    masking_texture_config_bits: u32, 
     
     
 };
@@ -230,6 +230,7 @@ fn fragment(
     //tint also affect emissive color? 
 
    pbr_out.color = final_color * custom_uniforms.tint_color;
+   pbr_out.color.a *= custom_uniforms.tint_color.a;
 
    //using fresnel
     if  (fresnel_power > 0.01){
@@ -239,9 +240,20 @@ fn fragment(
 
 
 
+     let animate_mask_texture = (custom_uniforms.masking_texture_config_bits & 0x2) != 0;
+
+    var mask_texture_uv = mesh.uv; 
+    if (animate_mask_texture) {
+        mask_texture_uv = tiled_uv;
+    }
+
+
+    let use_mask_texture = (custom_uniforms.masking_texture_config_bits & 0x1) != 0;
+
+
      // Apply masking texture if available
-    if (custom_uniforms.use_masking_texture > 0u) {
-        let mask_value = textureSample(masking_texture, masking_sampler, mesh.uv ).r;
+    if ( use_mask_texture ) {
+        let mask_value = textureSample(masking_texture, masking_sampler, mask_texture_uv ).r;
         pbr_out.color.a =  pbr_out.color.a * mask_value;  // apply mask 
     }
 
@@ -255,7 +267,7 @@ fn fragment(
        discard;
     }
 
-       
+        
       
  
     return pbr_out;

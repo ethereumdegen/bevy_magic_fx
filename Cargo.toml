@@ -41,4 +41,11 @@ name = "showcase"
 path = "examples/showcase.rs"
 
 
+
+
+[[example]]
+name = "wip"
+path = "examples/wip.rs"
+
+
  
