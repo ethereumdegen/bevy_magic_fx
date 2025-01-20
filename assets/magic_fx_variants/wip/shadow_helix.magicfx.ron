@@ -5,7 +5,7 @@
  
   
   (
-    shader_variant_name: "shadow1.shadvar",
+    shader_variant_name: "shadow_bluegreen.shadvar",
 	  mesh_name:  "meshes/aura_circle.obj", 
 	    fx_style: Standard,
 		  start_time_offset: 0.0,
@@ -32,7 +32,7 @@
  	
   
   (
-    shader_variant_name: "shadow1.shadvar",
+    shader_variant_name: "shadow_bluegreen.shadvar",
 	  mesh_name:  "meshes/helix2.obj", 
 	    fx_style: Standard,
 		  start_time_offset: 0.0,
