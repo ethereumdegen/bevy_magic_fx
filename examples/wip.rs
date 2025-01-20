@@ -427,7 +427,7 @@ fn spawn_magic_fx(
     ){
 
           println!("spawning magic fx  ");
-            let waterfall_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/wip/shadow_helix.magicfx.ron").unwrap();
+            let waterfall_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/wip/skull_sparkles.magicfx.ron").unwrap();
  
 
           //at a later time, whenever, spawn the magic fx . This is usually from a spell cast.

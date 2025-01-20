@@ -1,0 +1,36 @@
+(
+    
+   
+   
+
+    texture: "textures/diffuse_noise/bluegreen_2.TGA",
+
+    masking_texture: Some( "textures/custom/fel_skull2_particle.TGA"),
+
+    animate_masking_texture: true ,
+
+
+    animation_speed: (0.0,0.0),  
+
+    distortion_speed: (0.08,0.07),
+    scroll_repeats: ( 1.0,1.0),
+    distortion_amount: 0.08 , 
+
+    
+
+    color: LinearRgba(
+            red: 0.2,
+            green: 0.3,
+            blue: 0.2,
+            alpha: 1.0
+        ),
+     emissive: LinearRgba(
+              red: 4.0,
+             green: 4.0,
+             blue: 4.0,
+             alpha: 0.6  
+        ) 
+      
+)
+
+ 
