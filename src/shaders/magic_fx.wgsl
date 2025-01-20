@@ -230,7 +230,7 @@ fn fragment(
     //tint also affect emissive color? 
 
    pbr_out.color = final_color * custom_uniforms.tint_color;
-   pbr_out.color.a *= custom_uniforms.tint_color.a;
+   pbr_out.color.a *= custom_uniforms.tint_color.a; //exponential alpha decay from the tint color !! 
 
    //using fresnel
     if  (fresnel_power > 0.01){
