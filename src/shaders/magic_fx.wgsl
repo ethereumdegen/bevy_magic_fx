@@ -109,10 +109,7 @@ fn get_slideshow_uv_coords(coords: vec2<f32>, anim_frame_dimension_x: u32, anim_
 
 }
 
-
-
-
-//should consider adding vertex painting to this .. need another binding of course.. performs a color shift 
+ 
 
  
 @fragment
@@ -176,22 +173,9 @@ fn fragment(
 
 
 
-    //var fresnel_color = custom_uniforms.fresnel_color;
-    let fresnel_power = custom_uniforms.fresnel_power;
-   let fresnel_strength = 1.0;
-   var fresnel = saturate (0.4 * fresnel(
-    view.world_position.xyz, 
-    mesh.world_position.xyz, 
-    mesh.world_normal, 
-    fresnel_power, 
-    fresnel_strength
-    ));
+  
 
-
-   
-   //fresnel_color.a =   ( fresnel_color.a *  saturate(   fresnel )  );
-     //mult this by fresnel color and add ? 
-
+ 
 
 
    
@@ -233,7 +217,21 @@ fn fragment(
    pbr_out.color.a *= custom_uniforms.tint_color.a; //exponential alpha decay from the tint color !! 
 
    //using fresnel
-    if  (fresnel_power > 0.01){
+
+     let fresnel_power = custom_uniforms.fresnel_power;
+
+    if  (fresnel_power > 0.01){ 
+          
+           let fresnel_strength = 1.0;
+           var fresnel = saturate (0.4 * fresnel(
+            view.world_position.xyz, 
+            mesh.world_position.xyz, 
+            mesh.world_normal, 
+            fresnel_power, 
+            fresnel_strength
+            ));
+
+
            pbr_out.color.a =  pbr_out.color.a * fresnel ; 
       }
     // pbr_out.emissive = pbr_input.material.emissive * blended_color;
@@ -249,8 +247,7 @@ fn fragment(
 
 
     let use_mask_texture = (custom_uniforms.masking_texture_config_bits & 0x1) != 0;
-
-
+ 
      // Apply masking texture if available
     if ( use_mask_texture ) {
         let mask_value = textureSample(masking_texture, masking_sampler, mask_texture_uv ).r;
