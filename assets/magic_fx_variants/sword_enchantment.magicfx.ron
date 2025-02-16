@@ -15,7 +15,7 @@
 		  end_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.0,1.0,1.0)),
 
 		    start_tint_color: Some(   Srgba((
-			        red: 1.0,
+			        red: 22.0,
 			        green: 1.0,
 			        blue: 1.0,
 			        alpha: 1.0
@@ -28,6 +28,9 @@
 			        alpha: 0.1
 			   ) )), 
 
+
+			   color_easing_function:  Linear  ,
+
     ),
  
  
@@ -35,7 +38,7 @@
 
     ] ,  
 
-    max_time: None,
+    max_time: Some(1.0),
     repeating: true 
 
 

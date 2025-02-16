@@ -276,7 +276,9 @@ pub fn update_magic_fx_instances_translation_scale(
         let start_time = magic_fx_variant.start_time + instance.start_time_offset;
         let end_time = magic_fx_variant.start_time + instance.end_time_offset;
 
-      
+        let transform_easing_function_type =  instance.transform_easing_function ;
+
+
 
         let is_visible = current_time >= start_time && current_time <= end_time;
  
@@ -296,7 +298,7 @@ pub fn update_magic_fx_instances_translation_scale(
                 .clamp(0.0, 1.0);
 
                 // Assuming `Transform` struct has a `lerp` function
-                 let new_transform =  lerp_euler_transforms(&start_xform, &end_xform, lerp_amount).to_transform();
+                 let new_transform =  lerp_euler_transforms(&start_xform, &end_xform, lerp_amount, transform_easing_function_type).to_transform();
 
 
                  fx_xform.translation = new_transform.translation;
@@ -353,6 +355,7 @@ pub fn update_magicfx_standard_rotation(
         let end_time = magic_fx_variant.start_time + instance.end_time_offset;
 
       
+        let ease_function_type = instance.transform_easing_function;
 
         let is_visible = current_time >= start_time && current_time <= end_time;
  
@@ -373,7 +376,7 @@ pub fn update_magicfx_standard_rotation(
                 .clamp(0.0, 1.0);
 
                 // Assuming `Transform` struct has a `lerp` function
-                 let new_transform =  lerp_euler_transforms(&start_xform, &end_xform, lerp_amount).to_transform();
+                 let new_transform =  lerp_euler_transforms(&start_xform, &end_xform, lerp_amount, ease_function_type ).to_transform();
 
  
                   
@@ -485,6 +488,7 @@ pub fn update_magicfx_tint_color(
         let start_time = magic_fx_variant.start_time + instance.start_time_offset;
         let end_time = magic_fx_variant.start_time + instance.end_time_offset;
       
+        let color_easing_function_type = instance.color_easing_function; 
 
          let duration = end_time.as_secs_f32() - start_time.as_secs_f32();
          let elapsed = current_time.as_secs_f32() - start_time.as_secs_f32();
@@ -502,7 +506,7 @@ pub fn update_magicfx_tint_color(
 
             if let Some(tint_end_color) = instance.end_tint_color{
 
-                let lerped_tint_color = lerp_colors(&tint_start_color,&tint_end_color,lerp_amount);
+                let lerped_tint_color = lerp_colors(&tint_start_color,&tint_end_color,lerp_amount , color_easing_function_type);
               
                  anim_mat.extension.custom_uniforms.tint_color = lerped_tint_color.into();
 

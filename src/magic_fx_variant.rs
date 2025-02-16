@@ -10,6 +10,7 @@ use crate::animated_material::{
 };
 
 use crate::euler_transform::EulerTransform;
+ 
 use crate::shader_variant::ShaderVariantManifest;
  
 
@@ -34,13 +35,19 @@ pub struct MagicFxInstanceManifest {
 
     pub start_time_offset: f32,
     pub end_time_offset: f32,
+
+
     pub start_transform: EulerTransform,
     pub end_transform: EulerTransform,
+
+    #[serde(default = "default_easing_function")]
+    pub transform_easing_function: EaseFunction ,
 
      pub start_tint_color: Option<Color>,
      pub end_tint_color: Option<Color>,
 
-   
+      #[serde(default = "default_easing_function")]
+    pub color_easing_function: EaseFunction ,
 
 }
 
@@ -51,6 +58,12 @@ impl TypePath for MagicFxVariantManifest {
     fn type_path() -> &'static str {
         "magicfx.ron"
     }
+}
+
+
+fn default_easing_function() -> EaseFunction {
+
+    EaseFunction::Linear
 }
 
 #[derive(Clone,Serialize,Deserialize,Debug,Component,Eq,PartialEq,Hash )]
@@ -124,11 +137,13 @@ pub struct MagicFxInstance {
     pub end_time_offset: Duration,
     pub start_transform: EulerTransform,
     pub end_transform: EulerTransform,
+    pub transform_easing_function: EaseFunction ,
+
      pub shader_material_handle: Handle<AnimatedMaterial>,
 
      pub start_tint_color: Option<Color>,
      pub end_tint_color: Option<Color>,
-
+     pub color_easing_function: EaseFunction, 
     
 
 }
@@ -175,9 +190,11 @@ impl MagicFxInstance {
             start_time_offset: Duration::from_secs_f32(manifest.start_time_offset),
             start_transform: manifest.start_transform ,
             end_transform: manifest.end_transform ,
+            transform_easing_function: manifest.transform_easing_function, 
 
             start_tint_color: manifest.start_tint_color,
             end_tint_color: manifest.end_tint_color,
+            color_easing_function: manifest.color_easing_function, 
   
         })
     }

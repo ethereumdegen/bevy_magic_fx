@@ -20,6 +20,8 @@ pub mod camera;
 
 pub mod rotate_to;
 
+//pub mod interpolation;
+
 pub struct MagicFxPlugin;
 
 // Step 2: Implement the Plugin trait for your struct

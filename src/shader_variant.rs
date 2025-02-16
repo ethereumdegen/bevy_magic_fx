@@ -27,8 +27,8 @@ pub struct ShaderVariantManifest {
     
     pub uv_scale_factor: Option<Vec2>, 
 
-    pub color: LinearRgba,
-    pub emissive: LinearRgba,
+    pub color: Color,
+    pub emissive: Color,
  
     pub depth_cutoff_offset: Option<f32> ,   // use depth bias for this ? 
 

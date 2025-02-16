@@ -17,18 +17,18 @@
 
     animation_frame_dimensions: Some( (4,4) ),
 
-    color: LinearRgba(
+    color: LinearRgba((
         red: 1.0,
         green: 1.0,
         blue: 1.0,
         alpha: 1.0
-    ),
-     emissive: LinearRgba(
+    )),
+     emissive: LinearRgba((
          red: 1.0,
         green: 1.0,
         blue: 1.0,
         alpha: 2.6
-    )
+    ))
       
 )
 
