@@ -13,19 +13,19 @@
 		  start_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(0.8,0.8,0.8)),
 		  end_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(0.8,0.8,0.8)),
 
-		  start_tint_color: Some(  LinearRgba(
+		  start_tint_color: Some(  Srgba((
 			        red: 1.0,
 			        green: 1.0,
 			        blue: 1.0,
 			        alpha: 1.0
-			    )),
+			    ))),
 
-		  end_tint_color: Some(   LinearRgba(
+		  end_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green:1.0,
 			        blue: 1.0,
 			        alpha: 0.8
-			    )), 
+			    ))), 
 
     ),
  
@@ -40,19 +40,19 @@
 		  start_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(0.8,0.8,0.8)),
 		  end_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(0.7,0.7,0.7)),
 
-		  start_tint_color: Some(   LinearRgba(
+		  start_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green: 1.0,
 			        blue: 1.0,
 			        alpha: 1.0
-			    )),
+			   ) )),
 
-		  end_tint_color: Some(   LinearRgba(
+		  end_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green:1.0,
 			        blue: 1.0,
 			        alpha: 0.0001
-			    )), 
+			   ) )), 
 
     ),
 

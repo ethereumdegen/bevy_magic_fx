@@ -12,20 +12,20 @@
 		  end_time_offset: 1.0,
 		  start_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.2,1.2,1.2)),
 		  end_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.4,1.4,1.4)),
-
-		  start_tint_color: Some(   LinearRgba(
+   
+     start_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green: 1.0,
 			        blue: 1.0,
 			        alpha: 1.0
-			    )),
+			    ))),
 
-		  end_tint_color: Some(   LinearRgba(
+		  end_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green:1.0,
 			        blue: 1.0,
 			        alpha: 0.1
-			    )), 
+			   ) )), 
 
     ),
 
@@ -39,19 +39,19 @@
 		  start_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.2,1.2,1.2)),
 		  end_transform: (translation: (0.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(1.4,1.4,1.4)),
 
-		  start_tint_color: Some(   LinearRgba(
+		   start_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green: 1.0,
 			        blue: 1.0,
 			        alpha: 1.0
-			    )),
+			    ))),
 
-		  end_tint_color: Some(   LinearRgba(
+		  end_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green:1.0,
 			        blue: 1.0,
 			        alpha: 0.1
-			    )), 
+			   ) )), 
 
     ),
 
@@ -65,19 +65,19 @@
 		  start_transform: (translation: (0.0,0.2,0.0), rotation:(0.0,0.0,0.0),scale:(1.2,1.2,1.2)),
 		  end_transform: (translation: (0.0,0.2,0.0), rotation:(0.0,0.0,0.0),scale:(1.4,1.4,1.4)),
 
-		  start_tint_color: Some(   LinearRgba(
+		   start_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green: 1.0,
 			        blue: 1.0,
 			        alpha: 1.0
-			    )),
+			    ))),
 
-		  end_tint_color: Some(   LinearRgba(
+		  end_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green:1.0,
 			        blue: 1.0,
 			        alpha: 0.1
-			    )), 
+			   ) )), 
 
     ),
 
@@ -91,19 +91,19 @@
 		  start_transform: (translation: (1.0,0.0,0.0), rotation:(3.14,0.0,0.0),scale:(0.5,0.5,0.5)),
 		  end_transform: (translation: (1.0,0.0,0.0), rotation:(3.14,0.0,0.0),scale:(0.5,0.5,0.5)),
 
-		  start_tint_color: Some(   LinearRgba(
+		    start_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green: 1.0,
 			        blue: 1.0,
-			        alpha: 0.5
-			    )),
+			        alpha: 1.0
+			    ))),
 
-		  end_tint_color: Some(   LinearRgba(
+		  end_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green:1.0,
 			        blue: 1.0,
 			        alpha: 0.1
-			    )), 
+			   ) )), 
 
     ),
 
@@ -117,19 +117,19 @@
 		  start_transform: (translation: (-1.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(0.5,0.5,0.5)),
 		  end_transform: (translation: (-1.0,0.0,0.0), rotation:(0.0,0.0,0.0),scale:(0.5,0.5,0.5)),
 
-		  start_tint_color: Some(   LinearRgba(
+		  start_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green: 1.0,
 			        blue: 1.0,
-			         alpha: 0.5
-			    )),
+			        alpha: 0.5
+			    ))),
 
-		  end_tint_color: Some(   LinearRgba(
+		  end_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green:1.0,
 			        blue: 1.0,
 			        alpha: 0.1
-			    )), 
+			   ) )), 
 
     ),
   
@@ -143,19 +143,19 @@
 		  start_transform: (translation: (0.0,0.0,1.0), rotation:(1.57,0.0,0.0),scale:(0.5,0.5,0.5)),
 		  end_transform: (translation: (0.0,0.0,1.0), rotation:(1.57,0.0,0.0),scale:(0.5,0.5,0.5)),
 
-		  start_tint_color: Some(   LinearRgba(
+		  start_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green: 1.0,
 			        blue: 1.0,
-			          alpha: 0.5
-			    )),
+			        alpha: 0.5
+			    ))),
 
-		  end_tint_color: Some(   LinearRgba(
+		  end_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green:1.0,
 			        blue: 1.0,
 			        alpha: 0.1
-			    )), 
+			   ) )), 
 
     ),
 
@@ -168,19 +168,19 @@
 		  start_transform: (translation: (0.0,0.0,-1.0), rotation:(4.71,0.0,0.0),scale:(0.5,0.5,0.5)),
 		  end_transform: (translation: (0.0,0.0,-1.0), rotation:(4.71,0.0,0.0),scale:(0.5,0.5,0.5)),
 
-		  start_tint_color: Some(   LinearRgba(
+		    start_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green: 1.0,
 			        blue: 1.0,
 			        alpha: 0.5
-			    )),
+			    ))),
 
-		  end_tint_color: Some(   LinearRgba(
+		  end_tint_color: Some(   Srgba((
 			        red: 1.0,
 			        green:1.0,
 			        blue: 1.0,
 			        alpha: 0.1
-			    )), 
+			   ) )), 
 
     ),
  

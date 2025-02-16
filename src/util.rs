@@ -57,12 +57,14 @@ pub(crate) fn lerp_euler_transforms(
 }
 
 pub(crate) fn lerp_colors(
-   start: &LinearRgba,
-    end: &LinearRgba,
+    start: &Color,
+    end: &Color,
     t: f32, // Interpolation factor (0.0 = start, 1.0 = end)
-    ) -> LinearRgba {
+    ) -> Color {
 
-
+    //interpolate linearly ? 
+    let start = start.to_linear();
+    let end = end.to_linear();
 
     let r = start.red.lerp(end.red, t);
     let g = start.green.lerp(end.green, t);
@@ -70,8 +72,8 @@ pub(crate) fn lerp_colors(
     let a = start.alpha.lerp(end.alpha, t);
     
 
-
-    Color::srgba(r, g, b, a).into()  
+    Color::LinearRgba(LinearRgba { red: r, green: g, blue: b, alpha: a })
+   // Color::rgba(r, g, b, a).into()  
 
 
 }
