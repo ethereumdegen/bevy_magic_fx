@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use bevy::pbr::{ExtendedMaterial, OpaqueRendererMethod};
 use bevy::prelude::*;
-use bevy::utils::HashMap;
+use bevy::platform_support::collections::hash_map::HashMap;
 use serde::{Deserialize, Serialize};
 
 use crate::animated_material::{

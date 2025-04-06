@@ -1,5 +1,7 @@
 use crate::rotate_to::{get_rotate_towards,UpDirection};
  
+ use bevy::ecs::relationship::Relationship;
+
 use std::ops::Mul;
 use std::{ops::Div, time::Duration};
 
@@ -185,7 +187,7 @@ pub fn update_magic_fx_variants_despawn(
 
     for (magicfx_entity, _variant_comp) in magic_fx_query.iter(){
 
-        if let Some(mut cmd) = commands.get_entity( magicfx_entity  ){
+        if let Some(mut cmd) = commands.get_entity( magicfx_entity  ).ok() {
 
 
             cmd.despawn_recursive(); 
@@ -204,7 +206,7 @@ pub fn update_magic_fx_instances_visibility(
         &mut Visibility,
         
         &MagicFxInstanceComponent,
-        &Parent
+        &ChildOf
     )>,
 
     magic_fx_variant_query: Query<&MagicFxVariantComponent>,
@@ -251,7 +253,7 @@ pub fn update_magic_fx_instances_translation_scale(
          
         &mut Transform,
         &MagicFxInstanceComponent,
-        &Parent,
+        &ChildOf,
         &MagicFxStyle,
     )>,
 
@@ -330,7 +332,7 @@ pub fn update_magicfx_standard_rotation(
          
         &mut Transform,
         &MagicFxInstanceComponent,
-        &Parent,
+        &ChildOf,
         &MagicFxStyle
     )  >,
 
@@ -413,7 +415,7 @@ pub fn update_magicfx_anim_frames(
         Entity,
         &MagicFxInstanceComponent,
         &MeshMaterial3d< AnimatedMaterial >,
-        &Parent
+        &ChildOf
     )  >,
 
     mut animated_material_assets: ResMut<Assets<AnimatedMaterial>>,
@@ -467,7 +469,7 @@ pub fn update_magicfx_tint_color(
         Entity,
         &MagicFxInstanceComponent,
         &MeshMaterial3d< AnimatedMaterial >,
-        &Parent
+        &ChildOf
     )  >,
 
     mut animated_material_assets: ResMut<Assets<AnimatedMaterial>>,
@@ -529,10 +531,10 @@ pub fn update_magicfx_billboard_rotation(
 
     target_query: Query<Entity, With<MagicFxBillboardTarget> >,
 
-    parent_query: Query<&Parent>,
+    parent_query: Query<&ChildOf>,
     global_xform_query: Query<&GlobalTransform>,
 
-    mut magicfx_billboard_query: Query<(Entity, &mut Transform,  &Parent, &MagicFxStyle), Without<MagicFxBillboardTarget> >
+    mut magicfx_billboard_query: Query<(Entity, &mut Transform,  &ChildOf, &MagicFxStyle), Without<MagicFxBillboardTarget> >
 
 ){
  
@@ -582,10 +584,10 @@ pub fn update_magicfx_billboard_vertical_rotation(
 
     target_query: Query<Entity, With<MagicFxBillboardTarget> >,
 
-    parent_query: Query<&Parent>,
+    parent_query: Query<&ChildOf>,
     global_xform_query: Query<&GlobalTransform>,
 
-    mut magicfx_billboard_query: Query<(Entity, &mut Transform,  &Parent, &MagicFxStyle), Without<MagicFxBillboardTarget> >
+    mut magicfx_billboard_query: Query<(Entity, &mut Transform,  &ChildOf, &MagicFxStyle), Without<MagicFxBillboardTarget> >
 
 ){
  

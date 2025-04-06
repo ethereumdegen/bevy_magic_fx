@@ -4,7 +4,7 @@ use bevy::reflect::TypePath;
 use bevy::render::render_resource::*;
 
 use bevy::pbr::{ExtendedMaterial, MaterialExtension, OpaqueRendererMethod};
-use bevy::utils::HashMap;
+ use  bevy::platform_support::collections::hash_map::HashMap;
 
 use crate::shader_variant::ShaderVariantManifest;
 

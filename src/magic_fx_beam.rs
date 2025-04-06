@@ -1,6 +1,7 @@
 
 
  
+use bevy::ecs::relationship::Relationship;
 use crate::magic_fx::MagixFxStandardUpdateSet;
 use crate::magic_fx::MagicFxBillboardTarget;
 use crate::magic_fx_variant::MagicFxStyle;
@@ -43,7 +44,7 @@ fn update_magic_beam_xform(
 
    beam_comp_query: Query<&MagicFxBeamComponent>,
 
-    mut magicfx_query: Query<(Entity, &mut Transform,   &MagicFxStyle, &Parent)  >
+    mut magicfx_query: Query<(Entity, &mut Transform,   &MagicFxStyle, &ChildOf)  >
 
 ){
 

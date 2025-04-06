@@ -6,6 +6,7 @@
     https://github.com/TotalKrill/bevy_mod_lookat/blob/main/src/lib.rs
 
 */
+use bevy::ecs::relationship::Relationship;
 use bevy::prelude::*; 
 
 pub enum UpDirection {
@@ -25,7 +26,7 @@ pub fn get_rotate_towards(
 
     up_direction:  UpDirection, 
  
-    parent_query: &Query<&Parent>,
+    parent_query: &Query<&ChildOf>,
     global_transforms: &Query<&GlobalTransform>, // potential_targets
 
    // mut rotators: Query<(&mut Transform, &GlobalTransform, Option<&Parent>, &RotateTo)>, // the ones to rotate
