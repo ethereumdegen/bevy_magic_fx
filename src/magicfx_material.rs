@@ -6,13 +6,13 @@ use bevy::render::render_resource::*;
 use bevy::pbr::{ExtendedMaterial, MaterialExtension, OpaqueRendererMethod};
 use bevy::utils::HashMap;
 
-use crate::shader_variant::ShaderVariantManifest;
+//use crate::shader_variant::ShaderVariantManifest;
 
 
-pub type AnimatedMaterial = ExtendedMaterial<StandardMaterial, AnimatedMaterialBase>;
+pub type MagicFxMaterial = ExtendedMaterial<StandardMaterial, MagicFxMaterialBase>;
 
  
-
+/*
 pub fn build_animated_material(
     shader_variant_manifest: &ShaderVariantManifest,
     texture_handles_map: & HashMap<String,Handle<Image>>, 
@@ -93,11 +93,13 @@ pub fn build_animated_material(
       )
 }
 
+*/
+
 //pub type AnimatedMaterialExtension = ExtendedMaterial<StandardMaterial, AnimatedMaterial>;
 //pub type AnimatedMaterialBundle = MaterialMeshBundle<AnimatedMaterial >;
 
-#[derive(Clone, ShaderType, Debug)]
-pub struct AnimatedMaterialUniforms {
+#[derive(Clone, ShaderType, Debug, Reflect )]
+pub struct MagicFxMaterialUniforms {
     pub distortion_speed: Vec2, 
     pub scroll_repeats: Vec2, 
     pub scroll_speed: Vec2,
@@ -113,7 +115,9 @@ pub struct AnimatedMaterialUniforms {
     pub fresnel_power: f32 ,
     pub masking_texture_config_bits: u32
 }
-impl Default for AnimatedMaterialUniforms {
+
+
+impl Default for MagicFxMaterialUniforms {
     fn default() -> Self {
         Self {
              scroll_speed: Vec2::new(0.1,1.0),
@@ -138,12 +142,13 @@ impl Default for AnimatedMaterialUniforms {
     }
 }
 
-#[derive(Asset, AsBindGroup, TypePath, Debug, Clone, Default)]
-pub struct AnimatedMaterialBase {
+// #[derive(Asset, AsBindGroup, TypePath, Debug, Clone, Default)]
+#[derive(Asset, AsBindGroup, Reflect, Debug, Clone, Default )]
+pub struct MagicFxMaterialBase {
     // We need to ensure that the bindings of the base material and the extension do not conflict,
     // so we start from binding slot 100, leaving slots 0-99 for the base material.
     #[uniform(20)]
-    pub custom_uniforms: AnimatedMaterialUniforms,
+    pub custom_uniforms: MagicFxMaterialUniforms,
 
     #[texture(21)]
     #[sampler(22)]
@@ -157,7 +162,7 @@ pub struct AnimatedMaterialBase {
   //  pub masking_sampler: Option<Handle<Sampler>>,
 }
 
-impl MaterialExtension for AnimatedMaterialBase {
+impl MaterialExtension for MagicFxMaterialBase {
     fn fragment_shader() -> ShaderRef {
         MAGIC_FX_SHADER_HANDLE.into()
     }

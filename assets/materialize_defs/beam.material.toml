@@ -1,0 +1,7 @@
+type = "MagicFxMaterial"
+
+[material.base] 
+
+[material.extension]
+base_color_texture = "../textures/beam_01.png"
+custom_uniforms = {  distortion_amount = 0.02   } 
