@@ -6,7 +6,8 @@
  
 
   (
-    shader_variant_name: "portal_1.shadvar",
+ 
+      shader_variant_name: "materialize_defs/portal_1.material.toml",
 	  mesh_name:  "meshes/portal_spiral_plane.obj", 
 	    fx_style: Standard,
 		  start_time_offset: 0.0,

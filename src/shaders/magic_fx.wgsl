@@ -52,8 +52,8 @@ struct CustomMaterialUniforms {
     //fresnel color ?
     // disturbance effect ?  
 
-    masking_texture_config_bits: u32, 
-    
+    use_masking_texture: u32, 
+    animate_masking_texture: u32, 
     
 };
 
@@ -238,15 +238,15 @@ fn fragment(
 
 
 
-     let animate_mask_texture = (custom_uniforms.masking_texture_config_bits & 0x2) != 0;
+     let animate_mask_texture = (custom_uniforms.animate_masking_texture ) != 0;
 
     var mask_texture_uv = mesh.uv; 
     if (animate_mask_texture) {
         mask_texture_uv = tiled_uv;
     }
 
-
-    let use_mask_texture = (custom_uniforms.masking_texture_config_bits & 0x1) != 0;
+      let use_mask_texture = (custom_uniforms.use_masking_texture ) != 0;
+   
  
      // Apply masking texture if available
     if ( use_mask_texture ) {

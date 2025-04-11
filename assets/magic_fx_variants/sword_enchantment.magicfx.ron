@@ -1,10 +1,7 @@
 (
-    
-    
+     
     magic_fx_instances: [
- 
- 
-
+  
   (
     shader_variant_name: "materialize_defs/beam.material.toml",
 	  mesh_name:  "meshes/sword_enchantment.obj", 

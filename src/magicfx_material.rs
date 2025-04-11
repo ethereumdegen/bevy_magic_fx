@@ -113,7 +113,11 @@ pub struct MagicFxMaterialUniforms {
 
     pub tint_color: LinearRgba ,
     pub fresnel_power: f32 ,
-    pub masking_texture_config_bits: u32
+
+    pub use_masking_texture: u32,   //bool
+    pub animate_masking_texture: u32 ,  //bool
+
+    //pub masking_texture_config_bits: u32
 }
 
 
@@ -137,7 +141,8 @@ impl Default for MagicFxMaterialUniforms {
             tint_color: Color::WHITE.into(),
             fresnel_power:  0.0 , //typically like 2.0 if used 
 
-            masking_texture_config_bits: 0
+            use_masking_texture: 0,
+            animate_masking_texture: 0,
         }
     }
 }
