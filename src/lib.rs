@@ -43,12 +43,13 @@ impl Plugin for MagicFxPlugin {
         // Step 3: Add systems, resources, and configurations to the Bevy app
         app  
 
-           .add_plugins( MaterializePlugin::new(TomlMaterialDeserializer) )
+          
+            //do this in your app! 
+          /* .add_plugins( MaterializePlugin::new(TomlMaterialDeserializer)
+                    .with_simple_loader_settings(None)   //to prevent bug with PNG loading 
+             ) */
 
-            //.add_plugins(ShaderUtilsPlugin)
-           /* .add_plugins(RonAssetPlugin::<ShaderVariantManifest>::new(&[
-            "shadvar.ron",
-            ])) */
+            
             .add_plugins(RonAssetPlugin::<MagicFxVariantManifest>::new(&[
                 "magicfx.ron",
             ]))
@@ -59,8 +60,8 @@ impl Plugin for MagicFxPlugin {
             })
 
             //do both registrations! 
-             .register_generic_material::< magicfx_material::MagicFxMaterial >()
-             .register_generic_material_shorthand::< magicfx_material::MagicFxMaterial >("MagicFxMaterial")
+              .register_generic_material::< magicfx_material::MagicFxMaterial >()
+              .register_generic_material_shorthand::< magicfx_material::MagicFxMaterial >("MagicFxMaterial")
 
             
 

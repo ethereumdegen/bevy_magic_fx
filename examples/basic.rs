@@ -1,6 +1,8 @@
 //! This example demonstrates the built-in 3d shapes in Bevy.
 //! The scene includes a patterned texture and a rotation for visualizing the normals and UVs.
 
+use bevy_materialize::MaterializePlugin;
+use bevy_materialize::prelude::TomlMaterialDeserializer;
 use bevy_magic_fx::magic_fx_beam::MagicFxBeamComponent;
 use std::f32::consts::PI;
 
@@ -39,6 +41,13 @@ fn main() {
    
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
         .add_plugins(bevy_obj::ObjPlugin)
+
+
+           .add_plugins( MaterializePlugin::new(TomlMaterialDeserializer)
+                    .with_simple_loader_settings(None)   //to prevent bug with PNG loading 
+             )
+
+           
 
              .insert_resource(BuiltVfxResource::default())
         .insert_resource(AssetLoadingResource::default())
