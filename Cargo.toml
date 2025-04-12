@@ -18,7 +18,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 ron = "0.8.1"
  
-bevy_materialize = {version="0.4.2", features=[ "toml" ],   default-features = false  }
+bevy_materialize = {version="0.4.2"   }
 
 # bevy_shader_utils = "0.7.0"
 
