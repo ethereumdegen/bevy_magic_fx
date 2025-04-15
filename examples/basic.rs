@@ -1,7 +1,7 @@
 //! This example demonstrates the built-in 3d shapes in Bevy.
 //! The scene includes a patterned texture and a rotation for visualizing the normals and UVs.
 
-use bevy_materialize::MaterializePlugin;
+use bevy_materialize::{GenericMaterial, MaterializePlugin};
 use bevy_materialize::prelude::TomlMaterialDeserializer;
 use bevy_magic_fx::magic_fx_beam::MagicFxBeamComponent;
 use std::f32::consts::PI;
@@ -48,14 +48,20 @@ fn main() {
              )
 
            
+       
 
-             .insert_resource(BuiltVfxResource::default())
-        .insert_resource(AssetLoadingResource::default())
-        .insert_resource(FolderLoadingResource::default())
          .init_state::<LoadingState>()
 
 
-        .add_plugins( MagicFxPlugin )
+        .add_plugins( MagicFxPlugin )  //this registers the material
+
+
+
+          .init_resource::<BuiltMaterialsResource>()
+         .init_resource::<BuiltVfxResource>()
+
+           .init_resource::<AssetLoadingResource>()
+         .init_resource::<FolderLoadingResource>()
 
 
          .add_systems(Update, update_load_folders)
@@ -84,6 +90,31 @@ fn main() {
 
 }
 
+
+#[derive(Resource )]
+struct BuiltMaterialsResource  ( HashMap< String, Handle<GenericMaterial> > );
+
+impl FromWorld for BuiltMaterialsResource {
+
+
+
+
+        fn from_world(world: &mut World) -> Self {
+
+                    //usually build this from anotehr config file ! 
+                let mut built_map = HashMap::new();
+
+                built_map.insert("beam".to_string(), world.load_asset( "materialize_defs/beam.material.toml" )  );
+                built_map.insert("portal_1".to_string(), world.load_asset( "materialize_defs/portal_1.material.toml" )  );
+
+
+
+                Self(built_map)
+
+
+
+         }
+}
 
 
 
@@ -374,13 +405,15 @@ fn update_loading_magic_fx_variant_manifest(
     mut commands: Commands,
 
    mut built_vfx_resource: ResMut<BuiltVfxResource>,
+
+   built_materials_resource: Res<BuiltMaterialsResource>, 
  
     asset_loading_resource: Res<AssetLoadingResource>,
 
     mut next_state: ResMut<NextState<LoadingState>>,
  
 
-   // animated_materials_assets: Res<Assets<AnimatedMaterial>>,
+    generic_materials_assets: Res<Assets<GenericMaterial>>,
     mut asset_server: ResMut<AssetServer>,
 
 
@@ -401,23 +434,29 @@ fn update_loading_magic_fx_variant_manifest(
 
                      let mesh_handles_map = &asset_loading_resource.mesh_handles_map;
 
-                 //   let animated_materials_map = &asset_loading_resource.animated_material_map;
+                      let generic_materials_map = &built_materials_resource.0;
   
-                    let magic_fx = MagicFxVariant::from_manifest(
+                    let Some( magic_fx )  = MagicFxVariant::from_manifest(
                         magic_fx_variant_manifest,
                       
                         &mesh_handles_map,
                       
-                      //  &animated_materials_map,
+                         &generic_materials_map,
 
 
-                       // &animated_materials_assets,
+                          &generic_materials_assets,
                         &mut asset_server 
      
 
                      
                         
-                    ).expect(format!("could not load {:?}",file_path.to_string()).as_str());
+                    ) else {
+                        warn!( "could not load {:?}",file_path.to_string() );
+                        continue
+                    };  //.expect(format!("could not load {:?}",file_path.to_string()).as_str());
+
+
+
                     info!("loaded {:?}",file_path.to_string());
                     built_vfx_resource.magic_fx_variants.insert(file_path.to_string(), magic_fx);
 

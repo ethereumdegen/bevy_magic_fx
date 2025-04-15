@@ -3,7 +3,7 @@
     magic_fx_instances: [
   
   (
-    shader_variant_name: "materialize_defs/beam.material.toml",
+    shader_variant_name: "beam", // materialize_defs/beam.material.toml
 	  mesh_name:  "meshes/sword_enchantment.obj", 
 	    fx_style: Standard,
 		  start_time_offset: 0.0,

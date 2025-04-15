@@ -1,6 +1,6 @@
 [package]
 name = "bevy_magic_fx"
-version = "0.15.9"
+version = "0.15.11"
 rust-version = "1.81"
 license = "MIT"
 description = "Define mesh-based vfx in serialized files"

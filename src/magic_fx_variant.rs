@@ -95,6 +95,12 @@ impl MagicFxVariant {
        // animated_materials_map: &HashMap<String,Handle<MagicFxMaterial>>,
 
        //  animated_materials_assets: &Res<Assets<MagicFxMaterial>>,
+
+
+         generic_materials_map: &HashMap<String,Handle<GenericMaterial>>,
+
+         generic_materials_assets: &Res<Assets< GenericMaterial >>,
+         
         asset_server: &ResMut<AssetServer>
      
     ) -> Option<Self> {
@@ -108,8 +114,8 @@ impl MagicFxVariant {
                 MagicFxInstance::from_manifest(
                     instance_manifest,
                     mesh_handles_map,
-                    //animated_materials_map,
-                    //animated_materials_assets,
+                     generic_materials_map,
+                     generic_materials_assets,
                     asset_server,
                 )
             })
@@ -153,9 +159,9 @@ impl MagicFxInstance {
  
         mesh_handles_map: &HashMap<String, Handle<Mesh>>,
  
-       // animated_materials_map: &HashMap<String,Handle<MagicFxMaterial>>,
+         generic_materials_map: &HashMap<String,Handle<GenericMaterial>>,
 
-      //  animated_materials_assets: &Res<Assets<MagicFxMaterial>>,
+         generic_materials_assets: &Res<Assets< GenericMaterial >>,
 
 
         asset_server: &ResMut<AssetServer>
@@ -165,28 +171,28 @@ impl MagicFxInstance {
 
 
                         // "materials/custom_material.toml"
-        let new_shader_material_handle = asset_server.load( &manifest.shader_variant_name   ); 
+       // let new_shader_material_handle = asset_server.load( &manifest.shader_variant_name   ); 
         
         println!( "loading shader material handle {:?}" ,  &manifest.shader_variant_name);
 
-      /*   let shader_material_handle  = animated_materials_map
+        let shader_material_handle  = generic_materials_map
          .get(&manifest.shader_variant_name)?.clone();
 
 
 
-        let shader_material_deep_ref = animated_materials_assets.get(&shader_material_handle)? ;
+       // let shader_material_deep_ref = generic_materials_assets.get(&shader_material_handle)? ;
 
-        let shader_material_deep_clone = shader_material_deep_ref.clone();
+       // let shader_material_deep_clone = shader_material_deep_ref.clone();
 
-        let new_shader_material_handle = asset_server.add( shader_material_deep_clone );
-            */
+       // let new_shader_material_handle = asset_server.add( shader_material_deep_clone );
+            
 
        
         Some(Self { 
 
             end_time_offset: Duration::from_secs_f32(manifest.end_time_offset),
          
-         	shader_material_handle:new_shader_material_handle,
+         	shader_material_handle: shader_material_handle,
 
         
             mesh_handle: mesh_handle.clone (),
