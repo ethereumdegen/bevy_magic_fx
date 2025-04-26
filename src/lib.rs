@@ -1,18 +1,20 @@
+use bevy_materialize::MaterializePlugin;
+use bevy_materialize::prelude::*;
 use bevy::asset::load_internal_asset;
 use bevy::prelude::*;
 use bevy_common_assets::ron::RonAssetPlugin;
 use magic_fx_variant::MagicFxVariantManifest;
-use shader_variant::ShaderVariantManifest;
+//use shader_variant::ShaderVariantManifest;
 
 
 
 //use bevy_shader_utils::ShaderUtilsPlugin;
 
-pub mod animated_material;
+pub mod magicfx_material;
 pub mod euler_transform;
 pub mod magic_fx;
 pub mod magic_fx_variant;
-pub mod shader_variant;
+// pub mod shader_variant;  //use materialize now 
 pub mod magic_fx_beam;
 pub(crate) mod util;
 
@@ -39,22 +41,29 @@ impl Plugin for MagicFxPlugin {
 
 
         // Step 3: Add systems, resources, and configurations to the Bevy app
-        app
+        app  
 
-            //.add_plugins(ShaderUtilsPlugin)
-            .add_plugins(RonAssetPlugin::<ShaderVariantManifest>::new(&[
-            "shadvar.ron",
-            ]))
+          
+            //do this in your app! 
+          /* .add_plugins( MaterializePlugin::new(TomlMaterialDeserializer)
+                    .with_simple_loader_settings(None)   //to prevent bug with PNG loading 
+             ) */
+
+            
             .add_plugins(RonAssetPlugin::<MagicFxVariantManifest>::new(&[
                 "magicfx.ron",
             ]))
-            .add_plugins(MaterialPlugin::<animated_material::AnimatedMaterial > {
+            .add_plugins(MaterialPlugin::<magicfx_material::MagicFxMaterial > {
 
                  prepass_enabled: false,
                 ..default() 
             })
 
+            //do both registrations! 
+              .register_generic_material::< magicfx_material::MagicFxMaterial >()
+              .register_generic_material_shorthand::< magicfx_material::MagicFxMaterial >("MagicFxMaterial")
 
+            
 
             .add_plugins(magic_fx_beam::magic_fx_beam_plugin)
             .add_plugins(magic_fx::magic_fx_comp_plugin)

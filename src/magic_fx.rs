@@ -9,7 +9,7 @@ use bevy::prelude::*;
 
 use crate::magic_fx_variant::MagicFxStyle;
 use crate::{
-    animated_material::{AnimatedMaterial, AnimatedMaterialBase}, 
+    magicfx_material::{ MagicFxMaterial, MagicFxMaterialBase  }, 
     magic_fx_variant::{MagicFxInstance, MagicFxVariant},
      util::{lerp_euler_transforms,lerp_colors}
 };
@@ -414,11 +414,12 @@ pub fn update_magicfx_anim_frames(
       magic_fx_instance_query: Query<(
         Entity,
         &MagicFxInstanceComponent,
-        &MeshMaterial3d< AnimatedMaterial >,
+ 
+        &MeshMaterial3d< MagicFxMaterial >,
         &ChildOf
     )  >,
 
-    mut animated_material_assets: ResMut<Assets<AnimatedMaterial>>,
+    mut animated_material_assets: ResMut<Assets< MagicFxMaterial >>,
  
 
     magic_fx_variant_query: Query<&MagicFxVariantComponent>,
@@ -467,12 +468,14 @@ pub fn update_magicfx_anim_frames(
 pub fn update_magicfx_tint_color(
       magic_fx_instance_query: Query<(
         Entity,
-        &MagicFxInstanceComponent,
-        &MeshMaterial3d< AnimatedMaterial >,
+ 
+ 
+        &MeshMaterial3d< MagicFxMaterial >,
         &ChildOf
+ 
     )  >,
 
-    mut animated_material_assets: ResMut<Assets<AnimatedMaterial>>,
+    mut animated_material_assets: ResMut<Assets<MagicFxMaterial>>,
  
 
     magic_fx_variant_query: Query<&MagicFxVariantComponent>,

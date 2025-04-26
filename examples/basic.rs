@@ -1,6 +1,8 @@
 //! This example demonstrates the built-in 3d shapes in Bevy.
 //! The scene includes a patterned texture and a rotation for visualizing the normals and UVs.
 
+use bevy_materialize::{GenericMaterial, MaterializePlugin};
+use bevy_materialize::prelude::TomlMaterialDeserializer;
 use bevy_magic_fx::magic_fx_beam::MagicFxBeamComponent;
 use std::f32::consts::PI;
 
@@ -24,10 +26,10 @@ use bevy_magic_fx::{ MagicFxPlugin};
 
 //use bevy_magic_fx::magic_fx::{  MagicFxVariantComponent, };
 
-use bevy_magic_fx::animated_material::{build_animated_material, AnimatedMaterial};
+//use bevy_magic_fx::animated_material::{build_animated_material, AnimatedMaterial};
 use bevy_magic_fx::{
     magic_fx_variant::{MagicFxVariant, MagicFxVariantManifest},
-    shader_variant::ShaderVariantManifest,
+  //  shader_variant::ShaderVariantManifest,
 };
   
 
@@ -40,20 +42,33 @@ fn main() {
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
         .add_plugins(bevy_obj::ObjPlugin)
 
-             .insert_resource(BuiltVfxResource::default())
-        .insert_resource(AssetLoadingResource::default())
-        .insert_resource(FolderLoadingResource::default())
+
+           .add_plugins( MaterializePlugin::new(TomlMaterialDeserializer)
+                    .with_simple_loader_settings(None)   //to prevent bug with PNG loading 
+             )
+
+           
+       
+
          .init_state::<LoadingState>()
 
 
-        .add_plugins( MagicFxPlugin )
+        .add_plugins( MagicFxPlugin )  //this registers the material
+
+
+
+          .init_resource::<BuiltMaterialsResource>()
+         .init_resource::<BuiltVfxResource>()
+
+           .init_resource::<AssetLoadingResource>()
+         .init_resource::<FolderLoadingResource>()
 
 
          .add_systems(Update, update_load_folders)
  
 
-        .add_systems(OnEnter(LoadingState::FundamentalAssetsLoad), update_loading_shader_variant_manifest)
-        .add_systems(OnEnter(LoadingState::ShadersLoad), update_loading_magic_fx_variant_manifest)
+        // .add_systems(OnEnter(LoadingState::FundamentalAssetsLoad), update_loading_shader_variant_manifest)
+        .add_systems(OnEnter(LoadingState::FundamentalAssetsLoad), update_loading_magic_fx_variant_manifest)
          .add_systems(OnEnter(LoadingState::Complete) , spawn_magic_fx) 
 
         
@@ -76,18 +91,43 @@ fn main() {
 }
 
 
+#[derive(Resource )]
+struct BuiltMaterialsResource  ( HashMap< String, Handle<GenericMaterial> > );
+
+impl FromWorld for BuiltMaterialsResource {
+
+
+
+
+        fn from_world(world: &mut World) -> Self {
+
+                    //usually build this from anotehr config file ! 
+                let mut built_map = HashMap::new();
+
+                built_map.insert("beam".to_string(), world.load_asset( "materialize_defs/beam.material.toml" )  );
+                built_map.insert("portal_1".to_string(), world.load_asset( "materialize_defs/portal_1.material.toml" )  );
+
+
+
+                Self(built_map)
+
+
+
+         }
+}
+
 
 
 #[derive(Resource, Default)]
   struct AssetLoadingResource {
     texture_handles_map: HashMap<String, Handle<Image>>,
     mesh_handles_map: HashMap<String, Handle<Mesh>>,
-    shader_variants_map: HashMap<String, Handle<ShaderVariantManifest>>,
+  //  shader_variants_map: HashMap<String, Handle<ShaderVariantManifest>>,
 
     magic_fx_variants_map: HashMap<String, Handle<MagicFxVariantManifest>>,
 
     
-     animated_material_map: HashMap<String, Handle<AnimatedMaterial>>,
+   //  animated_material_map: HashMap<String, Handle<AnimatedMaterial>>,
  
 }
 
@@ -97,7 +137,7 @@ fn main() {
    
 
     textures_folder_handle: Handle<LoadedFolder>,
-    shadvars_folder_handle: Handle<LoadedFolder>,
+   // shadvars_folder_handle: Handle<LoadedFolder>,
     meshes_folder_handle: Handle<LoadedFolder>,
 
       magicfx_folder_handle: Handle<LoadedFolder>,
@@ -119,7 +159,7 @@ pub enum LoadingState {
     #[default]
     Init,
     FundamentalAssetsLoad,
-    ShadersLoad,
+    //ShadersLoad,
     Complete
 
 }
@@ -145,7 +185,7 @@ fn setup(
 
     let textures_folder = asset_server.load_folder("textures/");
 
-    let shadvars_folder = asset_server.load_folder("shader_variants/");
+   // let shadvars_folder = asset_server.load_folder("shader_variants/");
 
      let meshes_folder = asset_server.load_folder("meshes/");
 
@@ -154,7 +194,7 @@ fn setup(
 
 
      folder_loading_resource.textures_folder_handle = textures_folder;
-     folder_loading_resource.shadvars_folder_handle = shadvars_folder;
+    // folder_loading_resource.shadvars_folder_handle = shadvars_folder;
      folder_loading_resource.meshes_folder_handle = meshes_folder;
      folder_loading_resource.magicfx_folder_handle = magic_fx_variants_folder;
 
@@ -258,9 +298,9 @@ fn update_load_folders(
                          asset_loading_resource.texture_handles_map.insert((&asset_path.path().to_str().unwrap().to_string()).clone(), asset_server.load(  &asset_path ) ) ;
                 }
 
-                if (&asset_path.path()).starts_with("shader_variants") { 
+             /*   if (&asset_path.path()).starts_with("shader_variants") { 
                          asset_loading_resource.shader_variants_map.insert((&asset_path.path().to_str().unwrap().to_string()).clone(), asset_server.load(  &asset_path ) ) ;
-                }
+                }*/
 
                   if (&asset_path.path()).starts_with("magic_fx_variants") { 
                          asset_loading_resource.magic_fx_variants_map.insert((&asset_path.path().to_str().unwrap().to_string()).clone(), asset_server.load(  &asset_path ) ) ;
@@ -272,12 +312,13 @@ fn update_load_folders(
 
             if ! asset_loading_resource.mesh_handles_map.is_empty() 
             &&  !asset_loading_resource.texture_handles_map.is_empty()
-            &&  !asset_loading_resource.shader_variants_map.is_empty() 
+         //   &&  !asset_loading_resource.shader_variants_map.is_empty() 
              &&  !asset_loading_resource.magic_fx_variants_map.is_empty() 
 
             {
 
                 next_state.set(LoadingState::FundamentalAssetsLoad);
+               //next_state.set(LoadingState::ShadersLoad);
             }
 
 
@@ -293,15 +334,16 @@ fn update_load_folders(
 
 }
 
+/*
 fn update_loading_shader_variant_manifest(
     
      
 
     mut asset_loading_resource: ResMut<AssetLoadingResource>,
-    mut animated_materials: ResMut<Assets<AnimatedMaterial>>,
+   // mut animated_materials: ResMut<Assets<AnimatedMaterial>>,
 
 
-    shader_variant_manifest_resource: Res<Assets<ShaderVariantManifest>>,
+ //   shader_variant_manifest_resource: Res<Assets<ShaderVariantManifest>>,
 
     asset_server: ResMut<AssetServer>,
 
@@ -354,7 +396,7 @@ fn update_loading_shader_variant_manifest(
                    
                 }
        
-}
+} */
 
 fn update_loading_magic_fx_variant_manifest(
    // mut ev_asset: EventReader<AssetEvent<MagicFxVariantManifest>>,
@@ -363,13 +405,15 @@ fn update_loading_magic_fx_variant_manifest(
     mut commands: Commands,
 
    mut built_vfx_resource: ResMut<BuiltVfxResource>,
+
+   built_materials_resource: Res<BuiltMaterialsResource>, 
  
     asset_loading_resource: Res<AssetLoadingResource>,
 
     mut next_state: ResMut<NextState<LoadingState>>,
  
 
-    animated_materials_assets: Res<Assets<AnimatedMaterial>>,
+    generic_materials_assets: Res<Assets<GenericMaterial>>,
     mut asset_server: ResMut<AssetServer>,
 
 
@@ -390,23 +434,29 @@ fn update_loading_magic_fx_variant_manifest(
 
                      let mesh_handles_map = &asset_loading_resource.mesh_handles_map;
 
-                    let animated_materials_map = &asset_loading_resource.animated_material_map;
+                      let generic_materials_map = &built_materials_resource.0;
   
-                    let magic_fx = MagicFxVariant::from_manifest(
+                    let Some( magic_fx )  = MagicFxVariant::from_manifest(
                         magic_fx_variant_manifest,
                       
                         &mesh_handles_map,
                       
-                        &animated_materials_map,
+                         &generic_materials_map,
 
 
-                        &animated_materials_assets,
+                          &generic_materials_assets,
                         &mut asset_server 
      
 
                      
                         
-                    ).expect(format!("could not load {:?}",file_path.to_string()).as_str());
+                    ) else {
+                        warn!( "could not load {:?}",file_path.to_string() );
+                        continue
+                    };  //.expect(format!("could not load {:?}",file_path.to_string()).as_str());
+
+
+
                     info!("loaded {:?}",file_path.to_string());
                     built_vfx_resource.magic_fx_variants.insert(file_path.to_string(), magic_fx);
 
@@ -427,7 +477,7 @@ fn spawn_magic_fx(
     ){
 
           println!("spawning magic fx  ");
-            let waterfall_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/sword_enchantment.magicfx.ron").unwrap();
+            let waterfall_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/portal_1.magicfx.ron").unwrap();
  
 
           //at a later time, whenever, spawn the magic fx . This is usually from a spell cast.
