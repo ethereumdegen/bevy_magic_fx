@@ -4,7 +4,7 @@ use bevy::reflect::TypePath;
 use bevy::render::render_resource::*;
 
 use bevy::pbr::{ExtendedMaterial, MaterialExtension };
-use bevy::utils::HashMap;
+use bevy::platform::collections::hash_map::HashMap;
 
  
 

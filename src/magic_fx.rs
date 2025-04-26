@@ -190,7 +190,7 @@ pub fn update_magic_fx_variants_despawn(
         if let Some(mut cmd) = commands.get_entity( magicfx_entity  ).ok() {
 
 
-            cmd.despawn_recursive(); 
+            cmd.despawn(); 
         }
 
 
@@ -216,7 +216,7 @@ pub fn update_magic_fx_instances_visibility(
 
     for (entity, mut fx_visibility, instance_comp, parent) in magic_fx_instance_query.iter_mut() {
        
-        let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.get()  ).ok() else {continue};
+        let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.parent()  ).ok() else {continue};
 
 
         let instance = &instance_comp.instance;
@@ -269,7 +269,7 @@ pub fn update_magic_fx_instances_translation_scale(
         //    continue;
         //}
 
-         let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.get()  ).ok() else {continue};
+         let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.parent()  ).ok() else {continue};
 
 
 
@@ -348,7 +348,7 @@ pub fn update_magicfx_standard_rotation(
             continue;
         }
 
-         let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.get()  ).ok() else {continue};
+         let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.parent()  ).ok() else {continue};
 
 
         let instance = &instance_comp.instance;
@@ -429,7 +429,7 @@ pub fn update_magicfx_anim_frames(
 
     for (entity, instance_comp, anim_mat_handle, parent) in magic_fx_instance_query.iter() {
        
-        let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.get()  ).ok() else {continue};
+        let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.parent()  ).ok() else {continue};
 
 
         let instance = &instance_comp.instance;
@@ -469,7 +469,7 @@ pub fn update_magicfx_tint_color(
       magic_fx_instance_query: Query<(
         Entity,
  
- 
+        &MagicFxInstanceComponent,
         &MeshMaterial3d< MagicFxMaterial >,
         &ChildOf
  
@@ -485,7 +485,7 @@ pub fn update_magicfx_tint_color(
 
     for (entity, instance_comp, anim_mat_handle, parent) in magic_fx_instance_query.iter() {
        
-        let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.get()  ).ok() else {continue};
+        let Some(magic_fx_variant) = magic_fx_variant_query.get( parent.parent()  ).ok() else {continue};
 
 
         let instance = &instance_comp.instance;
@@ -542,11 +542,11 @@ pub fn update_magicfx_billboard_rotation(
 ){
  
 
-    if let Some(target_entity ) = target_query.get_single().ok()  {
+    if let Some(target_entity ) = target_query.single().ok()  {
 
         
       
-        for( billboard_entity, mut magicfx_xform,  parent, magic_fx_style) in magicfx_billboard_query.iter_mut(){
+        for( billboard_entity, mut magicfx_xform,  _parent, magic_fx_style) in magicfx_billboard_query.iter_mut(){
                 
            if magic_fx_style != &MagicFxStyle::Billboard  {
                 continue;
@@ -595,14 +595,14 @@ pub fn update_magicfx_billboard_vertical_rotation(
 ){
  
 
-    if let Some(target_entity ) = target_query.get_single().ok()  {
+    if let Some(target_entity ) = target_query.single().ok()  {
 
     //let Some(target_xform) = global_xform_query.get(target_entity).ok() else {return};
     
 
        
       
-        for( billboard_entity, mut magicfx_xform,  parent, magic_fx_style) in magicfx_billboard_query.iter_mut(){
+        for( billboard_entity, mut magicfx_xform,  _parent, magic_fx_style) in magicfx_billboard_query.iter_mut(){
                 
            if magic_fx_style != &MagicFxStyle::BillboardVertically  {
                 continue;

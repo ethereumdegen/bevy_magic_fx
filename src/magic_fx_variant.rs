@@ -1,12 +1,13 @@
-use bevy_materialize::GenericMaterial3d;
+use bevy_materialize::prelude::GenericMaterial;
+use bevy_materialize::generic_material::GenericMaterial3d;
 use std::time::Duration;
 
 use bevy::pbr::{ExtendedMaterial, OpaqueRendererMethod};
 use bevy::prelude::*;
  
-use bevy::platform_support::collections::hash_map::HashMap;
+use bevy::platform::collections::hash_map::HashMap;
  
-use bevy_materialize::GenericMaterial;
+ 
  
 use serde::{Deserialize, Serialize};
  
