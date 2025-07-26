@@ -29,18 +29,18 @@ pub fn build_animated_material(
 
    let masking_texture_handle = shader_variant_manifest.masking_texture.as_ref().map(|m|  texture_handles_map.get( m ) ) .flatten();
     
-   let use_masking_texture = masking_texture_handle.is_some();
-   let animate_masking_texture = shader_variant_manifest.animate_masking_texture ;
+   let use_masking_texture_bool = masking_texture_handle.is_some();
+   let animate_masking_texture_bool = shader_variant_manifest.animate_masking_texture ;
 
     
      // Create a list of flag states
-    let flags = [
+    /*let flags = [
         (MaskingTextureConfigBits::UseMaskingTexture, use_masking_texture),
         (MaskingTextureConfigBits::AnimateMaskingTexture, animate_masking_texture),
-    ];
+    ];*/
 
     // Build the bitfield
-    let masking_texture_config_bits = build_masking_texture_config_bits(&flags);
+   // let masking_texture_config_bits = build_masking_texture_config_bits(&flags);
 
 
    Ok(
@@ -81,7 +81,8 @@ pub fn build_animated_material(
                             animation_frame_dimension: shader_variant_manifest.animation_frame_dimensions.map(|d|  Vec2::new(d[0] as f32,d[1] as f32)  ).unwrap_or(  Vec2::new(1.0,1.0) ),
 
 
-                            masking_texture_config_bits ,
+                            use_masking_texture : use_masking_texture as u32,
+                            animate_masking_texture: use_masking_texture as u32 , 
                          //   animation_frame_dimension_y: shader_variant_manifest.animation_frame_dimensions.map(|d| d[1]).unwrap_or(   1 ), 
 
                             ..default()
@@ -111,7 +112,9 @@ pub struct AnimatedMaterialUniforms {
 
     pub tint_color: LinearRgba ,
     pub fresnel_power: f32 ,
-    pub masking_texture_config_bits: u32
+    //pub masking_texture_config_bits: u32
+    pub use_masking_texture: u32,
+    pub animate_masking_texture: u32, 
 }
 impl Default for AnimatedMaterialUniforms {
     fn default() -> Self {
@@ -133,7 +136,8 @@ impl Default for AnimatedMaterialUniforms {
             tint_color: Color::WHITE.into(),
             fresnel_power:  0.0 , //typically like 2.0 if used 
 
-            masking_texture_config_bits: 0
+            use_masking_texture: 0,
+            animate_masking_texture: 0 ,
         }
     }
 }
@@ -171,7 +175,7 @@ impl MaterialExtension for AnimatedMaterialBase {
 
 // ----- 
 
-
+/*
 // Define an enum for the bit positions
 #[repr(u32)]
 #[derive(Clone,Copy)]
@@ -192,4 +196,4 @@ fn build_masking_texture_config_bits(flags: &[(MaskingTextureConfigBits, bool)])
     }
 
     config_bits
-}
+}*/

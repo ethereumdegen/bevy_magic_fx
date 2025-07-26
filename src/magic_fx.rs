@@ -7,6 +7,9 @@ use std::{ops::Div, time::Duration};
 
 use bevy::prelude::*;
 
+
+use bevy:: render:: view::{RenderLayers }; 
+
 use crate::magic_fx_variant::MagicFxStyle;
 use crate::{
     magicfx_material::{ MagicFxMaterial, MagicFxMaterialBase  }, 
@@ -53,7 +56,8 @@ pub struct MagicFxInstanceComponent {
 
 pub(crate) fn magic_fx_comp_plugin(app: &mut App) {
     
-    app
+    app 
+       .add_event::<MagicFxInstanceChildAdded>()
         .add_systems(Update,( 
 
                  update_magic_fx_variants_added,
@@ -91,6 +95,14 @@ pub struct MagixFxStandardUpdateSet;
 pub struct MagicFxNoAutoTransform; 
 
 
+
+
+#[derive(Event,Debug,Clone)]
+pub struct MagicFxInstanceChildAdded {
+    pub parent: Entity,
+    pub child: Entity 
+}
+
 /*
 
 build plugins for the above comps
@@ -110,27 +122,41 @@ pub fn update_magic_fx_variants_added(
 
             let anim_mat_bundle =  instance.to_anim_material_bundle();
 
+             let style_component = &instance.fx_style;
+
             let magic_fx_child = commands
                 .spawn(
-                  anim_mat_bundle   //this include spatial bundle 
-                    
-                ).insert (
-                    ( 
+                  (
+                  anim_mat_bundle,   //this includes spatial bundle with mesh 
+
                     MagicFxInstanceComponent {
                         instance: instance.clone(),
                        // start_time: time.elapsed(),
                     },
                     bevy::pbr::NotShadowCaster,
-                    )
-                )
+                    ChildOf( fx_entity  ) ,
+                    style_component.clone() ,
+
+                   //  RenderLayers:: layer(2)   // test 
+
+                  )  
+                ) 
                 .id();
 
-            commands.entity(fx_entity).add_child(magic_fx_child);
+           // commands.entity(fx_entity).add_child(magic_fx_child);
 
-            let style_component = &instance.fx_style;
+           
 
-            commands.entity(magic_fx_child).insert( style_component.clone() );
+         //   commands.entity(magic_fx_child).insert( style_component.clone() );
 
+
+           commands.send_event(
+                MagicFxInstanceChildAdded {
+                    parent: fx_entity.clone(),
+                    child: magic_fx_child.clone(), 
+
+                }
+            );
           
         }
     }
