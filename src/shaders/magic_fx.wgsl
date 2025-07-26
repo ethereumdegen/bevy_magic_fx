@@ -258,13 +258,15 @@ fn fragment(
 
    var position = mesh.position; //this is frag_coord ? 
 
+   #ifdef DEPTH_PREPASS
+
    //apply the depth_cutoff_offset
    let depth = prepass_utils::prepass_depth(position,sample_index);
    if ( (position.z - depth ) * 100.0  < custom_uniforms.depth_cutoff_offset   ) { 
        discard;
     }
 
-        
+    #endif  
       
  
     return pbr_out;
