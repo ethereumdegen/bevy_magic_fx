@@ -15,6 +15,16 @@
 //  #import bevy_shader_utils::fresnel::fresnel
  #import bevy_pbr::mesh_view_bindings::view
 
+
+#import bevy_pbr::view_transformations::{
+position_clip_to_world,
+sition_view_to_clip, 
+position_clip_to_view,
+position_view_to_world,
+depth_ndc_to_view_z
+} 
+
+
 struct StandardMaterial {
     time: f32,
     base_color: vec4<f32>,
@@ -256,17 +266,37 @@ fn fragment(
 
 
 
-   var position = mesh.position; //this is frag_coord ? 
+  // var position = mesh.position; //this is frag_coord ? 
 
-   #ifdef DEPTH_PREPASS
+  
 
-   //apply the depth_cutoff_offset
-   let depth = prepass_utils::prepass_depth(position,sample_index);
-   if ( (position.z - depth ) * 100.0  < custom_uniforms.depth_cutoff_offset   ) { 
-       discard;
-    }
+      #ifdef DEPTH_PREPASS
 
-    #endif  
+
+       // Get the scene depth from the depth prepass
+        let scene_depth = prepass_utils::prepass_depth(mesh.position, sample_index);
+
+        // Convert fragment depth to view space for proper comparison
+        let fragment_depth_view = depth_ndc_to_view_z(mesh.position.z);
+        let scene_depth_view = depth_ndc_to_view_z(scene_depth);
+
+        // Calculate depth difference in view space (more intuitive units)
+        let depth_difference = fragment_depth_view - scene_depth_view;
+
+        // Apply soft depth fade instead of hard cutoff
+        let fade_distance = custom_uniforms.depth_cutoff_offset;
+        
+        if depth_difference < 1.0 {
+             discard; 
+           //      pbr_out.color = vec4<f32>(0.0,0.0,0.0,1.0);
+        }
+
+ 
+          
+   
+          
+    #endif
+
       
  
     return pbr_out;
@@ -314,3 +344,6 @@ fn fresnel(
     // and making it brighter by multiplying by 2
     return pow(fresnel, power) * strength;
 };
+
+
+ 

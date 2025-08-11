@@ -107,30 +107,29 @@ impl MagicFxVariant {
          
         asset_server: &ResMut<AssetServer>
      
-    ) -> Option<Self> {
-       // let current_time = time.elapsed();
-
-         let magic_fx_instances: Vec<MagicFxInstance> = manifest
+    ) -> Result<Self> {
+     
+      let magic_fx_instances: Vec<MagicFxInstance> = manifest
             .magic_fx_instances
             .clone()
-            .into_iter() // Use into_iter instead of drain(..) to consume the vector
+            .into_iter()
             .map(|instance_manifest| {
                 MagicFxInstance::from_manifest(
                     instance_manifest,
                     mesh_handles_map,
-                     generic_materials_map,
-                     generic_materials_assets,
+                    generic_materials_map,
+                    generic_materials_assets,
                     asset_server,
                 )
             })
-            .collect::<Option<Vec<MagicFxInstance>>>()?; // Early return None if any item is None
+            .collect::<Result<Vec<MagicFxInstance>, _>>()?; // Collect Results and propagate errors
 
-        Some(Self {
-          //  name: manifest.name.clone(),
+        Ok(Self {
             repeating: manifest.repeating,
-            max_time_offset:  manifest.max_time.map( |t| Duration::from_secs_f32(t) ) ,
+            max_time_offset: manifest.max_time.map(|t| Duration::from_secs_f32(t)),
             magic_fx_instances,
         })
+        
         
     }
 
@@ -158,58 +157,36 @@ pub struct MagicFxInstance {
 }
 
 impl MagicFxInstance {
-    pub fn from_manifest(
+  pub fn from_manifest(
         manifest: MagicFxInstanceManifest,
- 
         mesh_handles_map: &HashMap<String, Handle<Mesh>>,
- 
-         generic_materials_map: &HashMap<String,Handle<GenericMaterial>>,
-
-         generic_materials_assets: &Res<Assets< GenericMaterial >>,
-
-
+        generic_materials_map: &HashMap<String, Handle<GenericMaterial>>,
+        generic_materials_assets: &Res<Assets<GenericMaterial>>,
         asset_server: &ResMut<AssetServer>
-    ) -> Option<Self> {
+    ) -> Result<Self> {
+        let mesh_handle = mesh_handles_map
+            .get(&manifest.mesh_name)
+            .ok_or_else(|| format!("Mesh '{}' not found in mesh_handles_map", manifest.mesh_name))?;
 
-        let mesh_handle = mesh_handles_map.get(&manifest.mesh_name)?;
-
-
-                        // "materials/custom_material.toml"
-       // let new_shader_material_handle = asset_server.load( &manifest.shader_variant_name   ); 
+        println!("loading shader material handle {:?}", &manifest.shader_variant_name);
         
-        println!( "loading shader material handle {:?}" ,  &manifest.shader_variant_name);
+        let shader_material_handle = generic_materials_map
+            .get(&manifest.shader_variant_name)
+            .ok_or_else(|| format!("Shader material '{}' not found in generic_materials_map", manifest.shader_variant_name))?
+            .clone();
 
-        let shader_material_handle  = generic_materials_map
-         .get(&manifest.shader_variant_name)?.clone();
-
-
-
-       // let shader_material_deep_ref = generic_materials_assets.get(&shader_material_handle)? ;
-
-       // let shader_material_deep_clone = shader_material_deep_ref.clone();
-
-       // let new_shader_material_handle = asset_server.add( shader_material_deep_clone );
-            
-
-       
-        Some(Self { 
-
+        Ok(Self { 
             end_time_offset: Duration::from_secs_f32(manifest.end_time_offset),
-         
-         	shader_material_handle: shader_material_handle,
-
-        
-            mesh_handle: mesh_handle.clone (),
+            shader_material_handle,
+            mesh_handle: mesh_handle.clone(),
             fx_style: manifest.fx_style.clone(),
             start_time_offset: Duration::from_secs_f32(manifest.start_time_offset),
-            start_transform: manifest.start_transform ,
-            end_transform: manifest.end_transform ,
+            start_transform: manifest.start_transform,
+            end_transform: manifest.end_transform,
             transform_easing_function: manifest.transform_easing_function, 
-
             start_tint_color: manifest.start_tint_color,
             end_tint_color: manifest.end_tint_color,
-            color_easing_function: manifest.color_easing_function, 
-  
+            color_easing_function: manifest.color_easing_function,
         })
     }
 
