@@ -1,7 +1,8 @@
 //! This example demonstrates the built-in 3d shapes in Bevy.
 //! The scene includes a patterned texture and a rotation for visualizing the normals and UVs.
 
-use bevy_materialize::{GenericMaterial, MaterializePlugin};
+use bevy::render::view::Hdr ;
+use bevy_materialize::{generic_material::GenericMaterial, MaterializePlugin};
 use bevy_materialize::prelude::TomlMaterialDeserializer;
 use bevy_magic_fx::magic_fx_beam::MagicFxBeamComponent;
 use std::f32::consts::PI;
@@ -10,16 +11,17 @@ use std::f32::consts::PI;
 use bevy::asset::{AssetPath, LoadedFolder};
 use bevy::core_pipeline::prepass::DepthPrepass;
 //use bevy::pbr::{ExtendedMaterial, OpaqueRendererMethod};
-use bevy::{gltf::GltfMesh, utils::HashMap};
-
-//use bevy::gltf::Gltf;
  
 
-use bevy::core_pipeline::bloom::{Bloom };
+//use bevy::gltf::Gltf;
+ use bevy::platform::collections::HashMap ;
+ 
 
 use bevy::core_pipeline::tonemapping::Tonemapping;
 
-use bevy::{core_pipeline::bloom::BloomCompositeMode, prelude::*};
+use bevy::{  prelude::*};
+use bevy:: post_process::bloom::{Bloom, BloomCompositeMode} ;
+
 
 use bevy_magic_fx::magic_fx::{MagicFxNoAutoTransform,MagicFxVariantComponent,MagicFxBillboardTarget};
 use bevy_magic_fx::{ MagicFxPlugin};
@@ -44,7 +46,7 @@ fn main() {
 
 
            .add_plugins( MaterializePlugin::new(TomlMaterialDeserializer)
-                    .with_simple_loader_settings(None)   //to prevent bug with PNG loading 
+                    .with_simple_loader (None)   //to prevent bug with PNG loading 
              )
 
            
@@ -222,6 +224,7 @@ fn setup(
      commands.insert_resource(AmbientLight {
         color: Color::linear_rgba(1.0, 1.0, 1.0, 1.0),
         brightness: 4000.0,
+        ..default() 
     });
 
      let silver_color = Color::linear_rgba(0.22, 0.22, 0.22, 0.2);
@@ -240,9 +243,9 @@ fn setup(
     commands.spawn((
 
         Camera3d::default() , 
-
+        Hdr,
         Camera {
-                hdr: true, // 1. HDR must be enabled on the camera
+             //   hdr: true, // 1. HDR must be enabled on the camera
                 ..default()
             },
 
@@ -436,7 +439,7 @@ fn update_loading_magic_fx_variant_manifest(
 
                       let generic_materials_map = &built_materials_resource.0;
   
-                    let Some( magic_fx )  = MagicFxVariant::from_manifest(
+                    let Ok( magic_fx )  = MagicFxVariant::from_manifest(
                         magic_fx_variant_manifest,
                       
                         &mesh_handles_map,

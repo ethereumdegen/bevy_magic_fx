@@ -48,7 +48,7 @@ fn update_magic_beam_xform(
 
 ){
 
-	let Some(billboard_target_entity) = billboard_target_query.get_single( ) .ok() else {return};
+	let Some(billboard_target_entity) = billboard_target_query.single( ) .ok() else {return};
 
 
   for( magic_fx_instance_entity, mut magicfx_xform,    magic_fx_style, parent ) in magicfx_query.iter_mut(){

@@ -3,9 +3,9 @@
    
    
 
-    texture: "textures/diffuse_noise/bluegreen_2.TGA",
+    texture: "textures/diffuse_noise/bluegreen_2.tga",
 
-    masking_texture: Some( "textures/custom/fel_skull2_particle.TGA"),
+    masking_texture: Some( "textures/custom/fel_skull2_particle.tga"),
 
     animate_masking_texture: true ,
 

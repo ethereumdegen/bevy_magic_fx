@@ -11,22 +11,23 @@ use bevy::{gltf::GltfMesh, utils::HashMap};
 
 //use bevy::gltf::Gltf;
  
+use bevy:: post_process::bloom::{Bloom, BloomCompositeMode} ;
 
-use bevy::core_pipeline::bloom::BloomSettings;
+ 
 
 use bevy::core_pipeline::tonemapping::Tonemapping;
 
-use bevy::{core_pipeline::bloom::BloomCompositeMode, prelude::*};
+use bevy::{ prelude::*};
 
 use bevy_magic_fx::magic_fx::{MagicFxVariantComponent,MagicFxBillboardTarget};
 use bevy_magic_fx::{ MagicFxPlugin};
 
 //use bevy_magic_fx::magic_fx::{  MagicFxVariantComponent, };
 
-use bevy_magic_fx::animated_material::{build_animated_material, AnimatedMaterial};
+//use bevy_magic_fx::animated_material::{build_animated_material, AnimatedMaterial};
 use bevy_magic_fx::{
     magic_fx_variant::{MagicFxVariant, MagicFxVariantManifest},
-    shader_variant::ShaderVariantManifest,
+  //  shader_variant::ShaderVariantManifest,
 };
   
 

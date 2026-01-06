@@ -70,18 +70,18 @@ struct CustomMaterialUniforms {
  
 
 
-@group(2) @binding(20)
+@group(#{MATERIAL_BIND_GROUP}) @binding(20)
 var<uniform> custom_uniforms: CustomMaterialUniforms;
  
-@group(2) @binding(21)
+@group(#{MATERIAL_BIND_GROUP})  @binding(21)
 var base_color_texture: texture_2d<f32>;
-@group(2) @binding(22)
+@group(#{MATERIAL_BIND_GROUP})  @binding(22)
 var base_color_sampler: sampler;
  
  
-@group(2) @binding(23)
+@group(#{MATERIAL_BIND_GROUP})  @binding(23)
 var  masking_texture: texture_2d<f32>;
-@group(2) @binding(24)
+@group(#{MATERIAL_BIND_GROUP})  @binding(24)
 var  masking_sampler: sampler;
 
 
@@ -287,7 +287,10 @@ fn fragment(
         let fade_distance = custom_uniforms.depth_cutoff_offset;
         
         if depth_difference < 1.0 {
-             discard; 
+          //   discard;    // ADD THIS BACK IN LATER ????   KIND OF BROKEN IN 0.17  
+          // MAKE THIS 1.0 BE DYNAMIC ? 
+        
+
            //      pbr_out.color = vec4<f32>(0.0,0.0,0.0,1.0);
         }
 
@@ -295,7 +298,7 @@ fn fragment(
           
    
           
-    #endif
+       #endif
 
       
  

@@ -8,7 +8,7 @@ use std::{ops::Div, time::Duration};
 use bevy::prelude::*;
 
 
-use bevy:: render:: view::{RenderLayers }; 
+// use bevy:: render:: view::{RenderLayers }; 
 
 use crate::magic_fx_variant::MagicFxStyle;
 use crate::{
@@ -57,7 +57,7 @@ pub struct MagicFxInstanceComponent {
 pub(crate) fn magic_fx_comp_plugin(app: &mut App) {
     
     app 
-       .add_event::<MagicFxInstanceChildAdded>()
+       .add_message::<MagicFxInstanceChildAdded>()
         .add_systems(Update,( 
 
                  update_magic_fx_variants_added,
@@ -97,7 +97,7 @@ pub struct MagicFxNoAutoTransform;
 
 
 
-#[derive(Event,Debug,Clone)]
+#[derive(Message,Debug,Clone)]
 pub struct MagicFxInstanceChildAdded {
     pub parent: Entity,
     pub child: Entity 
@@ -133,7 +133,7 @@ pub fn update_magic_fx_variants_added(
                         instance: instance.clone(),
                        // start_time: time.elapsed(),
                     },
-                    bevy::pbr::NotShadowCaster,
+                    bevy::light::NotShadowCaster,
                     ChildOf( fx_entity  ) ,
                     style_component.clone() ,
 
@@ -150,7 +150,7 @@ pub fn update_magic_fx_variants_added(
          //   commands.entity(magic_fx_child).insert( style_component.clone() );
 
 
-           commands.send_event(
+           commands.write_message(
                 MagicFxInstanceChildAdded {
                     parent: fx_entity.clone(),
                     child: magic_fx_child.clone(), 

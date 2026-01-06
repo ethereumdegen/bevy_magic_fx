@@ -4,7 +4,7 @@
 (
     
     
-    texture: "textures/T_Lightning_2x1_00.TGA",
+    texture: "textures/T_Lightning_2x1_00.tga",
     animation_speed: (0.0,14.0),  
 
     distortion_speed: (32.0,16.0),

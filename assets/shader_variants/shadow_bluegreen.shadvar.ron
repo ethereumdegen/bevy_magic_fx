@@ -3,7 +3,7 @@
    
    
 
-    texture: "textures/diffuse_noise/bluegreen_2.TGA",
+    texture: "textures/diffuse_noise/bluegreen_2.tga",
 
     masking_texture: Some( "textures/kenney/fire_01.png"),
 

@@ -1,6 +1,7 @@
 use crate::MAGIC_FX_SHADER_HANDLE;
 use bevy::prelude::*;
-use bevy::reflect::TypePath;
+
+use bevy::shader::ShaderRef; 
 use bevy::render::render_resource::*;
 
 use bevy::pbr::{ExtendedMaterial, MaterialExtension };

@@ -78,7 +78,6 @@ impl Plugin for MagicFxPlugin {
 
           
 
-   pub(crate) const MAGIC_FX_SHADER_HANDLE: Handle<Shader> =
-    Handle::weak_from_u128(7_473_426_912_151_597_127);
+   pub(crate) const MAGIC_FX_SHADER_HANDLE: Handle<Shader> = bevy::asset::uuid_handle!("1327c9b7-c26a-48e7-b7b8-023a354b7bac") ;
 
 
