@@ -81,6 +81,29 @@ pub struct MagicFxMaterialBase {
   //  pub masking_sampler: Option<Handle<Sampler>>,
 }
 
+impl MagicFxMaterialBase {
+
+    pub fn update_animation(&mut self , time_secs: f32  ) {
+
+        let time_secs_constrained = time_secs % 32000.0 ;
+
+        let anim_frame_dimension =  &self.custom_uniforms. animation_frame_dimension; 
+
+
+        let factor =  self.custom_uniforms.scroll_speed.x  ; 
+
+        let anim_index_max = anim_frame_dimension.x  as u32   *   anim_frame_dimension.y as u32  ;
+
+
+        let anim_index =  ( time_secs_constrained * factor ) as u32   % anim_index_max ;
+
+        // println!("{}" , anim_index );
+        self.custom_uniforms . current_animation_frame_index = anim_index; 
+
+    }
+
+}
+
 impl MaterialExtension for MagicFxMaterialBase {
     fn fragment_shader() -> ShaderRef {
         MAGIC_FX_SHADER_HANDLE.into()
