@@ -1,7 +1,7 @@
 //! This example demonstrates the built-in 3d shapes in Bevy.
 //! The scene includes a patterned texture and a rotation for visualizing the normals and UVs.
 
-use bevy::render::view::Hdr ;
+use bevy::camera::Hdr;
 use bevy_materialize::{generic_material::GenericMaterial, MaterializePlugin};
 use bevy_materialize::prelude::TomlMaterialDeserializer;
 use bevy_magic_fx::magic_fx_beam::MagicFxBeamComponent;
@@ -45,9 +45,7 @@ fn main() {
         .add_plugins(bevy_obj::ObjPlugin)
 
 
-           .add_plugins( MaterializePlugin::new(TomlMaterialDeserializer)
-                    .with_simple_loader (None)   //to prevent bug with PNG loading 
-             )
+           .add_plugins(MaterializePlugin::new(TomlMaterialDeserializer))
 
            
        
@@ -80,6 +78,7 @@ fn main() {
 
         .run();
 }
+
  
 
 
@@ -107,7 +106,6 @@ impl FromWorld for BuiltMaterialsResource {
                 let mut built_map = HashMap::new();
 
                 built_map.insert("beam".to_string(), world.load_asset( "materialize_defs/beam.material.toml" )  );
-                built_map.insert("portal_1".to_string(), world.load_asset( "materialize_defs/portal_1.material.toml" )  );
 
 
 
@@ -209,7 +207,7 @@ fn setup(
             PointLight {
                 intensity: 2000.0,
                 range: 100.,
-                shadows_enabled: false,
+                shadow_maps_enabled: false,
                 ..default()
           },
 
@@ -221,7 +219,7 @@ fn setup(
 
         );
 
-     commands.insert_resource(AmbientLight {
+     commands.insert_resource(GlobalAmbientLight {
         color: Color::linear_rgba(1.0, 1.0, 1.0, 1.0),
         brightness: 4000.0,
         ..default() 
@@ -267,7 +265,7 @@ fn setup(
 
 
 fn update_load_folders(
-       mut ev_asset: EventReader<AssetEvent<LoadedFolder>>,
+       mut ev_asset: MessageReader<AssetEvent<LoadedFolder>>,
 
        asset_server: ResMut<AssetServer>,
 
@@ -402,7 +400,7 @@ fn update_loading_shader_variant_manifest(
 } */
 
 fn update_loading_magic_fx_variant_manifest(
-   // mut ev_asset: EventReader<AssetEvent<MagicFxVariantManifest>>,
+   // mut ev_asset: MessageReader<AssetEvent<MagicFxVariantManifest>>,
     fx_variant_assets: ResMut<Assets<MagicFxVariantManifest>>,
 
     mut commands: Commands,
@@ -480,7 +478,10 @@ fn spawn_magic_fx(
     ){
 
           println!("spawning magic fx  ");
-            let waterfall_fx = built_vfx_resource.magic_fx_variants.get("magic_fx_variants/portal_1.magicfx.ron").unwrap();
+            let sword_enchantment_fx = built_vfx_resource
+                .magic_fx_variants
+                .get("magic_fx_variants/sword_enchantment.magicfx.ron")
+                .expect("sword enchantment effect should be built");
  
 
           //at a later time, whenever, spawn the magic fx . This is usually from a spell cast.
@@ -489,7 +490,7 @@ fn spawn_magic_fx(
                             (Transform::from_xyz(0.0,0.0,0.0), Visibility::default( ) )
                             )
                         .insert(MagicFxVariantComponent {
-                            magic_fx: waterfall_fx.clone(),
+                            magic_fx: sword_enchantment_fx.clone(),
                             start_time: time.elapsed(),
                         }) ;
 

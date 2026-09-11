@@ -53,11 +53,7 @@ impl Plugin for MagicFxPlugin {
             .add_plugins(RonAssetPlugin::<MagicFxVariantManifest>::new(&[
                 "magicfx.ron",
             ]))
-            .add_plugins(MaterialPlugin::<magicfx_material::MagicFxMaterial > {
-
-                 prepass_enabled: false,
-                ..default() 
-            })
+            .add_plugins(MaterialPlugin::<magicfx_material::MagicFxMaterial>::default())
 
             //do both registrations! 
               .register_generic_material::< magicfx_material::MagicFxMaterial >()

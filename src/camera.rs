@@ -1,7 +1,7 @@
 use bevy::{input::mouse::MouseMotion, prelude::*};
 
 pub fn update_camera_look(
-    mut event_reader: EventReader<MouseMotion>,
+    mut event_reader: MessageReader<MouseMotion>,
     mouse_input: Res<ButtonInput<MouseButton>>,
     mut query: Query<(&mut Transform, &Camera3d)>,
 ) {

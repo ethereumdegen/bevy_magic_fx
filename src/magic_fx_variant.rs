@@ -2,7 +2,6 @@ use bevy_materialize::prelude::GenericMaterial;
 use bevy_materialize::generic_material::GenericMaterial3d;
 use std::time::Duration;
 
-use bevy::pbr::{ExtendedMaterial, OpaqueRendererMethod};
 use bevy::prelude::*;
  
 use bevy::platform::collections::hash_map::HashMap;

@@ -1,28 +1,29 @@
 [package]
 name = "bevy_magic_fx"
  
-version = "0.17.1"
+version = "0.19.0"
  
 license = "MIT"
 description = "Define mesh-based vfx in serialized files"
 edition = "2024" 
+autoexamples = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 
-bevy = { version = "0.17.0", features=["tga","png"] }
+bevy = { version = "0.19.1", features=["tga","png"] }
 
 # bevy = { version = "0.15.0", features = ["tga"] }
-bevy_obj = {version = "0.17" , features =["mesh"], default-features= false }
+bevy_obj = {version = "0.19" , features =["mesh"], default-features= false }
  
-bevy_common_assets = { version = "0.14", features = ["ron", "toml"] }
+bevy_common_assets = { version = "0.17", features = ["ron", "toml"] }
 
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 ron = "0.8.1"
  
-bevy_materialize = {version="0.8.0"   }
+bevy_materialize = {version="0.11.0"   }
 
 # bevy_shader_utils = "0.7.0"
 
@@ -32,26 +33,6 @@ name = "basic"
 path = "examples/basic.rs"
 
 
-[[example]]
-name = "waterfall"
-path = "examples/waterfall.rs"
-
-
-[[example]]
-name = "preview"
-path = "examples/preview.rs"
-
-
-[[example]]
-name = "showcase"
-path = "examples/showcase.rs"
-
-
-
-
-[[example]]
-name = "wip"
-path = "examples/wip.rs"
 
 
  

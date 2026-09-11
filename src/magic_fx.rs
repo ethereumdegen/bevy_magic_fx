@@ -464,7 +464,7 @@ pub fn update_magicfx_anim_frames(
         let end_time = magic_fx_variant.start_time + instance.end_time_offset;
       
 
-        if let Some(anim_mat) = animated_material_assets.get_mut(anim_mat_handle){
+        if let Some(mut anim_mat) = animated_material_assets.get_mut(anim_mat_handle){
 
 
              let total_frames = anim_mat.extension.custom_uniforms.animation_frame_dimension.x as u32 * anim_mat.extension.custom_uniforms.animation_frame_dimension.y as u32;
@@ -531,7 +531,7 @@ pub fn update_magicfx_tint_color(
                 }
                 .clamp(0.0, 1.0);
 
-        if let Some(anim_mat) = animated_material_assets.get_mut(anim_mat_handle){
+        if let Some(mut anim_mat) = animated_material_assets.get_mut(anim_mat_handle){
 
             if let Some(tint_start_color) = instance.start_tint_color{
 

@@ -112,6 +112,12 @@ impl MaterialExtension for MagicFxMaterialBase {
     fn deferred_fragment_shader() -> ShaderRef {
         MAGIC_FX_SHADER_HANDLE.into()
     }
+
+    // Effects are drawn in the main pass only. This was `MaterialPlugin { prepass_enabled: false }`
+    // before Bevy 0.18 moved the setting onto the material.
+    fn enable_prepass() -> bool {
+        false
+    }
 }
 
 

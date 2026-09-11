@@ -10,7 +10,7 @@ alpha_mode=  "Blend"
 
 
 [material.extension]
-base_color_texture = "../textures/fx_fireskill/Gradient_Beam_007.tga"
+base_color_texture = "../textures/T_Random_23.png"
 
 [material.extension.custom_uniforms]
 distortion_speed = [0.02,0.01]
